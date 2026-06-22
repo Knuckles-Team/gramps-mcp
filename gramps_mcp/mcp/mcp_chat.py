@@ -22,7 +22,7 @@ def register_chat_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web chat operations. CONCEPT:GRMP-001."""
+        """Manage Gramps chat operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_chat action: {action}")
         import json

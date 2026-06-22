@@ -24,7 +24,7 @@ def register_dna_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web dna operations. CONCEPT:GRMP-001."""
+        """Manage Gramps dna operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_dna action: {action}")
         import json

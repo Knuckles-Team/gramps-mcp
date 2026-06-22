@@ -24,7 +24,7 @@ def register_tasks_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web tasks operations. CONCEPT:GRMP-001."""
+        """Manage Gramps tasks operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_tasks action: {action}")
         import json

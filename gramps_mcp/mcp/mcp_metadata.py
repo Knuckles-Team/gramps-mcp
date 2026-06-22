@@ -24,7 +24,7 @@ def register_metadata_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web metadata operations. CONCEPT:GRMP-001."""
+        """Manage Gramps metadata operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_metadata action: {action}")
         import json

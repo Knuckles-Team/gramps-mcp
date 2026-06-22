@@ -24,7 +24,7 @@ def register_citations_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web citations operations. CONCEPT:GRMP-001."""
+        """Manage Gramps citations operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_citations action: {action}")
         import json

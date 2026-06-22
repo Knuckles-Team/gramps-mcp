@@ -14,14 +14,14 @@ flag.
 ```python
 from gramps_mcp.auth import get_client
 
-api = get_client()        # reads GRAMPS_WEB_URL / GRAMPS_WEB_TOKEN from the environment / .env
+api = get_client()        # reads GRAMPS_URL / GRAMPS_TOKEN from the environment / .env
 status = api.get_system_status()
 ```
 
 ## As a CLI
 
 ```bash
-export GRAMPS_WEB_URL="http://localhost:8080"
-export GRAMPS_WEB_TOKEN="your_token"
+export GRAMPS_URL="http://localhost:8080"
+export GRAMPS_TOKEN="your_token"
 gramps-mcp --transport stdio
 ```

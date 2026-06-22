@@ -1,13 +1,13 @@
 #!/usr/bin/python
-"""Base HTTP client for the Gramps Web API.
+"""Base HTTP client for the Gramps API.
 
 Handles the cross-cutting concerns shared by every generated domain client:
 
-* **Authentication** — a pre-minted JWT bearer token (``GRAMPS_WEB_TOKEN``) or a
-  username/password login (``GRAMPS_WEB_USERNAME`` / ``GRAMPS_WEB_PASSWORD``)
+* **Authentication** — a pre-minted JWT bearer token (``GRAMPS_TOKEN``) or a
+  username/password login (``GRAMPS_USERNAME`` / ``GRAMPS_PASSWORD``)
   exchanged against ``/api/token/`` for an access token, refreshed before expiry.
-* **Single tenant host** — Gramps Web serves one tree-server instance per host
-  (``GRAMPS_WEB_URL``, e.g. ``https://gramps.arpa``). Generated methods carry the
+* **Single tenant host** — Gramps serves one tree-server instance per host
+  (``GRAMPS_URL``, e.g. ``https://gramps.arpa``). Generated methods carry the
   absolute URL template from the spec; this base resolves ``{param}`` path tokens.
 * **Pagination** — Gramps' offset style (``page`` / ``pagesize`` query params with a
   ``X-Total-Count`` header on collection responses).
@@ -38,7 +38,7 @@ logger = get_logger(__name__)
 T = TypeVar("T")
 
 
-class GrampsWebApiBase:
+class GrampsApiBase:
     def __init__(
         self,
         url: str | None = None,
@@ -67,7 +67,7 @@ class GrampsWebApiBase:
         host = (url or "").strip().rstrip("/")
         if not host:
             raise MissingParameterError(
-                "Provide GRAMPS_WEB_URL (e.g. https://gramps.arpa)."
+                "Provide GRAMPS_URL (e.g. https://gramps.arpa)."
             )
         if not host.startswith(("http://", "https://")):
             host = f"https://{host}"
@@ -78,8 +78,8 @@ class GrampsWebApiBase:
 
         if not self._token and not (self._username and self._password):
             raise MissingParameterError(
-                "Provide GRAMPS_WEB_TOKEN, or GRAMPS_WEB_USERNAME and "
-                "GRAMPS_WEB_PASSWORD for the login flow."
+                "Provide GRAMPS_TOKEN, or GRAMPS_USERNAME and "
+                "GRAMPS_PASSWORD for the login flow."
             )
 
     # ------------------------------------------------------------------ auth
@@ -103,21 +103,21 @@ class GrampsWebApiBase:
                     timeout=30,
                 )
             except requests.RequestException as e:
-                raise AuthError(f"Gramps Web token request failed: {e}") from e
+                raise AuthError(f"Gramps token request failed: {e}") from e
             if resp.status_code in (401, 403):
                 raise UnauthorizedError(
-                    f"Gramps Web credentials rejected ({resp.status_code})."
+                    f"Gramps credentials rejected ({resp.status_code})."
                 )
             if not resp.ok:
                 raise AuthError(
-                    f"Gramps Web token endpoint returned {resp.status_code}: "
+                    f"Gramps token endpoint returned {resp.status_code}: "
                     f"{resp.text}"
                 )
             payload = resp.json()
             self._token = payload.get("access_token") or payload.get("token")
             self._refresh_token = payload.get("refresh_token")
             if not self._token:
-                raise AuthError("Gramps Web token response contained no access_token.")
+                raise AuthError("Gramps token response contained no access_token.")
             # Gramps access tokens default to 15 minutes; refresh 60s early.
             self._token_expiry = time.monotonic() + (15 * 60) - 60
             return self._token
@@ -192,7 +192,7 @@ class GrampsWebApiBase:
                 continue
             if response.status_code in (401, 403):
                 raise (AuthError if response.status_code == 401 else UnauthorizedError)(
-                    f"Gramps Web request to {url} failed ({response.status_code})."
+                    f"Gramps request to {url} failed ({response.status_code})."
                 )
             return response
 
@@ -307,7 +307,7 @@ class GrampsWebApiBase:
         except ValidationError as e:
             raise ParameterError(f"Invalid parameters: {e.errors()}") from e
         except requests.RequestException as e:
-            logger.error("Gramps Web request error: %s", e)
+            logger.error("Gramps request error: %s", e)
             raise
 
     # --------------------------------------------------------------- escape hatch
@@ -319,7 +319,7 @@ class GrampsWebApiBase:
         json: Any | None = None,
         data: Any | None = None,
     ) -> Response:
-        """Make an arbitrary Gramps Web REST request against the configured host.
+        """Make an arbitrary Gramps REST request against the configured host.
 
         ``endpoint`` is a path (e.g. ``/api/people/``) appended to the configured
         base URL. Use this for operations not covered by a typed method.

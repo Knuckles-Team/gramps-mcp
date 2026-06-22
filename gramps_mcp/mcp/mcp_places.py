@@ -24,7 +24,7 @@ def register_places_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web places operations. CONCEPT:GRMP-001."""
+        """Manage Gramps places operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_places action: {action}")
         import json

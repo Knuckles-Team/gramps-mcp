@@ -24,7 +24,7 @@ def register_media_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web media operations. CONCEPT:GRMP-001."""
+        """Manage Gramps media operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_media action: {action}")
         import json

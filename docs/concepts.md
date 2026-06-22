@@ -10,7 +10,7 @@
 
 | Concept ID | Name | Description |
 |------------|------|-------------|
-| `CONCEPT:GRMP-001` | Genealogy Connector | Action-routed + verbose 1:1 MCP tool surface over the Gramps Web REST API (people, families, events, places, sources, citations, media, notes, repositories, tags, trees, users, transactions, search, reports, importers/exporters, relations, timelines, DNA, …), generated from the vendored OpenAPI spec by `scripts/generate_from_openapi.py` |
+| `CONCEPT:GRMP-001` | Genealogy Connector | Action-routed + verbose 1:1 MCP tool surface over the Gramps REST API (people, families, events, places, sources, citations, media, notes, repositories, tags, trees, users, transactions, search, reports, importers/exporters, relations, timelines, DNA, …), generated from the vendored OpenAPI spec by `scripts/generate_from_openapi.py` |
 
 ## Cross-Project References (from agent-utilities)
 

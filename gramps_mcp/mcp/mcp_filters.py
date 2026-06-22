@@ -24,7 +24,7 @@ def register_filters_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web filters operations. CONCEPT:GRMP-001."""
+        """Manage Gramps filters operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_filters action: {action}")
         import json

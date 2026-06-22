@@ -24,7 +24,7 @@ def register_types_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web types operations. CONCEPT:GRMP-001."""
+        """Manage Gramps types operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_types action: {action}")
         import json

@@ -24,7 +24,7 @@ def register_exporters_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web exporters operations. CONCEPT:GRMP-001."""
+        """Manage Gramps exporters operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_exporters action: {action}")
         import json

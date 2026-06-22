@@ -24,7 +24,7 @@ def register_timeline_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web timeline operations. CONCEPT:GRMP-001."""
+        """Manage Gramps timeline operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_timeline action: {action}")
         import json

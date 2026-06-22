@@ -1,7 +1,7 @@
 #!/usr/bin/python
-"""Shared models for the Gramps Web API client.
+"""Shared models for the Gramps API client.
 
-The Gramps Web API exposes a genealogy data model (people, families, events,
+The Gramps API exposes a genealogy data model (people, families, events,
 places, sources, citations, media, notes, repositories, tags) over a REST
 surface. Rather than generate brittle per-schema Pydantic models for every
 Gramps object type, the client passes request/response payloads through as

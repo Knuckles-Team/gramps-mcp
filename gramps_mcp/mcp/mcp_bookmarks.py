@@ -24,7 +24,7 @@ def register_bookmarks_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web bookmarks operations. CONCEPT:GRMP-001."""
+        """Manage Gramps bookmarks operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_bookmarks action: {action}")
         import json
