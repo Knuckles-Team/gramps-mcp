@@ -1,0 +1,52 @@
+{
+  "mcpServers": {
+    "gramps-web-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "gramps-web-mcp"
+      ],
+      "env": {
+        "GRAMPS_WEB_URL": "<YOUR_GRAMPS_WEB_URL>",
+        "GRAMPS_WEB_TOKEN": "<YOUR_GRAMPS_WEB_TOKEN>",
+        "GRAMPS_WEB_SSL_VERIFY": "True",
+        "MCP_TOOL_MODE": "both",
+        "BOOKMARKSTOOL": "True",
+        "CHATTOOL": "True",
+        "CITATIONSTOOL": "True",
+        "CONFIGTOOL": "True",
+        "DNATOOL": "True",
+        "EVENTSTOOL": "True",
+        "EXPORTERSTOOL": "True",
+        "FACTSTOOL": "True",
+        "FAMILIESTOOL": "True",
+        "FILTERSTOOL": "True",
+        "HOLIDAYSTOOL": "True",
+        "IMPORTERSTOOL": "True",
+        "LIVINGTOOL": "True",
+        "MEDIATOOL": "True",
+        "METADATATOOL": "True",
+        "NAME_FORMATSTOOL": "True",
+        "NAME_GROUPSTOOL": "True",
+        "NOTESTOOL": "True",
+        "OIDCTOOL": "True",
+        "PEOPLETOOL": "True",
+        "PLACESTOOL": "True",
+        "RELATIONSTOOL": "True",
+        "REPORTSTOOL": "True",
+        "REPOSITORIESTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SOURCESTOOL": "True",
+        "TAGSTOOL": "True",
+        "TASKSTOOL": "True",
+        "TIMELINETOOL": "True",
+        "TOKENTOOL": "True",
+        "TRANSACTIONSTOOL": "True",
+        "TRANSLATIONSTOOL": "True",
+        "TREESTOOL": "True",
+        "TYPESTOOL": "True",
+        "USERSTOOL": "True"
+      }
+    }
+  }
+}
