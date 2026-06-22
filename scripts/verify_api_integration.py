@@ -11,6 +11,7 @@ BASELINES = {
     "documentdb-mcp": 100.0,
     "github-agent": 100.0,
     "gitlab-api": 6.4,
+    "gramps-web-mcp": 0.0,
     "home-assistant-agent": 63.6,
     "jellyfin-mcp": 81.0,
     "langfuse-agent": 100.0,
