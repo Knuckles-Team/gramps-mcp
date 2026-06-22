@@ -121,7 +121,9 @@ def normalize_params(params: list, op: dict, spec: dict) -> list[dict]:
     request_body = _resolve_ref(spec, op.get("requestBody") or {})
     if request_body:
         content = request_body.get("content") or {}
-        media = content.get("application/json") or next(iter(content.values()), {})
+        media: dict = content.get("application/json") or next(
+            iter(content.values()), {}
+        )
         schema = _resolve_ref(spec, (media or {}).get("schema") or {})
         props = schema.get("properties") or {}
         required = set(schema.get("required") or [])
@@ -329,11 +331,13 @@ def emit_manifest(by_domain: dict[str, list[dict]]) -> None:
     lines = [
         AUTOGEN,
         "",
+        "from typing import Any",
+        "",
         "# Each entry: {operation_id, domain, method, action, http, path, paginate,",
         "#             summary, params:[{name,type,required,description}]}",
         "# `summary` + `params` drive the verbose 1:1 tool tier "
         "(register_verbose_tools).",
-        f"OPERATIONS = {operations!r}",
+        f"OPERATIONS: list[dict[str, Any]] = {operations!r}",
         "",
         "DOMAINS = " + json.dumps(sorted(by_domain), indent=4),
         "",
