@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""Pydantic response models for Gramps Web API payloads.
+"""Pydantic response models for Gramps API payloads.
 
 Gramps objects (people, families, events, …) are returned as JSON dicts and
 wrapped by :class:`gramps_mcp.gramps_models.Response`. This lightweight
@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 
 class TokenResponse(BaseModel):
-    """The Gramps Web ``/api/token/`` login response."""
+    """The Gramps ``/api/token/`` login response."""
 
     access_token: str | None = Field(
         default=None, description="Short-lived JWT access token."

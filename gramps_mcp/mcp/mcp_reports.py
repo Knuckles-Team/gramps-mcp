@@ -24,7 +24,7 @@ def register_reports_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web reports operations. CONCEPT:GRMP-001."""
+        """Manage Gramps reports operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_reports action: {action}")
         import json

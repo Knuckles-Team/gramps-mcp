@@ -28,8 +28,8 @@ matching `mcp_config.json` below.
       "command": "uvx",
       "args": ["--from", "gramps-mcp", "gramps-mcp"],
       "env": {
-        "GRAMPS_WEB_URL": "https://service.example.com",
-        "GRAMPS_WEB_TOKEN": "your_token"
+        "GRAMPS_URL": "https://service.example.com",
+        "GRAMPS_TOKEN": "your_token"
       }
     }
   }
@@ -66,8 +66,8 @@ daemonless runtime):
       "args": [
         "run", "-i", "--rm",
         "-e", "TRANSPORT=stdio",
-        "-e", "GRAMPS_WEB_URL=https://service.example.com",
-        "-e", "GRAMPS_WEB_TOKEN=your_token",
+        "-e", "GRAMPS_URL=https://service.example.com",
+        "-e", "GRAMPS_TOKEN=your_token",
         "knucklessg1/gramps-mcp:latest"
       ]
     }

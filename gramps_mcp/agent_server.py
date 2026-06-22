@@ -28,7 +28,7 @@ def agent_server():
 
     initialize_workspace()
     meta = load_identity()
-    agent_name = os.getenv("DEFAULT_AGENT_NAME", meta.get("name", "Gramps Web MCP"))
+    agent_name = os.getenv("DEFAULT_AGENT_NAME", meta.get("name", "Gramps MCP"))
 
     print(f"{agent_name} v{__version__}", file=sys.stderr)
     parser = create_agent_parser()
@@ -53,7 +53,7 @@ def agent_server():
             "AGENT_DESCRIPTION",
             meta.get(
                 "description",
-                "Gramps Web API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)",
+                "Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)",
             ),
         ),
         system_prompt=os.getenv(

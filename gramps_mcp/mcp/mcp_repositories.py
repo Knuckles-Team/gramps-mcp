@@ -24,7 +24,7 @@ def register_repositories_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web repositories operations. CONCEPT:GRMP-001."""
+        """Manage Gramps repositories operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_repositories action: {action}")
         import json

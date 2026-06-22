@@ -5,7 +5,7 @@
 
 ## Description
 
-Gramps Web API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)
+Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)
 
 ## Architecture
 

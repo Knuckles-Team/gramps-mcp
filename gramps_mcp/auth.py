@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-"""Authentication for the Gramps Web API.
+"""Authentication for the Gramps API.
 
 Priority:
 1. **OIDC Delegation** (RFC 8693 Token Exchange) — when ``ENABLE_DELEGATION`` is
    active, exchanges the IdP-issued user token for a downstream access token via the
    shared ``agent_utilities.mcp.delegated_auth`` helper.
-2. **Fixed credentials** — a pre-minted JWT bearer token (``GRAMPS_WEB_TOKEN``) or a
-   username/password login (``GRAMPS_WEB_USERNAME`` / ``GRAMPS_WEB_PASSWORD``)
+2. **Fixed credentials** — a pre-minted JWT bearer token (``GRAMPS_TOKEN``) or a
+   username/password login (``GRAMPS_USERNAME`` / ``GRAMPS_PASSWORD``)
    exchanged against ``/api/token/``.
 
 Credentials resolve live through the shared config layer (the one XDG
@@ -31,7 +31,7 @@ def get_client(
     verify: bool | None = None,
     config: dict | None = None,
 ) -> Api:
-    """Factory function to create the Gramps Web :class:`Api` client.
+    """Factory function to create the Gramps :class:`Api` client.
 
     Resolves auth via OIDC delegation, a fixed bearer token, or username/password
     login. Settings read from the shared XDG config at call time.
@@ -42,12 +42,12 @@ def get_client(
         is_delegation_enabled,
     )
 
-    base_url = url if url is not None else setting("GRAMPS_WEB_URL")
-    token = token if token is not None else setting("GRAMPS_WEB_TOKEN")
-    username = username if username is not None else setting("GRAMPS_WEB_USERNAME")
-    password = password if password is not None else setting("GRAMPS_WEB_PASSWORD")
+    base_url = url if url is not None else setting("GRAMPS_URL")
+    token = token if token is not None else setting("GRAMPS_TOKEN")
+    username = username if username is not None else setting("GRAMPS_USERNAME")
+    password = password if password is not None else setting("GRAMPS_PASSWORD")
     if verify is None:
-        verify = setting("GRAMPS_WEB_SSL_VERIFY", True)
+        verify = setting("GRAMPS_SSL_VERIFY", True)
 
     # --- Path 1: OIDC Delegation (RFC 8693 Token Exchange) ---
     if is_delegation_enabled(config):
@@ -60,19 +60,19 @@ def get_client(
             )
             identity = get_user_identity()
             logger.info(
-                "Using OIDC delegated token for Gramps Web API",
+                "Using OIDC delegated token for Gramps API",
                 extra={"user_email": identity.get("email"), "url": base_url},
             )
             return Api(url=base_url, token=delegated_token, verify=verify)
         except Exception as e:
             logger.error(
-                "OIDC delegation failed for Gramps Web",
+                "OIDC delegation failed for Gramps",
                 extra={"error_type": type(e).__name__, "error_message": str(e)},
             )
             raise RuntimeError(f"Token exchange failed: {str(e)}") from e
 
     # --- Path 2: Fixed Credentials (token or username/password login) ---
-    logger.info("Using fixed credentials for Gramps Web API")
+    logger.info("Using fixed credentials for Gramps API")
     try:
         return Api(
             url=base_url,
@@ -83,8 +83,8 @@ def get_client(
         )
     except (AuthError, UnauthorizedError) as e:
         raise RuntimeError(
-            "AUTHENTICATION ERROR: The Gramps Web credentials provided are not "
-            f"valid for '{base_url}'. Check GRAMPS_WEB_URL and GRAMPS_WEB_TOKEN "
-            "(or GRAMPS_WEB_USERNAME / GRAMPS_WEB_PASSWORD). "
+            "AUTHENTICATION ERROR: The Gramps credentials provided are not "
+            f"valid for '{base_url}'. Check GRAMPS_URL and GRAMPS_TOKEN "
+            "(or GRAMPS_USERNAME / GRAMPS_PASSWORD). "
             f"Error details: {str(e)}"
         ) from e

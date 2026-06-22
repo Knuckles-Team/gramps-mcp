@@ -1,6 +1,6 @@
 # gramps-mcp
 
-Gramps Web MCP **API + MCP Server + A2A Agent** for the agent-utilities ecosystem — a
+Gramps MCP **API + MCP Server + A2A Agent** for the agent-utilities ecosystem — a
 typed, action-routed connector.
 
 !!! info "Official documentation"
@@ -18,7 +18,7 @@ typed, action-routed connector.
 optional Pydantic-AI agent server.
 
 The connector remains inactive when credentials are absent: configure
-`GRAMPS_WEB_URL` and `GRAMPS_WEB_TOKEN` to connect it to an instance.
+`GRAMPS_URL` and `GRAMPS_TOKEN` to connect it to an instance.
 
 ## Explore the documentation
 

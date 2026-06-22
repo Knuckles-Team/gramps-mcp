@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""Pydantic input models for common Gramps Web API request parameters.
+"""Pydantic input models for common Gramps API request parameters.
 
 The generated domain clients accept arbitrary ``**kwargs`` (forwarded as path,
 query, and body fields), so these models are convenience helpers for the most
@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 
 class CollectionQueryInput(BaseModel):
-    """Common query parameters for Gramps Web collection endpoints."""
+    """Common query parameters for Gramps collection endpoints."""
 
     gramps_id: str | None = Field(
         default=None, description="Filter by Gramps ID (e.g. 'I0001')."

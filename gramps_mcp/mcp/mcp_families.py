@@ -24,7 +24,7 @@ def register_families_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web families operations. CONCEPT:GRMP-001."""
+        """Manage Gramps families operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_families action: {action}")
         import json

@@ -1,5 +1,5 @@
 site_name: "gramps-mcp"
-site_description: "Gramps Web API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)"
+site_description: "Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)"
 site_url: "https://knuckles-team.github.io/gramps-mcp/"
 repo_name: "Knuckles-Team/gramps-mcp"
 repo_url: "https://github.com/Knuckles-Team/gramps-mcp"
@@ -90,5 +90,5 @@ nav:
   - Installation: installation.md
   - Deployment: deployment.md
   - Usage (API / CLI / MCP): usage.md
-  - Backing Platform (Gramps Web MCP): platform.md
+  - Backing Platform (Gramps MCP): platform.md
   - Concepts: concepts.md

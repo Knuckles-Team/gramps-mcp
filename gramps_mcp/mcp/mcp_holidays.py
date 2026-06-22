@@ -24,7 +24,7 @@ def register_holidays_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web holidays operations. CONCEPT:GRMP-001."""
+        """Manage Gramps holidays operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_holidays action: {action}")
         import json

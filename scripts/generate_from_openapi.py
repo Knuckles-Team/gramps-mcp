@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate the Gramps Web API client + MCP tools from the vendored OpenAPI spec.
+"""Generate the Gramps API client + MCP tools from the vendored OpenAPI spec.
 
 This is an **author-time** developer tool, not a runtime dependency. It reads the
 spec(s) in ``gramps_mcp/specs/*.json`` and emits fleet-conformant, committed
@@ -15,7 +15,7 @@ code:
 * ``gramps_mcp/mcp/__init__.py`` — ``TOOL_REGISTRY`` consumed by ``mcp_server.py``.
 * ``gramps_mcp/api_client.py`` — the composite ``Api`` class.
 
-The OpenAPI spec is derived from the documented Gramps Web REST routes
+The OpenAPI spec is derived from the documented Gramps REST routes
 (``gramps-project/gramps-web-api``) — see ``gramps_mcp/specs/``.
 
 Re-run after refreshing the specs:  ``python scripts/generate_from_openapi.py``
@@ -221,16 +221,16 @@ AUTOGEN = (
 
 
 def emit_client_module(domain: str, ops: list[dict]) -> None:
-    cls = f"GrampsWeb{camel(domain)}"
+    cls = f"Gramps{camel(domain)}"
     lines = [
         "#!/usr/bin/python",
         AUTOGEN,
         "",
-        "from gramps_mcp.api.api_client_base import GrampsWebApiBase",
+        "from gramps_mcp.api.api_client_base import GrampsApiBase",
         "from gramps_mcp.gramps_models import Response",
         "",
         "",
-        f"class {cls}(GrampsWebApiBase):",
+        f"class {cls}(GrampsApiBase):",
     ]
     for op in ops:
         doc = op["summary"].replace('"', "'")
@@ -282,7 +282,7 @@ def emit_mcp_module(domain: str, ops: list[dict]) -> None:
         '            default=None, description="MCP context for progress reporting"',
         "        ),",
         "    ) -> Any:",
-        f'        """Manage Gramps Web {domain.replace("_", " ")} operations. '
+        f'        """Manage Gramps {domain.replace("_", " ")} operations. '
         'CONCEPT:GRMP-001."""',
         "        if ctx:",
         '            await ctx.info(f"Executing gramps_'
@@ -353,10 +353,10 @@ def emit_manifest(by_domain: dict[str, list[dict]]) -> None:
 def emit_api_client(by_domain: dict[str, list[dict]]) -> None:
     domains = sorted(by_domain)
     imports = [
-        f"from gramps_mcp.api.api_client_{d} import GrampsWeb{camel(d)}"
+        f"from gramps_mcp.api.api_client_{d} import Gramps{camel(d)}"
         for d in domains
     ]
-    bases = ",\n    ".join(f"GrampsWeb{camel(d)}" for d in domains)
+    bases = ",\n    ".join(f"Gramps{camel(d)}" for d in domains)
     lines = [
         "#!/usr/bin/python",
         AUTOGEN,
@@ -365,7 +365,7 @@ def emit_api_client(by_domain: dict[str, list[dict]]) -> None:
         "",
         "",
         f"class Api(\n    {bases},\n):",
-        '    """Composite Gramps Web API client — every domain client, one class."""',
+        '    """Composite Gramps API client — every domain client, one class."""',
         "",
         "    __slots__ = ()",
         "",

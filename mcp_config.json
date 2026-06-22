@@ -7,9 +7,9 @@
         "gramps-mcp"
       ],
       "env": {
-        "GRAMPS_WEB_URL": "<YOUR_GRAMPS_WEB_URL>",
-        "GRAMPS_WEB_TOKEN": "<YOUR_GRAMPS_WEB_TOKEN>",
-        "GRAMPS_WEB_SSL_VERIFY": "True",
+        "GRAMPS_URL": "<YOUR_GRAMPS_URL>",
+        "GRAMPS_TOKEN": "<YOUR_GRAMPS_TOKEN>",
+        "GRAMPS_SSL_VERIFY": "True",
         "MCP_TOOL_MODE": "both",
         "BOOKMARKSTOOL": "True",
         "CHATTOOL": "True",

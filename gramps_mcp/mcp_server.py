@@ -23,7 +23,7 @@ logger.setLevel(logging.INFO)
 
 
 def get_mcp_instance() -> tuple[Any, Any, Any]:
-    """Initialize and return the Gramps Web MCP instance, args, and middlewares.
+    """Initialize and return the Gramps MCP instance, args, and middlewares.
 
     The whole tool surface is wired by the shared ``register_tool_surface`` helper
     per ``MCP_TOOL_MODE`` (read from the XDG config): ``condensed`` (action-routed
@@ -36,10 +36,10 @@ def get_mcp_instance() -> tuple[Any, Any, Any]:
     load_config()
 
     args, mcp, middlewares = create_mcp_server(
-        name="Gramps Web MCP",
+        name="Gramps MCP",
         version=__version__,
         instructions=(
-            "Gramps Web MCP Server — genealogy (people, families, events, places, "
+            "Gramps MCP Server — genealogy (people, families, events, places, "
             "sources, citations, media, notes, repositories, tags). Condensed and "
             "verbose tool surfaces."
         ),
@@ -63,7 +63,7 @@ def get_mcp_instance() -> tuple[Any, Any, Any]:
 def mcp_server():
     mcp, args, _ = get_mcp_instance()
 
-    print(f"Gramps Web MCP v{__version__}", file=sys.stderr)
+    print(f"Gramps MCP v{__version__}", file=sys.stderr)
     print("\nStarting MCP Server", file=sys.stderr)
     print(f"  Transport: {args.transport.upper()}", file=sys.stderr)
 

@@ -24,7 +24,7 @@ def register_events_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps Web events operations. CONCEPT:GRMP-001."""
+        """Manage Gramps events operations. CONCEPT:GRMP-001."""
         if ctx:
             await ctx.info(f"Executing gramps_events action: {action}")
         import json
