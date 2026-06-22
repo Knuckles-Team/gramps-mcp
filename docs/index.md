@@ -1,20 +1,20 @@
-# gramps-web-mcp
+# gramps-mcp
 
 Gramps Web MCP **API + MCP Server + A2A Agent** for the agent-utilities ecosystem — a
 typed, action-routed connector.
 
 !!! info "Official documentation"
-    This site is the canonical reference for `gramps-web-mcp`, maintained alongside
+    This site is the canonical reference for `gramps-mcp`, maintained alongside
     every release.
 
-[![PyPI](https://img.shields.io/pypi/v/gramps-web-mcp)](https://pypi.org/project/gramps-web-mcp/)
+[![PyPI](https://img.shields.io/pypi/v/gramps-mcp)](https://pypi.org/project/gramps-mcp/)
 ![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
-[![License](https://img.shields.io/pypi/l/gramps-web-mcp)](https://github.com/Knuckles-Team/gramps-web-mcp/blob/main/LICENSE)
-[![GitHub](https://img.shields.io/badge/source-GitHub-181717?logo=github)](https://github.com/Knuckles-Team/gramps-web-mcp)
+[![License](https://img.shields.io/pypi/l/gramps-mcp)](https://github.com/Knuckles-Team/gramps-mcp/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/source-GitHub-181717?logo=github)](https://github.com/Knuckles-Team/gramps-mcp)
 
 ## Overview
 
-`gramps-web-mcp` wraps the target service with typed, deterministic MCP tools and an
+`gramps-mcp` wraps the target service with typed, deterministic MCP tools and an
 optional Pydantic-AI agent server.
 
 The connector remains inactive when credentials are absent: configure

@@ -6,7 +6,7 @@ __pycache__/
 .env
 scripts/
 tests/
-gramps_web_mcp.egg-info*
+gramps_mcp.egg-info*
 models/
 .github/
 build/

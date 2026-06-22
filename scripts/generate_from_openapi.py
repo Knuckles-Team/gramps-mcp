@@ -2,21 +2,21 @@
 """Generate the Gramps Web API client + MCP tools from the vendored OpenAPI spec.
 
 This is an **author-time** developer tool, not a runtime dependency. It reads the
-spec(s) in ``gramps_web_mcp/specs/*.json`` and emits fleet-conformant, committed
+spec(s) in ``gramps_mcp/specs/*.json`` and emits fleet-conformant, committed
 code:
 
-* ``gramps_web_mcp/api/api_client_<domain>.py`` — one method per OpenAPI operation,
-  composed into ``gramps_web_mcp.api_client.Api`` via multiple inheritance.
-* ``gramps_web_mcp/api/_operation_manifest.py`` — the machine-readable
+* ``gramps_mcp/api/api_client_<domain>.py`` — one method per OpenAPI operation,
+  composed into ``gramps_mcp.api_client.Api`` via multiple inheritance.
+* ``gramps_mcp/api/_operation_manifest.py`` — the machine-readable
   ``operationId → method → action`` map that the coverage test asserts against and
   that drives the verbose 1:1 tool tier.
-* ``gramps_web_mcp/mcp/mcp_<domain>.py`` — one consolidated, action-routed MCP tool
+* ``gramps_mcp/mcp/mcp_<domain>.py`` — one consolidated, action-routed MCP tool
   per domain exposing every operation as an ``action``.
-* ``gramps_web_mcp/mcp/__init__.py`` — ``TOOL_REGISTRY`` consumed by ``mcp_server.py``.
-* ``gramps_web_mcp/api_client.py`` — the composite ``Api`` class.
+* ``gramps_mcp/mcp/__init__.py`` — ``TOOL_REGISTRY`` consumed by ``mcp_server.py``.
+* ``gramps_mcp/api_client.py`` — the composite ``Api`` class.
 
 The OpenAPI spec is derived from the documented Gramps Web REST routes
-(``gramps-project/gramps-web-api``) — see ``gramps_web_mcp/specs/``.
+(``gramps-project/gramps-web-api``) — see ``gramps_mcp/specs/``.
 
 Re-run after refreshing the specs:  ``python scripts/generate_from_openapi.py``
 """
@@ -28,7 +28,7 @@ import keyword
 import re
 from pathlib import Path
 
-PKG = Path(__file__).resolve().parent.parent / "gramps_web_mcp"
+PKG = Path(__file__).resolve().parent.parent / "gramps_mcp"
 SPECS_DIR = PKG / "specs"
 API_DIR = PKG / "api"
 MCP_DIR = PKG / "mcp"
@@ -226,8 +226,8 @@ def emit_client_module(domain: str, ops: list[dict]) -> None:
         "#!/usr/bin/python",
         AUTOGEN,
         "",
-        "from gramps_web_mcp.api.api_client_base import GrampsWebApiBase",
-        "from gramps_web_mcp.gramps_web_models import Response",
+        "from gramps_mcp.api.api_client_base import GrampsWebApiBase",
+        "from gramps_mcp.gramps_models import Response",
         "",
         "",
         f"class {cls}(GrampsWebApiBase):",
@@ -263,12 +263,12 @@ def emit_mcp_module(domain: str, ops: list[dict]) -> None:
         "from fastmcp.dependencies import Depends",
         "from pydantic import Field",
         "",
-        "from gramps_web_mcp.auth import get_client",
+        "from gramps_mcp.auth import get_client",
         "",
         "",
         f"def register_{domain}_tools(mcp: FastMCP):",
         f'    @mcp.tool(tags={{"{tag}"}})',
-        f"    async def gramps_web_{domain}(",
+        f"    async def gramps_{domain}(",
         "        action: str = Field(",
         f'            description="Action to perform. One of: {actions}"',
         "        ),",
@@ -285,7 +285,7 @@ def emit_mcp_module(domain: str, ops: list[dict]) -> None:
         f'        """Manage Gramps Web {domain.replace("_", " ")} operations. '
         'CONCEPT:GRMP-001."""',
         "        if ctx:",
-        '            await ctx.info(f"Executing gramps_web_'
+        '            await ctx.info(f"Executing gramps_'
         + domain
         + ' action: {action}")',
         "        import json",
@@ -353,7 +353,7 @@ def emit_manifest(by_domain: dict[str, list[dict]]) -> None:
 def emit_api_client(by_domain: dict[str, list[dict]]) -> None:
     domains = sorted(by_domain)
     imports = [
-        f"from gramps_web_mcp.api.api_client_{d} import GrampsWeb{camel(d)}"
+        f"from gramps_mcp.api.api_client_{d} import GrampsWeb{camel(d)}"
         for d in domains
     ]
     bases = ",\n    ".join(f"GrampsWeb{camel(d)}" for d in domains)
@@ -376,7 +376,7 @@ def emit_api_client(by_domain: dict[str, list[dict]]) -> None:
 def emit_mcp_init(by_domain: dict[str, list[dict]]) -> None:
     domains = sorted(by_domain)
     imports = [
-        f"from gramps_web_mcp.mcp.mcp_{d} import register_{d}_tools" for d in domains
+        f"from gramps_mcp.mcp.mcp_{d} import register_{d}_tools" for d in domains
     ]
     registry = [f'    ("{d}", "{d.upper()}TOOL", register_{d}_tools),' for d in domains]
     lines = [

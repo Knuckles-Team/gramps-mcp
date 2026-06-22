@@ -1,6 +1,6 @@
 # Backing Platform — Gramps Web MCP
 
-`gramps-web-mcp` is a **client** of a backing service instance. This page provides a
+`gramps-mcp` is a **client** of a backing service instance. This page provides a
 Docker recipe for deploying one locally to serve as the target of
 `GRAMPS_WEB_URL`.
 

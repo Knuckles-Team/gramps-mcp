@@ -8,10 +8,10 @@
 - Core Libraries: `agent-utilities`, `fastmcp`, `pydantic-ai`
 - Key principles: Functional patterns, Pydantic for data validation, asynchronous tool execution.
 - Architecture:
-    - `gramps_web_mcp/api/`: Modular folder for target service client wrappers.
-    - `gramps_web_mcp/mcp/`: Modular folder for action-routed dynamic MCP tool tags.
-    - `gramps_web_mcp/mcp_server.py`: Main MCP server entry point and tool registration.
-    - `gramps_web_mcp/agent_server.py`: Pydantic AI agent definition and logic.
+    - `gramps_mcp/api/`: Modular folder for target service client wrappers.
+    - `gramps_mcp/mcp/`: Modular folder for action-routed dynamic MCP tool tags.
+    - `gramps_mcp/mcp_server.py`: Main MCP server entry point and tool registration.
+    - `gramps_mcp/agent_server.py`: Pydantic AI agent definition and logic.
 
 ### Architecture Diagram
 ```mermaid
@@ -52,16 +52,16 @@ pre-commit run --all-files
 
 # Execution Commands
 # Run MCP Server
-gramps-web-mcp
+gramps-mcp
 # Run Agent
-gramps-web-agent
+gramps-agent
 
 ## Project Structure Quick Reference
-- MCP Entry Point → `gramps_web_mcp/mcp_server.py`
-- Agent Entry Point → `gramps_web_mcp/agent_server.py`
-- Source Code → `gramps_web_mcp/`
-- API client mixins → `gramps_web_mcp/api/`
-- MCP tool modules → `gramps_web_mcp/mcp/`
+- MCP Entry Point → `gramps_mcp/mcp_server.py`
+- Agent Entry Point → `gramps_mcp/agent_server.py`
+- Source Code → `gramps_mcp/`
+- API client mixins → `gramps_mcp/api/`
+- MCP tool modules → `gramps_mcp/mcp/`
 - Tests → `tests/`
 - Documentation → `docs/` (published via mkdocs + GitHub Pages)
 

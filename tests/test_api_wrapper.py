@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from gramps_web_mcp.api_client import Api
+from gramps_mcp.api_client import Api
 
 
 def _make_response(status: int = 200, body: bytes = b"{}") -> requests.Response:

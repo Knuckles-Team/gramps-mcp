@@ -3,7 +3,7 @@ requires = [ "setuptools>=80.9.0", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gramps-web-mcp"
+name = "gramps-mcp"
 version = "0.1.0"
 description = "Gramps Web API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)"
 readme = "README.md"
@@ -20,22 +20,22 @@ text = "MIT"
 [project.optional-dependencies]
 mcp = [ "agent-utilities[mcp]>=0.51.0",]
 agent = [ "agent-utilities[agent,logfire]>=0.51.0",]
-all = [ "gramps-web-mcp[mcp,agent,logfire]>=0.1.0",]
+all = [ "gramps-mcp[mcp,agent,logfire]>=0.1.0",]
 test = [
     "pytest-xdist>=3.6.0", "pytest", "pytest-asyncio", "pytest-cov",]
 
 [project.scripts]
-gramps-web-mcp = "gramps_web_mcp.mcp_server:mcp_server"
-gramps-web-agent = "gramps_web_mcp.agent_server:agent_server"
+gramps-mcp = "gramps_mcp.mcp_server:mcp_server"
+gramps-agent = "gramps_mcp.agent_server:agent_server"
 
 # Fleet contribution (CONCEPT:OS-5.52): advertise this package's skills and
 # system-prompt blueprints so agent-utilities' skill-installer and KG prompt
 # library discover them without importing this package's agent code.
 [project.entry-points."agent_utilities.skill_providers"]
-gramps-web-mcp = "gramps_web_mcp.skills"
+gramps-mcp = "gramps_mcp.skills"
 
 [project.entry-points."agent_utilities.prompt_providers"]
-gramps-web-mcp = "gramps_web_mcp.prompts"
+gramps-mcp = "gramps_mcp.prompts"
 
 [tool.setuptools]
 include-package-data = true
@@ -55,7 +55,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-gramps_web_mcp = [ "mcp_config.json", "agent_data/**", "prompts/**", "skills/**", "specs/*.json",]
+gramps_mcp = [ "mcp_config.json", "agent_data/**", "prompts/**", "skills/**", "specs/*.json",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]

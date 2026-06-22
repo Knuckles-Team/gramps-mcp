@@ -36,4 +36,4 @@ RUN uv pip install --system --upgrade --verbose --no-cache --break-system-packag
 
 COPY docker/starship.toml /root/.config/starship.toml
 
-CMD ["gramps-web-mcp"]
+CMD ["gramps-mcp"]
