@@ -139,7 +139,14 @@ class GrampsWebApiBase:
         joined against ``self.url``.
         """
         url = url_template
-        if url.startswith("/"):
+        if "://" in url:
+            # The spec baked an absolute server URL into the template; rebase its
+            # path onto the configured base URL (scheme/host/port may differ — e.g.
+            # the spec says https://gramps.arpa but the deployment serves http).
+            from urllib.parse import urlsplit
+
+            url = f"{self.url.rstrip('/')}{urlsplit(url).path}"
+        elif url.startswith("/"):
             url = f"{self.url}{url}"
         for key, value in (path_kwargs or {}).items():
             url = url.replace("{" + key + "}", str(value))
