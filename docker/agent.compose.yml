@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  gramps-web-mcp-mcp:
-    image: knucklessg1/gramps-web-mcp:latest
-    container_name: gramps-web-mcp-mcp
-    hostname: gramps-web-mcp-mcp
+  gramps-mcp-mcp:
+    image: knucklessg1/gramps-mcp:latest
+    container_name: gramps-mcp-mcp
+    hostname: gramps-mcp-mcp
     restart: always
     env_file:
       - ../.env
@@ -27,21 +27,21 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  gramps-web-mcp-agent:
-    image: knucklessg1/gramps-web-mcp:latest
-    container_name: gramps-web-mcp-agent
-    hostname: gramps-web-mcp-agent
+  gramps-mcp-agent:
+    image: knucklessg1/gramps-mcp:latest
+    container_name: gramps-mcp-agent
+    hostname: gramps-mcp-agent
     restart: always
     depends_on:
-      - gramps-web-mcp-mcp
+      - gramps-mcp-mcp
     env_file:
       - ../.env
-    command: [ "gramps-web-agent" ]
+    command: [ "gramps-agent" ]
     environment:
       - PYTHONUNBUFFERED=1
       - HOST=0.0.0.0
       - PORT=9000
-      - MCP_URL=http://gramps-web-mcp-mcp:8000/mcp
+      - MCP_URL=http://gramps-mcp-mcp:8000/mcp
       - PROVIDER=${PROVIDER:-openai}
       - MODEL_ID=${MODEL_ID:-gpt-4o}
       - ENABLE_WEB_UI=True

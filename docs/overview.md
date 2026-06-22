@@ -1,4 +1,4 @@
-# gramps-web-mcp — Concept Overview
+# gramps-mcp — Concept Overview
 
 > **Category**: Integration | **Ecosystem Role**: MCP Server + A2A Agent
 > Built on [`agent-utilities`](https://github.com/Knuckles-Team/agent-utilities) — the unified AGI Harness.
@@ -15,7 +15,7 @@ This project follows the standardized agent-package pattern:
   tool modules) for cleaner organization.
 - **Dynamic Tool Registration**: action-routed dynamic tool tags, strictly
   lowercase, each togglable with a `*TOOL` environment flag.
-- **A2A Agent Server**: a Pydantic-AI graph agent (console script `gramps-web-agent`)
+- **A2A Agent Server**: a Pydantic-AI graph agent (console script `gramps-agent`)
   that calls the MCP tool surface and exposes an AG-UI web interface.
 
 ## Concept Registry

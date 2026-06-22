@@ -15,7 +15,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential \
     && rm -rf /var/lib/apt/lists/*
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv pip install --system --upgrade --break-system-packages --prerelease=allow gramps-web-mcp[all]>=0.1.0
+    uv pip install --system --upgrade --break-system-packages --prerelease=allow gramps-mcp[all]>=0.1.0
 
 FROM python:3.11-slim
 
@@ -38,4 +38,4 @@ ENV HOST=${HOST} \
 # Install base dependencies, uv, and starship shell prompt
 COPY --from=builder /usr/local /usr/local
 
-CMD ["gramps-web-mcp"]
+CMD ["gramps-mcp"]

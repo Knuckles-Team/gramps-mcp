@@ -7,7 +7,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 try:
-    from gramps_web_mcp.agent_server import agent_server  # noqa: F401
+    from gramps_mcp.agent_server import agent_server  # noqa: F401
 except ImportError as e:
     print(f"Agent import failed: {e}")
     sys.exit(1)

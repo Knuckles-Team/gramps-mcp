@@ -1,10 +1,10 @@
 {
   "mcpServers": {
-    "gramps-web-mcp": {
+    "gramps-mcp": {
       "command": "uv",
       "args": [
         "run",
-        "gramps-web-mcp"
+        "gramps-mcp"
       ],
       "env": {
         "GRAMPS_WEB_URL": "<YOUR_GRAMPS_WEB_URL>",

@@ -1,8 +1,8 @@
-site_name: "gramps-web-mcp"
+site_name: "gramps-mcp"
 site_description: "Gramps Web API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)"
-site_url: "https://knuckles-team.github.io/gramps-web-mcp/"
-repo_name: "Knuckles-Team/gramps-web-mcp"
-repo_url: "https://github.com/Knuckles-Team/gramps-web-mcp"
+site_url: "https://knuckles-team.github.io/gramps-mcp/"
+repo_name: "Knuckles-Team/gramps-mcp"
+repo_url: "https://github.com/Knuckles-Team/gramps-mcp"
 edit_uri: "edit/main/docs/"
 copyright: "Copyright &copy; Knuckles-Team — MIT licensed"
 
@@ -80,9 +80,9 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Knuckles-Team/gramps-web-mcp
+      link: https://github.com/Knuckles-Team/gramps-mcp
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/gramps-web-mcp/
+      link: https://pypi.org/project/gramps-mcp/
 
 nav:
   - Home: index.md

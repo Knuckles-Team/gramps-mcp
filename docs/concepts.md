@@ -1,4 +1,4 @@
-# Concept Registry — gramps-web-mcp
+# Concept Registry — gramps-mcp
 
 > **Prefix**: `CONCEPT:GRMP-*`
 > **Version**: 0.1.0

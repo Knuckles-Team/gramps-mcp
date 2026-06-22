@@ -1,14 +1,14 @@
 # Deployment
 
-This page covers running `gramps-web-mcp` as long-lived servers.
+This page covers running `gramps-mcp` as long-lived servers.
 
-> `gramps-web-mcp` ships both an **MCP server** (console script `gramps-web-mcp`) and an
-> **A2A agent server** (console script `gramps-web-agent`).
+> `gramps-mcp` ships both an **MCP server** (console script `gramps-mcp`) and an
+> **A2A agent server** (console script `gramps-agent`).
 
 <!-- BEGIN GENERATED: deployment-options -->
 ## Deployment Options
 
-`gramps-web-mcp` exposes its MCP server (console script `gramps-web-mcp`) four ways. Pick the
+`gramps-mcp` exposes its MCP server (console script `gramps-mcp`) four ways. Pick the
 row that matches where the server runs relative to your MCP client, then copy the
 matching `mcp_config.json` below.
 
@@ -24,9 +24,9 @@ matching `mcp_config.json` below.
 ```json
 {
   "mcpServers": {
-    "gramps-web-mcp": {
+    "gramps-mcp": {
       "command": "uvx",
-      "args": ["--from", "gramps-web-mcp", "gramps-web-mcp"],
+      "args": ["--from", "gramps-mcp", "gramps-mcp"],
       "env": {
         "GRAMPS_WEB_URL": "https://service.example.com",
         "GRAMPS_WEB_TOKEN": "your_token"
@@ -39,7 +39,7 @@ matching `mcp_config.json` below.
 ### 2. Streamable-HTTP (local process)
 
 ```bash
-uvx --from gramps-web-mcp gramps-web-mcp --transport streamable-http --host 0.0.0.0 --port 8000
+uvx --from gramps-mcp gramps-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 curl -s http://localhost:8000/health        # {"status":"OK"}
 ```
 
@@ -48,7 +48,7 @@ Connect to the running process by URL:
 ```json
 {
   "mcpServers": {
-    "gramps-web-mcp": { "url": "http://localhost:8000/mcp" }
+    "gramps-mcp": { "url": "http://localhost:8000/mcp" }
   }
 }
 ```
@@ -61,14 +61,14 @@ daemonless runtime):
 ```json
 {
   "mcpServers": {
-    "gramps-web-mcp": {
+    "gramps-mcp": {
       "command": "docker",
       "args": [
         "run", "-i", "--rm",
         "-e", "TRANSPORT=stdio",
         "-e", "GRAMPS_WEB_URL=https://service.example.com",
         "-e", "GRAMPS_WEB_TOKEN=your_token",
-        "knucklessg1/gramps-web-mcp:latest"
+        "knucklessg1/gramps-mcp:latest"
       ]
     }
   }
@@ -84,7 +84,7 @@ docker compose -f docker/mcp.compose.yml up -d
 ```json
 {
   "mcpServers": {
-    "gramps-web-mcp": { "url": "http://localhost:8000/mcp" }
+    "gramps-mcp": { "url": "http://localhost:8000/mcp" }
   }
 }
 ```
@@ -97,12 +97,12 @@ When the server is deployed remotely and published through Caddy on the internal
 ```json
 {
   "mcpServers": {
-    "gramps-web-mcp": { "url": "http://gramps-web-mcp.arpa/mcp" }
+    "gramps-mcp": { "url": "http://gramps-mcp.arpa/mcp" }
   }
 }
 ```
 
-Caddy reverse-proxies `http://gramps-web-mcp.arpa` to the container's `:8000`
+Caddy reverse-proxies `http://gramps-mcp.arpa` to the container's `:8000`
 streamable-http listener.
 <!-- END GENERATED: deployment-options -->
 
@@ -116,5 +116,5 @@ docker compose -f docker/agent.compose.yml up -d    # MCP + agent
 ## Run the A2A agent server
 
 ```bash
-gramps-web-agent --mcp-config mcp_config.json --web
+gramps-agent --mcp-config mcp_config.json --web
 ```

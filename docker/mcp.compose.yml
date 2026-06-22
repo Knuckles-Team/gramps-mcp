@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  gramps-web-mcp-mcp:
-    image: knucklessg1/gramps-web-mcp:latest
-    container_name: gramps-web-mcp-mcp
-    hostname: gramps-web-mcp-mcp
+  gramps-mcp-mcp:
+    image: knucklessg1/gramps-mcp:latest
+    container_name: gramps-mcp-mcp
+    hostname: gramps-mcp-mcp
     restart: always
     env_file:
       - ../.env
