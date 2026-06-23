@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   gramps-mcp-mcp:
-    image: knucklessg1/gramps-mcp:latest
+    image: knucklessg1/gramps-mcp:mcp
     container_name: gramps-mcp-mcp
     hostname: gramps-mcp-mcp
     restart: always
