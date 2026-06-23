@@ -55,7 +55,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-gramps_mcp = [ "mcp_config.json", "agent_data/**", "prompts/**", "skills/**", "specs/*.json",]
+gramps_mcp = [ "mcp_config.json", "prompts/**", "skills/**", "specs/*.json",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]
