@@ -100,19 +100,58 @@ _35 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unl
 
 ## Installation
 
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `gramps-mcp[mcp]` | Slim MCP server only (`agent-utilities[mcp]` — FastMCP/FastAPI) | You only run the **MCP server** (smallest install / image) |
+| `gramps-mcp[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated A2A agent** |
+| `gramps-mcp[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
+
+```bash
+# MCP server only (recommended for tool hosting — slim deps)
+uv pip install "gramps-mcp[mcp]"
+
+# Full agent runtime (Pydantic AI + epistemic-graph engine)
+uv pip install "gramps-mcp[agent]"
+
+# Everything (development)
+uv pip install "gramps-mcp[all]"      # or: python -m pip install "gramps-mcp[all]"
+```
+
 ### Install with `uvx` (no install — run on demand)
 
 ```bash
-uvx --from gramps-mcp gramps-mcp      # MCP server
-uvx --from gramps-mcp gramps-agent    # A2A agent server
+uvx --from "gramps-mcp[mcp]" gramps-mcp      # MCP server (slim)
+uvx --from "gramps-mcp[agent]" gramps-agent  # A2A agent server (full runtime)
 ```
 
-### Install with `pip`
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `knucklessg1/gramps-mcp:mcp` | `--target mcp` | `gramps-mcp[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `gramps-mcp` |
+| `knucklessg1/gramps-mcp:latest` | `--target agent` (default) | `gramps-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `gramps-agent` |
 
 ```bash
-python -m pip install gramps-mcp            # core (API client)
-python -m pip install "gramps-mcp[all]"     # + MCP server + A2A agent + telemetry
+docker build --target mcp   -t knucklessg1/gramps-mcp:mcp    docker/   # slim MCP server
+docker build --target agent -t knucklessg1/gramps-mcp:latest docker/   # full agent
 ```
+
+`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`:latest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`epistemic-graph`)
+
+The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
+transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
+across multiple agents — run **epistemic-graph as its own database container** and point the
+agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
+config, and the full database architecture (with diagrams) are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+The slim `[mcp]` server does **not** require the database.
 
 ### Console scripts
 
@@ -161,6 +200,14 @@ Tools are action-routed — pass an `action` plus a JSON `params_json` string:
 
 ## MCP
 
+> **Install the slim `[mcp]` extra.** The MCP examples below install
+> `gramps-mcp[mcp]` — the MCP-server extra that pulls only the FastMCP / FastAPI
+> tooling (`agent-utilities[mcp]`). It deliberately **excludes** the heavy agent
+> runtime (the epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`,
+> `tree-sitter`), so `uvx`/container installs are dramatically smaller and faster.
+> Use the full `[agent]` extra only when you need the integrated A2A agent
+> (see [Installation](#installation)).
+
 ### Using as an MCP Server
 
 The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
@@ -178,7 +225,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
   "mcpServers": {
     "gramps-mcp": {
       "command": "uvx",
-      "args": ["--from", "gramps-mcp", "gramps-mcp"],
+      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp"],
       "env": {
         "GRAMPS_URL": "https://service.example.com",
         "GRAMPS_TOKEN": "your_token"
@@ -195,7 +242,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
   "mcpServers": {
     "gramps-mcp": {
       "command": "uvx",
-      "args": ["--from", "gramps-mcp", "gramps-mcp", "--transport", "streamable-http", "--port", "8000"],
+      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp", "--transport", "streamable-http", "--port", "8000"],
       "env": {
         "TRANSPORT": "streamable-http",
         "HOST": "0.0.0.0",
@@ -228,6 +275,45 @@ copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable
 ```bash
 python -m pip install gramps-mcp
 ```
+
+## Environment Variables
+
+Every variable the server reads, grouped by purpose.
+
+### Connection & Credentials (Gramps)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `GRAMPS_URL` | Base Gramps Web API URL | `https://gramps.arpa` |
+| `GRAMPS_TOKEN` | JWT bearer token (from the login flow) | — |
+| `GRAMPS_USERNAME` | Username for the login flow (when no token) | — |
+| `GRAMPS_PASSWORD` | Password for the login flow (when no token) | — |
+| `GRAMPS_SSL_VERIFY` | TLS verification | `True` |
+
+### MCP server / transport
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TRANSPORT` | `stdio`, `streamable-http`, or `sse` | `stdio` |
+| `HOST` | Bind host (HTTP transports) | `0.0.0.0` |
+| `PORT` | Bind port (HTTP transports) | `8000` |
+| `MCP_TOOL_MODE` | Tool surface: `condensed`, `verbose`, or `both` | `both` |
+
+### Telemetry & governance
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ENABLE_OTEL` | Enable OpenTelemetry export | `True` |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint | — |
+| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` / `OTEL_EXPORTER_OTLP_SECRET_KEY` | OTLP auth keys | — |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP protocol (e.g. `http/protobuf`) | — |
+| `EUNOMIA_TYPE` | Authorization mode: `none`, `embedded`, `remote` | `none` |
+| `EUNOMIA_POLICY_FILE` | Embedded policy file | `mcp_policies.json` |
+| `EUNOMIA_REMOTE_URL` | Remote Eunomia server URL | — |
+
+### Tool toggles
+Each action-routed tool can be disabled individually via its toggle env var (set to `false`).
+The full list is in the [Available MCP Tools](#available-mcp-tools) table above (e.g.
+`PEOPLETOOL`, `FAMILIESTOOL`, `EVENTSTOOL`, `PLACESTOOL`, `SOURCESTOOL`, `MEDIATOOL`).
+
+See [`.env.example`](.env.example) for a copy-paste starting point.
 
 ## Documentation
 
