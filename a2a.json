@@ -1,7 +1,7 @@
 {
   "name": "gramps-mcp-agent",
   "type": "agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)",
   "url": "https://github.com/Knuckles-Team/gramps-mcp/tree/main",
   "license": "MIT",
