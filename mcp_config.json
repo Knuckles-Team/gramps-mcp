@@ -7,10 +7,7 @@
         "gramps-mcp"
       ],
       "env": {
-        "GRAMPS_URL": "<YOUR_GRAMPS_URL>",
-        "GRAMPS_TOKEN": "<YOUR_GRAMPS_TOKEN>",
-        "GRAMPS_SSL_VERIFY": "True",
-        "MCP_TOOL_MODE": "both",
+        "MCP_TOOL_MODE": "condensed",
         "BOOKMARKSTOOL": "True",
         "CHATTOOL": "True",
         "CITATIONSTOOL": "True",
@@ -21,6 +18,10 @@
         "FACTSTOOL": "True",
         "FAMILIESTOOL": "True",
         "FILTERSTOOL": "True",
+        "GRAMPS_PASSWORD": "your_password_here",
+        "GRAMPS_TOKEN": "your_jwt_here",
+        "GRAMPS_URL": "https://gramps.arpa",
+        "GRAMPS_USERNAME": "owner",
         "HOLIDAYSTOOL": "True",
         "IMPORTERSTOOL": "True",
         "LIVINGTOOL": "True",

@@ -208,96 +208,15 @@ Tools are action-routed — pass an `action` plus a JSON `params_json` string:
 > Use the full `[agent]` extra only when you need the integrated A2A agent
 > (see [Installation](#installation)).
 
-### Using as an MCP Server
+### MCP Configuration Examples
 
-The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
-`sse` mode.
+<!-- MCP-CONFIG-EXAMPLES:START -->
 
-#### Environment Variables
-
-<!-- ENV-VARS-TABLE:START -->
-
-#### Package environment variables
-
-| Variable | Example | Description |
-|----------|---------|-------------|
-| `HOST` | `0.0.0.0` |  |
-| `PORT` | `8000` |  |
-| `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
-| `ENABLE_OTEL` | `True` |  |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
-| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
-| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
-| `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
-| `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
-| `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
-| `MCP_TOOL_MODE` | `both` | condensed (action-routed), verbose (1:1 typed tools), or both (default). |
-| `GRAMPS_URL` | `https://gramps.arpa` |  |
-| `GRAMPS_TOKEN` | `your_jwt_here` | JWT bearer token (login -> token), OR username/password for the login flow: |
-| `GRAMPS_USERNAME` | `owner` |  |
-| `GRAMPS_PASSWORD` | `your_password_here` |  |
-| `GRAMPS_SSL_VERIFY` | `True` |  |
-| `BOOKMARKSTOOL` | `True` |  |
-| `CHATTOOL` | `True` |  |
-| `CITATIONSTOOL` | `True` |  |
-| `CONFIGTOOL` | `True` |  |
-| `DNATOOL` | `True` |  |
-| `EVENTSTOOL` | `True` |  |
-| `EXPORTERSTOOL` | `True` |  |
-| `FACTSTOOL` | `True` |  |
-| `FAMILIESTOOL` | `True` |  |
-| `FILTERSTOOL` | `True` |  |
-| `HOLIDAYSTOOL` | `True` |  |
-| `IMPORTERSTOOL` | `True` |  |
-| `LIVINGTOOL` | `True` |  |
-| `MEDIATOOL` | `True` |  |
-| `METADATATOOL` | `True` |  |
-| `NAME_FORMATSTOOL` | `True` |  |
-| `NAME_GROUPSTOOL` | `True` |  |
-| `NOTESTOOL` | `True` |  |
-| `OIDCTOOL` | `True` |  |
-| `PEOPLETOOL` | `True` |  |
-| `PLACESTOOL` | `True` |  |
-| `RELATIONSTOOL` | `True` |  |
-| `REPORTSTOOL` | `True` |  |
-| `REPOSITORIESTOOL` | `True` |  |
-| `SEARCHTOOL` | `True` |  |
-| `SOURCESTOOL` | `True` |  |
-| `TAGSTOOL` | `True` |  |
-| `TASKSTOOL` | `True` |  |
-| `TIMELINETOOL` | `True` |  |
-| `TOKENTOOL` | `True` |  |
-| `TRANSACTIONSTOOL` | `True` |  |
-| `TRANSLATIONSTOOL` | `True` |  |
-| `TREESTOOL` | `True` |  |
-| `TYPESTOOL` | `True` |  |
-| `USERSTOOL` | `True` |  |
-
-#### Inherited agent-utilities variables (apply to every connector)
-
-| Variable | Example | Description |
-|----------|---------|-------------|
-| `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
-| `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
-| `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
-| `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
-| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
-| `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
-| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
-| `DEBUG` | `False` | Verbose logging |
-| `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
-| `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
-| `PROVIDER` | `openai` | LLM provider for the agent |
-| `MODEL_ID` | `gpt-4o` | Model id for the agent |
-| `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
-
-_52 package + 13 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
-<!-- ENV-VARS-TABLE:END -->
-
-
-*   `GRAMPS_URL`: The URL of the target service.
-*   `GRAMPS_TOKEN`: The API token or access token.
+> **Install the slim `[mcp]` extra.** All examples install `gramps-mcp[mcp]` — the
+> MCP-server extra that pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`).
+> It deliberately **excludes** the heavy agent runtime (`pydantic-ai`, the epistemic-graph
+> engine, `dspy`, `llama-index`), so `uvx` / container installs are far smaller. Use the
+> full `[agent]` extra only when you need the integrated Pydantic AI agent.
 
 #### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
 
@@ -306,10 +225,52 @@ _52 package + 13 inherited variable(s). Auto-generated from `.env.example` + the
   "mcpServers": {
     "gramps-mcp": {
       "command": "uvx",
-      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp"],
+      "args": [
+        "--from",
+        "gramps-mcp[mcp]",
+        "gramps-mcp"
+      ],
       "env": {
-        "GRAMPS_URL": "https://service.example.com",
-        "GRAMPS_TOKEN": "your_token"
+        "MCP_TOOL_MODE": "condensed",
+        "BOOKMARKSTOOL": "True",
+        "CHATTOOL": "True",
+        "CITATIONSTOOL": "True",
+        "CONFIGTOOL": "True",
+        "DNATOOL": "True",
+        "EVENTSTOOL": "True",
+        "EXPORTERSTOOL": "True",
+        "FACTSTOOL": "True",
+        "FAMILIESTOOL": "True",
+        "FILTERSTOOL": "True",
+        "GRAMPS_PASSWORD": "your_password_here",
+        "GRAMPS_TOKEN": "your_jwt_here",
+        "GRAMPS_URL": "https://gramps.arpa",
+        "GRAMPS_USERNAME": "owner",
+        "HOLIDAYSTOOL": "True",
+        "IMPORTERSTOOL": "True",
+        "LIVINGTOOL": "True",
+        "MEDIATOOL": "True",
+        "METADATATOOL": "True",
+        "NAME_FORMATSTOOL": "True",
+        "NAME_GROUPSTOOL": "True",
+        "NOTESTOOL": "True",
+        "OIDCTOOL": "True",
+        "PEOPLETOOL": "True",
+        "PLACESTOOL": "True",
+        "RELATIONSTOOL": "True",
+        "REPORTSTOOL": "True",
+        "REPOSITORIESTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SOURCESTOOL": "True",
+        "TAGSTOOL": "True",
+        "TASKSTOOL": "True",
+        "TIMELINETOOL": "True",
+        "TOKENTOOL": "True",
+        "TRANSACTIONSTOOL": "True",
+        "TRANSLATIONSTOOL": "True",
+        "TREESTOOL": "True",
+        "TYPESTOOL": "True",
+        "USERSTOOL": "True"
       }
     }
   }
@@ -323,18 +284,131 @@ _52 package + 13 inherited variable(s). Auto-generated from `.env.example` + the
   "mcpServers": {
     "gramps-mcp": {
       "command": "uvx",
-      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp", "--transport", "streamable-http", "--port", "8000"],
+      "args": [
+        "--from",
+        "gramps-mcp[mcp]",
+        "gramps-mcp",
+        "--transport",
+        "streamable-http",
+        "--port",
+        "8000"
+      ],
       "env": {
         "TRANSPORT": "streamable-http",
         "HOST": "0.0.0.0",
         "PORT": "8000",
-        "GRAMPS_URL": "https://service.example.com",
-        "GRAMPS_TOKEN": "your_token"
+        "MCP_TOOL_MODE": "condensed",
+        "BOOKMARKSTOOL": "True",
+        "CHATTOOL": "True",
+        "CITATIONSTOOL": "True",
+        "CONFIGTOOL": "True",
+        "DNATOOL": "True",
+        "EVENTSTOOL": "True",
+        "EXPORTERSTOOL": "True",
+        "FACTSTOOL": "True",
+        "FAMILIESTOOL": "True",
+        "FILTERSTOOL": "True",
+        "GRAMPS_PASSWORD": "your_password_here",
+        "GRAMPS_TOKEN": "your_jwt_here",
+        "GRAMPS_URL": "https://gramps.arpa",
+        "GRAMPS_USERNAME": "owner",
+        "HOLIDAYSTOOL": "True",
+        "IMPORTERSTOOL": "True",
+        "LIVINGTOOL": "True",
+        "MEDIATOOL": "True",
+        "METADATATOOL": "True",
+        "NAME_FORMATSTOOL": "True",
+        "NAME_GROUPSTOOL": "True",
+        "NOTESTOOL": "True",
+        "OIDCTOOL": "True",
+        "PEOPLETOOL": "True",
+        "PLACESTOOL": "True",
+        "RELATIONSTOOL": "True",
+        "REPORTSTOOL": "True",
+        "REPOSITORIESTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SOURCESTOOL": "True",
+        "TAGSTOOL": "True",
+        "TASKSTOOL": "True",
+        "TIMELINETOOL": "True",
+        "TOKENTOOL": "True",
+        "TRANSACTIONSTOOL": "True",
+        "TRANSLATIONSTOOL": "True",
+        "TREESTOOL": "True",
+        "TYPESTOOL": "True",
+        "USERSTOOL": "True"
       }
     }
   }
 }
 ```
+
+Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
+
+```json
+{
+  "mcpServers": {
+    "gramps-mcp": {
+      "url": "http://localhost:8000/gramps-mcp/mcp"
+    }
+  }
+}
+```
+
+Deploying the Streamable-HTTP server via Docker:
+
+```bash
+docker run -d \
+  --name gramps-mcp-mcp \
+  -p 8000:8000 \
+  -e TRANSPORT=streamable-http \
+  -e HOST=0.0.0.0 \
+  -e PORT=8000 \
+  -e MCP_TOOL_MODE=condensed \
+  -e BOOKMARKSTOOL=True \
+  -e CHATTOOL=True \
+  -e CITATIONSTOOL=True \
+  -e CONFIGTOOL=True \
+  -e DNATOOL=True \
+  -e EVENTSTOOL=True \
+  -e EXPORTERSTOOL=True \
+  -e FACTSTOOL=True \
+  -e FAMILIESTOOL=True \
+  -e FILTERSTOOL=True \
+  -e GRAMPS_PASSWORD=your_password_here \
+  -e GRAMPS_TOKEN=your_jwt_here \
+  -e GRAMPS_URL=https://gramps.arpa \
+  -e GRAMPS_USERNAME=owner \
+  -e HOLIDAYSTOOL=True \
+  -e IMPORTERSTOOL=True \
+  -e LIVINGTOOL=True \
+  -e MEDIATOOL=True \
+  -e METADATATOOL=True \
+  -e NAME_FORMATSTOOL=True \
+  -e NAME_GROUPSTOOL=True \
+  -e NOTESTOOL=True \
+  -e OIDCTOOL=True \
+  -e PEOPLETOOL=True \
+  -e PLACESTOOL=True \
+  -e RELATIONSTOOL=True \
+  -e REPORTSTOOL=True \
+  -e REPOSITORIESTOOL=True \
+  -e SEARCHTOOL=True \
+  -e SOURCESTOOL=True \
+  -e TAGSTOOL=True \
+  -e TASKSTOOL=True \
+  -e TIMELINETOOL=True \
+  -e TOKENTOOL=True \
+  -e TRANSACTIONSTOOL=True \
+  -e TRANSLATIONSTOOL=True \
+  -e TREESTOOL=True \
+  -e TYPESTOOL=True \
+  -e USERSTOOL=True \
+  knucklessg1/gramps-mcp:mcp
+```
+
+_Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
+<!-- MCP-CONFIG-EXAMPLES:END -->
 
 <!-- BEGIN GENERATED: additional-deployment-options -->
 ### Additional Deployment Options
