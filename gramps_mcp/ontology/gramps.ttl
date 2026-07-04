@@ -1,0 +1,144 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix : <http://knuckles.team/kg#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Gramps genealogy ontology — people, families, life events, places and their sources.
+# All classes and properties live in the shared `:` (kg#) namespace; only the
+# owl:Ontology node gets the per-package IRI. The shared :Person and :MediaAsset/:Blob
+# classes are REUSED (never redefined) — a genealogical individual is a :Person, and a
+# scanned photo/document is a :MediaAsset backed by a :Blob. Backs the gramps-mcp tool
+# surface (gramps_people / gramps_families / gramps_events / gramps_media / …).
+
+# --- classes (owl:Class) — genealogy-specific; :Person + :MediaAsset are shared ---
+
+:Family a owl:Class ;
+    rdfs:label "Family" ;
+    rdfs:comment "A family unit linking two partners and their children (gramps_families)." .
+
+:Event a owl:Class ;
+    rdfs:label "Event" ;
+    rdfs:comment "A dated life event — birth, marriage, death, burial, census (gramps_events)." .
+
+:Place a owl:Class ;
+    rdfs:label "Place" ;
+    rdfs:comment "A geographic place where an event occurred (gramps_places)." .
+
+:Source a owl:Class ;
+    rdfs:label "Source" ;
+    rdfs:comment "A source of genealogical evidence — a book, record, or archive (gramps_sources)." .
+
+:Citation a owl:Class ;
+    rdfs:label "Citation" ;
+    rdfs:comment "A specific reference into a Source that supports a fact (gramps_citations)." .
+
+:Repository a owl:Class ;
+    rdfs:label "Repository" ;
+    rdfs:comment "An archive or library that holds sources (gramps_repositories)." .
+
+# --- links (owl:ObjectProperty) ---
+
+:hasFather a owl:ObjectProperty ;
+    rdfs:label "has father" ;
+    rdfs:comment "Links a Family to the Person recorded as father." ;
+    rdfs:domain :Family ;
+    rdfs:range :Person .
+
+:hasMother a owl:ObjectProperty ;
+    rdfs:label "has mother" ;
+    rdfs:comment "Links a Family to the Person recorded as mother." ;
+    rdfs:domain :Family ;
+    rdfs:range :Person .
+
+:hasChild a owl:ObjectProperty ;
+    rdfs:label "has child" ;
+    rdfs:comment "Links a Family to a Person who is a child in it." ;
+    rdfs:domain :Family ;
+    rdfs:range :Person .
+
+:spouseInFamily a owl:ObjectProperty ;
+    rdfs:label "spouse in family" ;
+    rdfs:comment "Links a Person to a Family in which they are a partner." ;
+    rdfs:domain :Person ;
+    rdfs:range :Family .
+
+:childInFamily a owl:ObjectProperty ;
+    rdfs:label "child in family" ;
+    rdfs:comment "Links a Person to a Family in which they are a child." ;
+    rdfs:domain :Person ;
+    rdfs:range :Family .
+
+:participatedInEvent a owl:ObjectProperty ;
+    rdfs:label "participated in event" ;
+    rdfs:comment "Links a Person or Family to an Event they took part in." ;
+    rdfs:range :Event .
+
+:occurredAtPlace a owl:ObjectProperty ;
+    rdfs:label "occurred at place" ;
+    rdfs:comment "Links an Event to the Place where it happened." ;
+    rdfs:domain :Event ;
+    rdfs:range :Place .
+
+:hasMedia a owl:ObjectProperty ;
+    rdfs:label "has media" ;
+    rdfs:comment "Links a Person, Family, Event or Place to an attached MediaAsset (photo/scan)." ;
+    rdfs:range :MediaAsset .
+
+:citesSource a owl:ObjectProperty ;
+    rdfs:label "cites source" ;
+    rdfs:comment "Links a Citation to the Source it references." ;
+    rdfs:domain :Citation ;
+    rdfs:range :Source .
+
+:heldByRepository a owl:ObjectProperty ;
+    rdfs:label "held by repository" ;
+    rdfs:comment "Links a Source to the Repository that holds it." ;
+    rdfs:domain :Source ;
+    rdfs:range :Repository .
+
+# --- fields (owl:DatatypeProperty) ---
+
+:grampsId a owl:DatatypeProperty ;
+    rdfs:label "gramps id" ;
+    rdfs:comment "Human-facing Gramps identifier of an object (e.g. I0042, F0007, E0011)." ;
+    rdfs:range xsd:string .
+
+:handle a owl:DatatypeProperty ;
+    rdfs:label "handle" ;
+    rdfs:comment "Internal stable Gramps handle (primary key) of an object." ;
+    rdfs:range xsd:string .
+
+:gender a owl:DatatypeProperty ;
+    rdfs:label "gender" ;
+    rdfs:comment "Recorded gender of a Person (female, male, unknown)." ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:eventType a owl:DatatypeProperty ;
+    rdfs:label "event type" ;
+    rdfs:comment "Type of an Event (Birth, Marriage, Death, Burial, Census, …)." ;
+    rdfs:domain :Event ;
+    rdfs:range xsd:string .
+
+:eventDate a owl:DatatypeProperty ;
+    rdfs:label "event date" ;
+    rdfs:comment "Formatted date an Event occurred." ;
+    rdfs:domain :Event ;
+    rdfs:range xsd:string .
+
+:familyRelType a owl:DatatypeProperty ;
+    rdfs:label "family relationship type" ;
+    rdfs:comment "Relationship type of a Family (Married, Unmarried, Civil Union, …)." ;
+    rdfs:domain :Family ;
+    rdfs:range xsd:string .
+
+<http://knuckles.team/kg/gramps> a owl:Ontology ;
+    rdfs:label "Gramps Genealogy Ontology" ;
+    rdfs:comment """Gramps genealogy model — individuals (shared :Person), family units,
+    life events, places, sources, citations and repositories, with their kinship,
+    participation and provenance relationships, plus photos/scans as shared
+    :MediaAsset blobs — federated into the agent-utilities knowledge-graph hub.""" ;
+    owl:imports <http://knuckles.team/kg> .
