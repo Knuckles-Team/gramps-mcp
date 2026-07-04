@@ -24,7 +24,7 @@ def register_trees_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps trees operations. CONCEPT:GRMP-001."""
+        """Manage Gramps trees operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_trees action: {action}")
         import json

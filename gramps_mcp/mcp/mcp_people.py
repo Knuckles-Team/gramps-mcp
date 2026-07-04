@@ -24,7 +24,7 @@ def register_people_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps people operations. CONCEPT:GRMP-001."""
+        """Manage Gramps people operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_people action: {action}")
         import json

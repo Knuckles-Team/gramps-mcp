@@ -24,7 +24,7 @@ def register_tags_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps tags operations. CONCEPT:GRMP-001."""
+        """Manage Gramps tags operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_tags action: {action}")
         import json

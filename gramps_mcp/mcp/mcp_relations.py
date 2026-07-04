@@ -24,7 +24,7 @@ def register_relations_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps relations operations. CONCEPT:GRMP-001."""
+        """Manage Gramps relations operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_relations action: {action}")
         import json

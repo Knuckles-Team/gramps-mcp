@@ -24,7 +24,7 @@ def register_search_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps search operations. CONCEPT:GRMP-001."""
+        """Manage Gramps search operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_search action: {action}")
         import json

@@ -24,7 +24,7 @@ def register_transactions_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps transactions operations. CONCEPT:GRMP-001."""
+        """Manage Gramps transactions operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_transactions action: {action}")
         import json

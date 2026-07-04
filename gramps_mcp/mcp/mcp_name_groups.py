@@ -24,7 +24,7 @@ def register_name_groups_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps name groups operations. CONCEPT:GRMP-001."""
+        """Manage Gramps name groups operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_name_groups action: {action}")
         import json

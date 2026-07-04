@@ -24,7 +24,7 @@ def register_living_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps living operations. CONCEPT:GRMP-001."""
+        """Manage Gramps living operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_living action: {action}")
         import json

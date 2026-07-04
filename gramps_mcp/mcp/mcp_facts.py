@@ -22,7 +22,7 @@ def register_facts_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps facts operations. CONCEPT:GRMP-001."""
+        """Manage Gramps facts operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_facts action: {action}")
         import json

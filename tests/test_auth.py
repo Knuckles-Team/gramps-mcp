@@ -5,9 +5,9 @@ import pytest
 from gramps_mcp.auth import get_client
 
 
-@pytest.mark.concept("GRMP-001")
+@pytest.mark.concept("GM-OS.identity.grmp")
 def test_get_client_auth_error():
-    """Auth failure surfaces a clear error. CONCEPT:GRMP-001"""
+    """Auth failure surfaces a clear error. CONCEPT:GM-OS.identity.grmp"""
     from agent_utilities.core.exceptions import AuthError
 
     with patch(
@@ -20,9 +20,9 @@ def test_get_client_auth_error():
     assert "AUTHENTICATION ERROR" in str(exc_info.value)
 
 
-@pytest.mark.concept("GRMP-001")
+@pytest.mark.concept("GM-OS.identity.grmp")
 def test_get_client_builds_api():
-    """A valid token yields the composite Api client. CONCEPT:GRMP-001"""
+    """A valid token yields the composite Api client. CONCEPT:GM-OS.identity.grmp"""
     sentinel = object()
     with patch(
         "agent_utilities.mcp.delegated_auth.is_delegation_enabled",

@@ -24,7 +24,7 @@ def register_token_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps token operations. CONCEPT:GRMP-001."""
+        """Manage Gramps token operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_token action: {action}")
         import json

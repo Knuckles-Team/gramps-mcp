@@ -24,7 +24,7 @@ def register_importers_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps importers operations. CONCEPT:GRMP-001."""
+        """Manage Gramps importers operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_importers action: {action}")
         import json

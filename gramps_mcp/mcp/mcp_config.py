@@ -24,7 +24,7 @@ def register_config_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps config operations. CONCEPT:GRMP-001."""
+        """Manage Gramps config operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_config action: {action}")
         import json

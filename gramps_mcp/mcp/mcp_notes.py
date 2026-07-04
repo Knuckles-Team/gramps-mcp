@@ -24,7 +24,7 @@ def register_notes_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps notes operations. CONCEPT:GRMP-001."""
+        """Manage Gramps notes operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_notes action: {action}")
         import json

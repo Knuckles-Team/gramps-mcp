@@ -283,7 +283,7 @@ def emit_mcp_module(domain: str, ops: list[dict]) -> None:
         "        ),",
         "    ) -> Any:",
         f'        """Manage Gramps {domain.replace("_", " ")} operations. '
-        'CONCEPT:GRMP-001."""',
+        'CONCEPT:GM-OS.identity.grmp."""',
         "        if ctx:",
         '            await ctx.info(f"Executing gramps_'
         + domain

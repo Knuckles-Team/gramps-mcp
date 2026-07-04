@@ -2,7 +2,7 @@
 
 > **Prefix**: `CONCEPT:GRMP-*`
 > **Version**: 0.1.0
-> **Bridge**: [`CONCEPT:ECO-4.0`](https://github.com/Knuckles-Team/agent-utilities/blob/main/docs/concepts.md) (Unified Toolkit Ingestion)
+> **Bridge**: [`CONCEPT:AU-ECO.messaging.native-backend-abstraction`](https://github.com/Knuckles-Team/agent-utilities/blob/main/docs/concepts.md) (Unified Toolkit Ingestion)
 
 ---
 
@@ -10,12 +10,12 @@
 
 | Concept ID | Name | Description |
 |------------|------|-------------|
-| `CONCEPT:GRMP-001` | Genealogy Connector | Action-routed + verbose 1:1 MCP tool surface over the Gramps REST API (people, families, events, places, sources, citations, media, notes, repositories, tags, trees, users, transactions, search, reports, importers/exporters, relations, timelines, DNA, …), generated from the vendored OpenAPI spec by `scripts/generate_from_openapi.py` |
+| `CONCEPT:GM-OS.identity.grmp` | Genealogy Connector | Action-routed + verbose 1:1 MCP tool surface over the Gramps REST API (people, families, events, places, sources, citations, media, notes, repositories, tags, trees, users, transactions, search, reports, importers/exporters, relations, timelines, DNA, …), generated from the vendored OpenAPI spec by `scripts/generate_from_openapi.py` |
 
 ## Cross-Project References (from agent-utilities)
 
 | Concept ID | Name | Origin |
 |------------|------|--------|
-| `CONCEPT:ECO-4.0` | Unified Toolkit Ingestion | agent-utilities |
-| `CONCEPT:ORCH-1.2` | Confidence-Gated Router | agent-utilities |
-| `CONCEPT:OS-5.1` | Prompt Injection Defense | agent-utilities |
+| `CONCEPT:AU-ECO.messaging.native-backend-abstraction` | Unified Toolkit Ingestion | agent-utilities |
+| `CONCEPT:AU-ORCH.adapter.hot-cache-invalidation` | Confidence-Gated Router | agent-utilities |
+| `CONCEPT:AU-OS.config.secrets-authentication` | Prompt Injection Defense | agent-utilities |

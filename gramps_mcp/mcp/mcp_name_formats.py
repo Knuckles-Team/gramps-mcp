@@ -24,7 +24,7 @@ def register_name_formats_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps name formats operations. CONCEPT:GRMP-001."""
+        """Manage Gramps name formats operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_name_formats action: {action}")
         import json

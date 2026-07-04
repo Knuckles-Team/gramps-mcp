@@ -14,9 +14,9 @@ def _make_response(status: int = 200, body: bytes = b"{}") -> requests.Response:
     return resp
 
 
-@pytest.mark.concept("GRMP-001")
+@pytest.mark.concept("GM-OS.identity.grmp")
 def test_call_returns_decoded_json():
-    """A generated operation returns the decoded JSON body. CONCEPT:GRMP-001"""
+    """A generated operation returns the decoded JSON body. CONCEPT:GM-OS.identity.grmp"""
     client = Api(url="https://gramps.arpa", token="t")
     resp = _make_response(200, b'{"people": []}')
     with patch.object(client, "_request", return_value=resp):
@@ -25,9 +25,9 @@ def test_call_returns_decoded_json():
     assert result.status_code == 200
 
 
-@pytest.mark.concept("GRMP-001")
+@pytest.mark.concept("GM-OS.identity.grmp")
 def test_path_param_interpolated():
-    """Path parameters are interpolated into the URL. CONCEPT:GRMP-001"""
+    """Path parameters are interpolated into the URL. CONCEPT:GM-OS.identity.grmp"""
     client = Api(url="https://gramps.arpa", token="t")
     captured = {}
 

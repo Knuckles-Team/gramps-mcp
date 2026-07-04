@@ -24,7 +24,7 @@ def register_oidc_tools(mcp: FastMCP):
             default=None, description="MCP context for progress reporting"
         ),
     ) -> Any:
-        """Manage Gramps oidc operations. CONCEPT:GRMP-001."""
+        """Manage Gramps oidc operations. CONCEPT:GM-OS.identity.grmp."""
         if ctx:
             await ctx.info(f"Executing gramps_oidc action: {action}")
         import json
