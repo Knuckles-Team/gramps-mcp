@@ -1,5 +1,6 @@
 ---
 name: gramps-genealogy-research
+skill_type: skill
 description: >-
   Genealogy research over a Gramps tree via the gramps-mcp MCP server — find and
   read people, families, and life events, resolve kinship, and walk a person's

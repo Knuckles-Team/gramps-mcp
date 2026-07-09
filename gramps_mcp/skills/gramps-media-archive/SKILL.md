@@ -1,5 +1,6 @@
 ---
 name: gramps-media-archive
+skill_type: skill
 description: >-
   Work with the media (photos, scanned certificates, document images) attached to
   a Gramps tree via the gramps-mcp MCP server — list/read media objects, fetch

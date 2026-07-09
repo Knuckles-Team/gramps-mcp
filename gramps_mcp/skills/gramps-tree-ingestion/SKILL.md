@@ -1,5 +1,6 @@
 ---
 name: gramps-tree-ingestion
+skill_type: skill
 description: >-
   Ingest a Gramps family tree natively into the epistemic-graph knowledge graph
   via the gramps-mcp MCP server — people become typed :Person nodes, families
