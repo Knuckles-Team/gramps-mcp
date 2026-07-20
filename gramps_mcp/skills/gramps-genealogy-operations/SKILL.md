@@ -1,5 +1,6 @@
 ---
 name: gramps-genealogy-operations
+skill_type: skill
 description: Research and administer an authorized Gramps family-history system through gramps-mcp, including people, families, events, places, relationships, sources, citations, notes, media, DNA, timelines, imports, exports, trees, users, and supporting configuration. Use for evidence-based genealogy lookup, kinship resolution, media or record management, carefully approved mutations, or requesting centrally governed GraphOS synchronization of Gramps records.
 ---
 
