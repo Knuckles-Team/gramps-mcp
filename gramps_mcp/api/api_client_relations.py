@@ -10,7 +10,7 @@ class GrampsRelations(GrampsApiBase):
         """GET /relations/{handle1}/{handle2}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/relations/{handle1}/{handle2}",
+            url_template="/api/relations/{handle1}/{handle2}",
             path_params=["handle1", "handle2"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsRelations(GrampsApiBase):
         """GET /relations/{handle1}/{handle2}/all"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/relations/{handle1}/{handle2}/all",
+            url_template="/api/relations/{handle1}/{handle2}/all",
             path_params=["handle1", "handle2"],
             query_params=[],
             has_body=False,

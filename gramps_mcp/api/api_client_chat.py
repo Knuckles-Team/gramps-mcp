@@ -10,7 +10,7 @@ class GrampsChat(GrampsApiBase):
         """POST /chat/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/chat/",
+            url_template="/api/chat/",
             path_params=[],
             query_params=[],
             has_body=False,

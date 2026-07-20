@@ -10,7 +10,7 @@ class GrampsFilters(GrampsApiBase):
         """DELETE /filters/{namespace}/{name}"""
         return self._call(
             http="DELETE",
-            url_template="https://gramps.arpa/api/filters/{namespace}/{name}",
+            url_template="/api/filters/{namespace}/{name}",
             path_params=["namespace", "name"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsFilters(GrampsApiBase):
         """GET /filters/{namespace}/{name}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/filters/{namespace}/{name}",
+            url_template="/api/filters/{namespace}/{name}",
             path_params=["namespace", "name"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsFilters(GrampsApiBase):
         """GET /filters/{namespace}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/filters/{namespace}",
+            url_template="/api/filters/{namespace}",
             path_params=["namespace"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsFilters(GrampsApiBase):
         """POST /filters/{namespace}"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/filters/{namespace}",
+            url_template="/api/filters/{namespace}",
             path_params=["namespace"],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsFilters(GrampsApiBase):
         """PUT /filters/{namespace}"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/filters/{namespace}",
+            url_template="/api/filters/{namespace}",
             path_params=["namespace"],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsFilters(GrampsApiBase):
         """GET /filters/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/filters/",
+            url_template="/api/filters/",
             path_params=[],
             query_params=[],
             has_body=False,

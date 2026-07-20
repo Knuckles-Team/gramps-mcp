@@ -1,33 +1,26 @@
 #!/usr/bin/python
-"""Base HTTP client for the Gramps API.
+"""Shared HTTPS, authentication, pagination, and response handling for Gramps."""
 
-Handles the cross-cutting concerns shared by every generated domain client:
-
-* **Authentication** — a pre-minted JWT bearer token (``GRAMPS_TOKEN``) or a
-  username/password login (``GRAMPS_USERNAME`` / ``GRAMPS_PASSWORD``)
-  exchanged against ``/api/token/`` for an access token, refreshed before expiry.
-* **Single tenant host** — Gramps serves one tree-server instance per host
-  (``GRAMPS_URL``, e.g. ``https://gramps.arpa``). Generated methods carry the
-  absolute URL template from the spec; this base resolves ``{param}`` path tokens.
-* **Pagination** — Gramps' offset style (``page`` / ``pagesize`` query params with a
-  ``X-Total-Count`` header on collection responses).
-* **Transient errors** — retries ``429`` / ``502`` / ``503`` / ``504`` with bounded
-  exponential backoff, honouring ``Retry-After``.
-"""
+from __future__ import annotations
 
 import logging
 import threading
 import time
 from typing import Any, TypeVar
+from urllib.parse import quote, urlsplit
 
 import requests
-import urllib3
 from agent_utilities.base_utilities import get_logger
 from agent_utilities.core.exceptions import (
+    ApiError,
     AuthError,
     MissingParameterError,
     ParameterError,
     UnauthorizedError,
+)
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
 )
 from pydantic import ValidationError
 
@@ -37,90 +30,218 @@ logger = get_logger(__name__)
 
 T = TypeVar("T")
 
+_MAX_URL_BYTES = 2_048
+_MAX_SECRET_BYTES = 65_536
+_MAX_USERNAME_BYTES = 1_024
+_MAX_PATH_VALUE_BYTES = 8_192
+_MAX_RESPONSE_BYTES = 64 * 1024 * 1024
+_TRANSIENT_STATUSES = {429, 502, 503, 504}
+
+
+def _has_controls(value: str) -> bool:
+    return any(ord(character) < 32 or ord(character) == 127 for character in value)
+
+
+def _invalid_url_text(value: str) -> bool:
+    return (
+        _has_controls(value)
+        or "\\" in value
+        or any(character.isspace() for character in value)
+    )
+
+
+def _validated_secret(
+    value: str | None,
+    *,
+    label: str,
+    maximum: int,
+    header_value: bool = False,
+) -> str:
+    rendered = str(value or "")
+    if (
+        not 1 <= len(rendered.encode("utf-8")) <= maximum
+        or _has_controls(rendered)
+        or (header_value and any(character.isspace() for character in rendered))
+    ):
+        raise ParameterError(f"{label} is invalid")
+    return rendered
+
 
 class GrampsApiBase:
+    """Base client used by every generated Gramps API domain mixin."""
+
     def __init__(
         self,
         url: str | None = None,
         token: str | None = None,
         username: str | None = None,
         password: str | None = None,
-        proxies: dict | None = None,
-        verify: bool = True,
+        tls_profile: ResolvedTLSProfile | None = None,
         max_retries: int = 3,
         debug: bool = False,
-    ):
+    ) -> None:
         logger.setLevel(logging.DEBUG if debug else logging.ERROR)
+        if not isinstance(max_retries, int) or not 0 <= max_retries <= 10:
+            raise ParameterError("max_retries must be between 0 and 10")
 
-        self.verify = verify
-        self.proxies = proxies
+        host = str(url or "").strip().rstrip("/")
+        if not 1 <= len(host.encode("utf-8")) <= _MAX_URL_BYTES or _invalid_url_text(
+            host
+        ):
+            raise MissingParameterError("GRAMPS_URL is required and must be valid")
+        parsed = urlsplit(host)
+        try:
+            _ = parsed.port
+        except ValueError:
+            raise ParameterError("GRAMPS_URL is invalid") from None
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ParameterError("GRAMPS_URL must be an absolute HTTPS URL")
+        if parsed.username or parsed.password:
+            raise ParameterError("GRAMPS_URL must not contain credentials")
+        if parsed.query or parsed.fragment:
+            raise ParameterError("GRAMPS_URL must not contain a query or fragment")
+
+        if token and (username or password):
+            raise ParameterError("Configure either a token or a username/password pair")
+        if bool(username) != bool(password):
+            raise MissingParameterError(
+                "GRAMPS_USERNAME and GRAMPS_PASSWORD must be configured together"
+            )
+        if not token and not (username and password):
+            raise MissingParameterError(
+                "Configure GRAMPS_TOKEN or GRAMPS_USERNAME and GRAMPS_PASSWORD"
+            )
+
+        self.url = host
         self.debug = debug
         self.max_retries = max_retries
-        self._session = requests.Session()
+        self.tls_profile = tls_profile or resolve_configured_tls_profile("gramps")
+        self._session = self.tls_profile.configure_requests_session(requests.Session())
         self._token_lock = threading.Lock()
-        self._token = token
+        self._token = (
+            _validated_secret(
+                token,
+                label="GRAMPS_TOKEN",
+                maximum=_MAX_SECRET_BYTES,
+                header_value=True,
+            )
+            if token
+            else None
+        )
+        self._token_is_fixed = self._token is not None
         self._refresh_token: str | None = None
-        self._token_expiry = 0.0
-        self._username = username
-        self._password = password
-
-        host = (url or "").strip().rstrip("/")
-        if not host:
-            raise MissingParameterError(
-                "Provide GRAMPS_URL (e.g. https://gramps.arpa)."
+        self._token_expiry = float("inf") if self._token_is_fixed else 0.0
+        self._username = (
+            _validated_secret(
+                username, label="GRAMPS_USERNAME", maximum=_MAX_USERNAME_BYTES
             )
-        if not host.startswith(("http://", "https://")):
-            host = f"https://{host}"
-        self.url = host
-
-        if self.verify is False:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-        if not self._token and not (self._username and self._password):
-            raise MissingParameterError(
-                "Provide GRAMPS_TOKEN, or GRAMPS_USERNAME and "
-                "GRAMPS_PASSWORD for the login flow."
+            if username
+            else None
+        )
+        self._password = (
+            _validated_secret(
+                password, label="GRAMPS_PASSWORD", maximum=_MAX_SECRET_BYTES
             )
+            if password
+            else None
+        )
+
+    def close(self) -> None:
+        """Release the session, temporary TLS material, and in-memory credentials."""
+        self._session.close()
+        self._token = None
+        self._refresh_token = None
+        self._username = None
+        self._password = None
+        self.tls_profile.cleanup()
 
     # ------------------------------------------------------------------ auth
+    def _token_request(self, path: str, payload: dict[str, str]) -> dict[str, Any]:
+        try:
+            response = self._session.post(
+                url=f"{self.url}{path}",
+                json=payload,
+                headers={"Accept": "application/json"},
+                timeout=30.0,
+                allow_redirects=False,
+            )
+        except requests.RequestException:
+            raise AuthError("Gramps token request failed") from None
+        if response.status_code == 401:
+            raise AuthError("Gramps credentials were rejected")
+        if response.status_code == 403:
+            raise UnauthorizedError("Gramps credentials are not authorized")
+        if not 200 <= response.status_code < 300:
+            raise AuthError(
+                f"Gramps token endpoint returned HTTP {response.status_code}"
+            )
+        try:
+            decoded = response.json()
+        except ValueError:
+            raise AuthError("Gramps token endpoint returned invalid JSON") from None
+        if not isinstance(decoded, dict):
+            raise AuthError("Gramps token endpoint returned an invalid response")
+        return decoded
+
+    def _accept_token_payload(self, payload: dict[str, Any]) -> str:
+        access = (
+            payload.get("access_token") or payload.get("access") or payload.get("token")
+        )
+        self._token = _validated_secret(
+            access,
+            label="Gramps access token",
+            maximum=_MAX_SECRET_BYTES,
+            header_value=True,
+        )
+        refresh = payload.get("refresh_token") or payload.get("refresh")
+        self._refresh_token = (
+            _validated_secret(
+                refresh,
+                label="Gramps refresh token",
+                maximum=_MAX_SECRET_BYTES,
+                header_value=True,
+            )
+            if refresh
+            else None
+        )
+        expires_in = payload.get("expires_in", 15 * 60)
+        try:
+            lifetime = max(60.0, min(float(expires_in), 24 * 60 * 60))
+        except (TypeError, ValueError):
+            lifetime = 15 * 60
+        self._token_expiry = time.monotonic() + max(1.0, lifetime - 60.0)
+        return self._token
+
     def _ensure_token(self) -> str:
-        """Return a valid bearer token, logging in via username/password if needed."""
+        """Return a fixed or current short-lived bearer token."""
         if self._token and (
-            not self._username or time.monotonic() < self._token_expiry
+            self._token_is_fixed or time.monotonic() < self._token_expiry
         ):
             return self._token
         with self._token_lock:
-            if self._token and time.monotonic() < self._token_expiry:
+            if self._token and (
+                self._token_is_fixed or time.monotonic() < self._token_expiry
+            ):
                 return self._token
-            token_url = f"{self.url}/api/token/"
-            try:
-                resp = self._session.post(
-                    url=token_url,
-                    json={"username": self._username, "password": self._password},
-                    headers={"Accept": "application/json"},
-                    verify=self.verify,
-                    proxies=self.proxies,
-                    timeout=30,
+            if self._refresh_token:
+                try:
+                    return self._accept_token_payload(
+                        self._token_request(
+                            "/api/token/refresh/",
+                            {"refresh_token": self._refresh_token},
+                        )
+                    )
+                except AuthError:
+                    if not (self._username and self._password):
+                        raise
+            if not (self._username and self._password):
+                raise AuthError("Gramps authentication must be renewed")
+            return self._accept_token_payload(
+                self._token_request(
+                    "/api/token/",
+                    {"username": self._username, "password": self._password},
                 )
-            except requests.RequestException as e:
-                raise AuthError(f"Gramps token request failed: {e}") from e
-            if resp.status_code in (401, 403):
-                raise UnauthorizedError(
-                    f"Gramps credentials rejected ({resp.status_code})."
-                )
-            if not resp.ok:
-                raise AuthError(
-                    f"Gramps token endpoint returned {resp.status_code}: "
-                    f"{resp.text}"
-                )
-            payload = resp.json()
-            self._token = payload.get("access_token") or payload.get("token")
-            self._refresh_token = payload.get("refresh_token")
-            if not self._token:
-                raise AuthError("Gramps token response contained no access_token.")
-            # Gramps access tokens default to 15 minutes; refresh 60s early.
-            self._token_expiry = time.monotonic() + (15 * 60) - 60
-            return self._token
+            )
 
     def _auth_headers(self, content_type: str | None = "application/json") -> dict:
         headers = {
@@ -132,28 +253,29 @@ class GrampsApiBase:
         return headers
 
     # --------------------------------------------------------------- url build
-    def _resolve_url(self, url_template: str, path_kwargs: dict) -> str:
-        """Resolve a spec URL template into an absolute URL.
-
-        Interpolates ``{param}`` path parameters by name. A relative template is
-        joined against ``self.url``.
-        """
-        url = url_template
-        if "://" in url:
-            # The spec baked an absolute server URL into the template; rebase its
-            # path onto the configured base URL (scheme/host/port may differ — e.g.
-            # the spec says https://gramps.arpa but the deployment serves http).
-            from urllib.parse import urlsplit
-
-            url = f"{self.url.rstrip('/')}{urlsplit(url).path}"
-        elif url.startswith("/"):
-            url = f"{self.url}{url}"
+    def _resolve_url(self, url_template: str, path_kwargs: dict[str, Any]) -> str:
+        """Resolve a generated relative template against the configured authority."""
+        template = str(url_template or "")
+        if not 1 <= len(
+            template.encode("utf-8")
+        ) <= _MAX_URL_BYTES or _invalid_url_text(template):
+            raise ParameterError("API URL template is invalid")
+        parsed = urlsplit(template)
+        if parsed.scheme or parsed.netloc or parsed.query or parsed.fragment:
+            raise ParameterError("API URL template must be a relative path")
+        path = template
+        if not path.startswith("/"):
+            path = "/" + path
         for key, value in (path_kwargs or {}).items():
-            url = url.replace("{" + key + "}", str(value))
-        if "{" in url:
-            missing = url[url.index("{") + 1 : url.index("}")] if "}" in url else "?"
-            raise MissingParameterError(f"Missing required path parameter: {missing}")
-        return url
+            rendered = str(value)
+            if not 1 <= len(
+                rendered.encode("utf-8")
+            ) <= _MAX_PATH_VALUE_BYTES or _has_controls(rendered):
+                raise ParameterError("Path parameter is invalid")
+            path = path.replace("{" + key + "}", quote(rendered, safe=""))
+        if "{" in path or "}" in path:
+            raise MissingParameterError("A required path parameter is missing")
+        return f"{self.url}{path}"
 
     # ----------------------------------------------------------------- request
     def _request(
@@ -163,37 +285,44 @@ class GrampsApiBase:
         params: dict | None = None,
         json: Any | None = None,
         data: Any | None = None,
-        headers: dict | None = None,
     ) -> requests.Response:
-        """Perform an HTTP request with rate-limit / transient-error retries."""
-        request_headers = headers or self._auth_headers()
+        """Perform one bounded request with transient retries and no redirects."""
+        request_url = urlsplit(url)
+        configured = urlsplit(self.url)
+        if (
+            request_url.scheme != configured.scheme
+            or request_url.netloc != configured.netloc
+        ):
+            raise ParameterError("Request authority differs from GRAMPS_URL")
+
         attempt = 0
         while True:
-            response = self._session.request(
-                method=method.upper(),
-                url=url,
-                params=params or None,
-                json=json,
-                data=data,
-                headers=request_headers,
-                verify=self.verify,
-                proxies=self.proxies,
-                timeout=60,
-            )
-            if response.status_code == 429 and attempt < self.max_retries:
-                delay = self._retry_delay(response, attempt)
-                logger.debug("Rate limited (429); sleeping %.1fs", delay)
-                time.sleep(delay)
-                attempt += 1
-                continue
-            if response.status_code in (502, 503, 504) and attempt < self.max_retries:
+            try:
+                response = self._session.request(
+                    method=method.upper(),
+                    url=url,
+                    params=params or None,
+                    json=json,
+                    data=data,
+                    headers=self._auth_headers(),
+                    timeout=60.0,
+                    allow_redirects=False,
+                )
+            except requests.RequestException:
+                raise ApiError("Gramps API request failed") from None
+            if (
+                response.status_code in _TRANSIENT_STATUSES
+                and attempt < self.max_retries
+            ):
                 time.sleep(self._retry_delay(response, attempt))
                 attempt += 1
                 continue
-            if response.status_code in (401, 403):
-                raise (AuthError if response.status_code == 401 else UnauthorizedError)(
-                    f"Gramps request to {url} failed ({response.status_code})."
-                )
+            if response.status_code == 401:
+                raise AuthError("Gramps API rejected the active credential")
+            if response.status_code == 403:
+                raise UnauthorizedError("Gramps API denied the requested operation")
+            if not 200 <= response.status_code < 300:
+                raise ApiError(f"Gramps API returned HTTP {response.status_code}")
             return response
 
     @staticmethod
@@ -201,32 +330,36 @@ class GrampsApiBase:
         retry_after = response.headers.get("Retry-After")
         if retry_after:
             try:
-                return min(float(retry_after), 60.0)
+                return min(max(float(retry_after), 0.0), 60.0)
             except ValueError:
                 pass
         return min(2.0**attempt, 30.0)
 
     @staticmethod
     def _decode(response: requests.Response) -> Any:
-        if not response.content:
+        content = response.content
+        if not content:
             return None
+        if len(content) > _MAX_RESPONSE_BYTES:
+            raise ApiError("Gramps API response exceeded the connector limit")
         if "application/json" in response.headers.get("Content-Type", ""):
             try:
                 return response.json()
             except ValueError:
-                return response.text
-        return response.text
+                raise ApiError("Gramps API returned invalid JSON") from None
+        return content
 
     # -------------------------------------------------------------- pagination
     def _fetch_all_pages(
         self, method: str, url: str, params: dict, max_pages: int
     ) -> tuple[requests.Response, list]:
-        """Collect every page of a Gramps offset-paginated collection."""
+        """Collect a bounded number of offset-paginated collection pages."""
         params = dict(params or {})
         first = self._request(method, url, params=params)
         body = self._decode(first)
         all_data = list(body) if isinstance(body, list) else self._extract_items(body)
         max_pages = max_pages if max_pages and max_pages > 0 else 10
+        max_pages = min(max_pages, 1_000)
 
         total = self._total_count(first)
         pagesize = int(params.get("pagesize", len(all_data) or 1) or 1)
@@ -235,8 +368,8 @@ class GrampsApiBase:
         while total and fetched < total and page < max_pages:
             page += 1
             params["page"] = page
-            resp = self._request(method, url, params=params)
-            chunk = self._decode(resp)
+            response = self._request(method, url, params=params)
+            chunk = self._decode(response)
             items = chunk if isinstance(chunk, list) else self._extract_items(chunk)
             if not items:
                 break
@@ -259,10 +392,10 @@ class GrampsApiBase:
     @staticmethod
     def _total_count(response: requests.Response) -> int:
         for key in ("X-Total-Count", "Total-Count"):
-            val = response.headers.get(key)
-            if val:
+            value = response.headers.get(key)
+            if value:
                 try:
-                    return int(val)
+                    return max(int(value), 0)
                 except ValueError:
                     pass
         return 0
@@ -278,39 +411,44 @@ class GrampsApiBase:
         paginate: str,
         kwargs: dict,
     ) -> Response:
-        """Dispatch a single generated operation. Used by every domain method."""
+        """Dispatch one generated operation."""
         try:
-            kwargs = {k: v for k, v in (kwargs or {}).items() if v is not None}
-            path_kwargs = {k: kwargs.pop(k) for k in path_params if k in kwargs}
+            kwargs = {
+                key: value for key, value in (kwargs or {}).items() if value is not None
+            }
+            path_kwargs = {key: kwargs.pop(key) for key in path_params if key in kwargs}
             url = self._resolve_url(url_template, path_kwargs)
 
-            params = {k: kwargs.pop(k) for k in query_params if k in kwargs}
+            params = {key: kwargs.pop(key) for key in query_params if key in kwargs}
             body = None
             if has_body:
                 body = kwargs.pop("body", None)
                 if body is None and kwargs:
                     body = kwargs
                     kwargs = {}
-            # Remaining kwargs (unknown to the spec) fold into query params.
             params.update(kwargs)
 
             if http.upper() == "GET" and paginate == "offset":
                 max_pages = int(params.pop("max_pages", 0) or 0)
-                response, data = self._fetch_all_pages(http, url, params, max_pages)
-                return Response(response=response, data=data)
+                response, decoded = self._fetch_all_pages(http, url, params, max_pages)
+                return Response(response=response, data=decoded)
 
             params.pop("max_pages", None)
             response = self._request(http, url, params=params, json=body)
             return Response(response=response, data=self._decode(response))
-        except (AuthError, UnauthorizedError, MissingParameterError):
+        except (
+            ApiError,
+            AuthError,
+            UnauthorizedError,
+            MissingParameterError,
+            ParameterError,
+        ):
             raise
-        except ValidationError as e:
-            raise ParameterError(f"Invalid parameters: {e.errors()}") from e
-        except requests.RequestException as e:
-            logger.error("Gramps request error: %s", e)
-            raise
+        except ValidationError:
+            raise ParameterError("Invalid API parameters") from None
+        except (TypeError, ValueError):
+            raise ParameterError("Invalid API parameters") from None
 
-    # --------------------------------------------------------------- escape hatch
     def api_request(
         self,
         method: str,
@@ -319,13 +457,21 @@ class GrampsApiBase:
         json: Any | None = None,
         data: Any | None = None,
     ) -> Response:
-        """Make an arbitrary Gramps REST request against the configured host.
-
-        ``endpoint`` is a path (e.g. ``/api/people/``) appended to the configured
-        base URL. Use this for operations not covered by a typed method.
-        """
-        if method.upper() not in ("GET", "POST", "PUT", "DELETE", "PATCH"):
-            raise ValueError(f"Unsupported HTTP method: {method.upper()}")
-        url = f"{self.url}/{endpoint.lstrip('/')}"
+        """Call an unmodeled path on the configured authority without URL escape."""
+        if method.upper() not in {"GET", "POST", "PUT", "DELETE", "PATCH"}:
+            raise ParameterError("Unsupported HTTP method")
+        rendered = str(endpoint or "")
+        parsed = urlsplit(rendered)
+        if (
+            not 1 <= len(rendered.encode("utf-8")) <= _MAX_URL_BYTES
+            or _invalid_url_text(rendered)
+            or parsed.scheme
+            or parsed.netloc
+            or parsed.query
+            or parsed.fragment
+            or any(segment == ".." for segment in parsed.path.split("/"))
+        ):
+            raise ParameterError("API endpoint path is invalid")
+        url = self._resolve_url(parsed.path, {})
         response = self._request(method, url, params=params, json=json, data=data)
         return Response(response=response, data=self._decode(response))

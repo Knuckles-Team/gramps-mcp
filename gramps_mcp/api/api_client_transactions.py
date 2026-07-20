@@ -10,7 +10,7 @@ class GrampsTransactions(GrampsApiBase):
         """POST /objects/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/objects/",
+            url_template="/api/objects/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTransactions(GrampsApiBase):
         """POST /objects/delete/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/objects/delete/",
+            url_template="/api/objects/delete/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsTransactions(GrampsApiBase):
         """POST /objects/delete-by-handle/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/objects/delete-by-handle/",
+            url_template="/api/objects/delete-by-handle/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsTransactions(GrampsApiBase):
         """POST /transactions/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/transactions/",
+            url_template="/api/transactions/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsTransactions(GrampsApiBase):
         """GET /transactions/history/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/transactions/history/",
+            url_template="/api/transactions/history/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsTransactions(GrampsApiBase):
         """GET /transactions/history/{transaction_id}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/transactions/history/{transaction_id}",
+            url_template="/api/transactions/history/{transaction_id}",
             path_params=["transaction_id"],
             query_params=[],
             has_body=False,
@@ -82,7 +82,7 @@ class GrampsTransactions(GrampsApiBase):
         """GET /transactions/history/{transaction_id}/undo"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/transactions/history/{transaction_id}/undo",
+            url_template="/api/transactions/history/{transaction_id}/undo",
             path_params=["transaction_id"],
             query_params=[],
             has_body=False,
@@ -94,7 +94,7 @@ class GrampsTransactions(GrampsApiBase):
         """POST /transactions/history/{transaction_id}/undo"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/transactions/history/{transaction_id}/undo",
+            url_template="/api/transactions/history/{transaction_id}/undo",
             path_params=["transaction_id"],
             query_params=[],
             has_body=False,

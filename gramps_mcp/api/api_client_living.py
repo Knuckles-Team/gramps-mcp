@@ -10,7 +10,7 @@ class GrampsLiving(GrampsApiBase):
         """GET /living/{handle}/dates"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/living/{handle}/dates",
+            url_template="/api/living/{handle}/dates",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsLiving(GrampsApiBase):
         """GET /living/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/living/{handle}",
+            url_template="/api/living/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,

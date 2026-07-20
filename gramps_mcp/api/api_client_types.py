@@ -10,7 +10,7 @@ class GrampsTypes(GrampsApiBase):
         """GET /types/custom/{datatype}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/types/custom/{datatype}",
+            url_template="/api/types/custom/{datatype}",
             path_params=["datatype"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTypes(GrampsApiBase):
         """GET /types/custom/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/types/custom/",
+            url_template="/api/types/custom/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsTypes(GrampsApiBase):
         """GET /types/default/{datatype}/map"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/types/default/{datatype}/map",
+            url_template="/api/types/default/{datatype}/map",
             path_params=["datatype"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsTypes(GrampsApiBase):
         """GET /types/default/{datatype}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/types/default/{datatype}",
+            url_template="/api/types/default/{datatype}",
             path_params=["datatype"],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsTypes(GrampsApiBase):
         """GET /types/default/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/types/default/",
+            url_template="/api/types/default/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsTypes(GrampsApiBase):
         """GET /types/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/types/",
+            url_template="/api/types/",
             path_params=[],
             query_params=[],
             has_body=False,

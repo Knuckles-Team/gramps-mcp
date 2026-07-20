@@ -5,14 +5,12 @@ import sys
 from typing import Any
 
 from agent_utilities.base_utilities import get_logger
-from agent_utilities.mcp_utilities import (
-    create_mcp_server,
-    load_config,
-    register_tool_surface,
-)
+from agent_utilities.core.config import load_config
+from agent_utilities.mcp.server_factory import create_mcp_server
+from agent_utilities.mcp.verbose_tools import register_tool_surface
 
+from gramps_mcp.api import Api
 from gramps_mcp.api._operation_manifest import OPERATIONS
-from gramps_mcp.api_client import Api
 from gramps_mcp.auth import get_client
 from gramps_mcp.mcp import TOOL_REGISTRY
 
@@ -40,8 +38,8 @@ def get_mcp_instance() -> tuple[Any, Any, Any]:
         version=__version__,
         instructions=(
             "Gramps MCP Server — genealogy (people, families, events, places, "
-            "sources, citations, media, notes, repositories, tags). Condensed and "
-            "verbose tool surfaces."
+            "sources, citations, media, notes, repositories, tags). Genealogy "
+            "records are sensitive; use the governed condensed or verbose surface."
         ),
     )
 

@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://gramps.arpa/api"
+      "url": "https://service.example.invalid/api"
     }
   ],
   "components": {

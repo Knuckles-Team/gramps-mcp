@@ -1,0 +1,42 @@
+schema_version: '1'
+connector: gramps-mcp
+ontology_source: gramps
+sync:
+- preset: gramps-events
+  server: gramps-mcp
+  tool: gramps_events
+  action: get_events
+  records_path: data
+  id_field: handle
+  title_field: gramps_id
+  text_field: description
+  updated_field: change
+  doc_type: event
+  tool_schema_sha256: 0bacef97a3338bc3e2f68f956bbc17df376baadd5f3f21688b24bb8b0ec48388
+- preset: gramps-families
+  server: gramps-mcp
+  tool: gramps_families
+  action: get_families
+  records_path: data
+  id_field: handle
+  title_field: gramps_id
+  text_field: gramps_id
+  updated_field: change
+  doc_type: family
+  tool_schema_sha256: 523983a3055fa1b483fa9f91d2f54490826b4b4e37bcd34152c4d261a4d5646a
+- preset: gramps-people
+  server: gramps-mcp
+  tool: gramps_people
+  action: get_people
+  records_path: data
+  id_field: handle
+  title_field: gramps_id
+  text_field: gramps_id
+  updated_field: change
+  doc_type: person
+  tool_schema_sha256: bdde859672e50c0ea1a552f97f8a189fc97897a67af81d95f68b486fb6d69a52
+governance:
+  default_acl: quarantine
+  identity: opaque-reference
+  tenant: required-at-materialization
+  provenance: required-at-materialization

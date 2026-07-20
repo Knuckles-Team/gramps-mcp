@@ -10,7 +10,7 @@ class GrampsCitations(GrampsApiBase):
         """GET /citations/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/citations/{handle}",
+            url_template="/api/citations/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsCitations(GrampsApiBase):
         """GET /citations/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/citations/",
+            url_template="/api/citations/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsCitations(GrampsApiBase):
         """GET /citations/{phoenix_handle}/merge/{titanic_handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/citations/{phoenix_handle}/merge/{titanic_handle}",
+            url_template="/api/citations/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
             has_body=False,

@@ -10,7 +10,7 @@ class GrampsDna(GrampsApiBase):
         """GET /people/{handle}/dna/matches"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/people/{handle}/dna/matches",
+            url_template="/api/people/{handle}/dna/matches",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsDna(GrampsApiBase):
         """GET /people/{handle}/ydna"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/people/{handle}/ydna",
+            url_template="/api/people/{handle}/ydna",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsDna(GrampsApiBase):
         """POST /parsers/dna-match"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/parsers/dna-match",
+            url_template="/api/parsers/dna-match",
             path_params=[],
             query_params=[],
             has_body=False,

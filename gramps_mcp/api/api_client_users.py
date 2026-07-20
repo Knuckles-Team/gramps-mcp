@@ -10,7 +10,7 @@ class GrampsUsers(GrampsApiBase):
         """GET /users/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/users/",
+            url_template="/api/users/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/",
+            url_template="/api/users/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsUsers(GrampsApiBase):
         """DELETE /users/{user_name}/"""
         return self._call(
             http="DELETE",
-            url_template="https://gramps.arpa/api/users/{user_name}/",
+            url_template="/api/users/{user_name}/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsUsers(GrampsApiBase):
         """GET /users/{user_name}/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/users/{user_name}/",
+            url_template="/api/users/{user_name}/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/{user_name}/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/{user_name}/",
+            url_template="/api/users/{user_name}/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsUsers(GrampsApiBase):
         """PUT /users/{user_name}/"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/users/{user_name}/",
+            url_template="/api/users/{user_name}/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -82,7 +82,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/{user_name}/register/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/{user_name}/register/",
+            url_template="/api/users/{user_name}/register/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -94,7 +94,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/{user_name}/create_owner/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/{user_name}/create_owner/",
+            url_template="/api/users/{user_name}/create_owner/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -106,7 +106,7 @@ class GrampsUsers(GrampsApiBase):
         """GET /users/-/email/confirm/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/users/-/email/confirm/",
+            url_template="/api/users/-/email/confirm/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -118,7 +118,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/{user_name}/password/change"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/{user_name}/password/change",
+            url_template="/api/users/{user_name}/password/change",
             path_params=["user_name"],
             query_params=[],
             has_body=False,
@@ -130,7 +130,7 @@ class GrampsUsers(GrampsApiBase):
         """GET /users/-/password/reset/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/users/-/password/reset/",
+            url_template="/api/users/-/password/reset/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -142,7 +142,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/-/password/reset/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/-/password/reset/",
+            url_template="/api/users/-/password/reset/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -154,7 +154,7 @@ class GrampsUsers(GrampsApiBase):
         """POST /users/{user_name}/password/reset/trigger/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/users/{user_name}/password/reset/trigger/",
+            url_template="/api/users/{user_name}/password/reset/trigger/",
             path_params=["user_name"],
             query_params=[],
             has_body=False,

@@ -10,7 +10,7 @@ class GrampsHolidays(GrampsApiBase):
         """GET /holidays/{country}/{year}/{month}/{day}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/holidays/{country}/{year}/{month}/{day}",
+            url_template="/api/holidays/{country}/{year}/{month}/{day}",
             path_params=["country", "year", "month", "day"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsHolidays(GrampsApiBase):
         """GET /holidays/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/holidays/",
+            url_template="/api/holidays/",
             path_params=[],
             query_params=[],
             has_body=False,

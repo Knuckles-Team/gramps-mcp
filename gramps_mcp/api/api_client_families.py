@@ -10,7 +10,7 @@ class GrampsFamilies(GrampsApiBase):
         """GET /families/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/families/{handle}",
+            url_template="/api/families/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsFamilies(GrampsApiBase):
         """POST /families/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/families/",
+            url_template="/api/families/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsFamilies(GrampsApiBase):
         """GET /families/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/families/",
+            url_template="/api/families/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsFamilies(GrampsApiBase):
         """POST /families/{phoenix_handle}/merge/{titanic_handle}"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/families/{phoenix_handle}/merge/{titanic_handle}",
+            url_template="/api/families/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
             has_body=False,

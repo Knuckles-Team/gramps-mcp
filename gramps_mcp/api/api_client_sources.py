@@ -10,7 +10,7 @@ class GrampsSources(GrampsApiBase):
         """GET /sources/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/sources/{handle}",
+            url_template="/api/sources/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsSources(GrampsApiBase):
         """GET /sources/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/sources/",
+            url_template="/api/sources/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsSources(GrampsApiBase):
         """GET /sources/{phoenix_handle}/merge/{titanic_handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/sources/{phoenix_handle}/merge/{titanic_handle}",
+            url_template="/api/sources/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
             has_body=False,

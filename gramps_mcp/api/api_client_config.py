@@ -10,7 +10,7 @@ class GrampsConfig(GrampsApiBase):
         """GET /config/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/config/",
+            url_template="/api/config/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsConfig(GrampsApiBase):
         """DELETE /config/{key}/"""
         return self._call(
             http="DELETE",
-            url_template="https://gramps.arpa/api/config/{key}/",
+            url_template="/api/config/{key}/",
             path_params=["key"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsConfig(GrampsApiBase):
         """GET /config/{key}/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/config/{key}/",
+            url_template="/api/config/{key}/",
             path_params=["key"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsConfig(GrampsApiBase):
         """PUT /config/{key}/"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/config/{key}/",
+            url_template="/api/config/{key}/",
             path_params=["key"],
             query_params=[],
             has_body=False,

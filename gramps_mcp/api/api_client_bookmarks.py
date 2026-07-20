@@ -10,7 +10,7 @@ class GrampsBookmarks(GrampsApiBase):
         """GET /bookmarks/{namespace}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/bookmarks/{namespace}",
+            url_template="/api/bookmarks/{namespace}",
             path_params=["namespace"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsBookmarks(GrampsApiBase):
         """GET /bookmarks/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/bookmarks/",
+            url_template="/api/bookmarks/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsBookmarks(GrampsApiBase):
         """DELETE /bookmarks/{namespace}/{handle}"""
         return self._call(
             http="DELETE",
-            url_template="https://gramps.arpa/api/bookmarks/{namespace}/{handle}",
+            url_template="/api/bookmarks/{namespace}/{handle}",
             path_params=["namespace", "handle"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsBookmarks(GrampsApiBase):
         """PUT /bookmarks/{namespace}/{handle}"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/bookmarks/{namespace}/{handle}",
+            url_template="/api/bookmarks/{namespace}/{handle}",
             path_params=["namespace", "handle"],
             query_params=[],
             has_body=False,

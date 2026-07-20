@@ -10,7 +10,7 @@ class GrampsToken(GrampsApiBase):
         """POST /token/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/token/",
+            url_template="/api/token/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsToken(GrampsApiBase):
         """POST /token/refresh/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/token/refresh/",
+            url_template="/api/token/refresh/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsToken(GrampsApiBase):
         """GET /token/create_owner/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/token/create_owner/",
+            url_template="/api/token/create_owner/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsToken(GrampsApiBase):
         """POST /token/create_owner/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/token/create_owner/",
+            url_template="/api/token/create_owner/",
             path_params=[],
             query_params=[],
             has_body=False,

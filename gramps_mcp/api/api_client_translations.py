@@ -10,7 +10,7 @@ class GrampsTranslations(GrampsApiBase):
         """GET /translations/{language}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/translations/{language}",
+            url_template="/api/translations/{language}",
             path_params=["language"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTranslations(GrampsApiBase):
         """POST /translations/{language}"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/translations/{language}",
+            url_template="/api/translations/{language}",
             path_params=["language"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsTranslations(GrampsApiBase):
         """GET /translations/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/translations/",
+            url_template="/api/translations/",
             path_params=[],
             query_params=[],
             has_body=False,

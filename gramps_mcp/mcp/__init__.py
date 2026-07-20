@@ -12,7 +12,6 @@ from gramps_mcp.mcp.mcp_families import register_families_tools
 from gramps_mcp.mcp.mcp_filters import register_filters_tools
 from gramps_mcp.mcp.mcp_holidays import register_holidays_tools
 from gramps_mcp.mcp.mcp_importers import register_importers_tools
-from gramps_mcp.mcp.mcp_kg import register_kg_tools
 from gramps_mcp.mcp.mcp_living import register_living_tools
 from gramps_mcp.mcp.mcp_media import register_media_tools
 from gramps_mcp.mcp.mcp_metadata import register_metadata_tools
@@ -51,7 +50,6 @@ TOOL_REGISTRY = [
     ("filters", "FILTERSTOOL", register_filters_tools),
     ("holidays", "HOLIDAYSTOOL", register_holidays_tools),
     ("importers", "IMPORTERSTOOL", register_importers_tools),
-    ("kg", "KGTOOL", register_kg_tools),
     ("living", "LIVINGTOOL", register_living_tools),
     ("media", "MEDIATOOL", register_media_tools),
     ("metadata", "METADATATOOL", register_metadata_tools),
@@ -90,7 +88,6 @@ __all__ = [
     "register_filters_tools",
     "register_holidays_tools",
     "register_importers_tools",
-    "register_kg_tools",
     "register_living_tools",
     "register_media_tools",
     "register_metadata_tools",

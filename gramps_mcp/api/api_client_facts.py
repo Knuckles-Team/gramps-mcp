@@ -10,7 +10,7 @@ class GrampsFacts(GrampsApiBase):
         """GET /facts/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/facts/",
+            url_template="/api/facts/",
             path_params=[],
             query_params=[],
             has_body=False,

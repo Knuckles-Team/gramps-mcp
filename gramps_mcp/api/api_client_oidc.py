@@ -10,7 +10,7 @@ class GrampsOidc(GrampsApiBase):
         """GET /oidc/login/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/oidc/login/",
+            url_template="/api/oidc/login/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsOidc(GrampsApiBase):
         """GET /oidc/callback/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/oidc/callback/",
+            url_template="/api/oidc/callback/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsOidc(GrampsApiBase):
         """GET /oidc/callback/{provider_id}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/oidc/callback/{provider_id}",
+            url_template="/api/oidc/callback/{provider_id}",
             path_params=["provider_id"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsOidc(GrampsApiBase):
         """GET /oidc/config/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/oidc/config/",
+            url_template="/api/oidc/config/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsOidc(GrampsApiBase):
         """GET /oidc/tokens/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/oidc/tokens/",
+            url_template="/api/oidc/tokens/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsOidc(GrampsApiBase):
         """GET /oidc/logout/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/oidc/logout/",
+            url_template="/api/oidc/logout/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -82,7 +82,7 @@ class GrampsOidc(GrampsApiBase):
         """POST /oidc/backchannel-logout/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/oidc/backchannel-logout/",
+            url_template="/api/oidc/backchannel-logout/",
             path_params=[],
             query_params=[],
             has_body=False,

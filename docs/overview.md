@@ -1,30 +1,30 @@
-# gramps-mcp — Concept Overview
+# Overview
 
-> **Category**: Integration | **Ecosystem Role**: MCP Server + A2A Agent
-> Built on [`agent-utilities`](https://github.com/Knuckles-Team/agent-utilities) — the unified AGI Harness.
+`gramps-mcp` has three layers:
 
-## Description
+1. Generated domain clients call the configured Gramps Web API through one hardened
+   HTTPS base client.
+2. Condensed MCP tools route validated actions through the current Agent Utilities
+   dispatcher and move blocking HTTP work off the async event loop.
+3. The optional A2A server uses the current Agent Utilities agent runtime and the single
+   `gramps-genealogy-operations` skill.
 
-Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)
+## Current runtime contracts
 
-## Architecture
+- Agent Utilities 1.27.1 or newer supplies AgentConfig, MCP registration, delegated
+  authentication, transport-security profiles, and the mandatory
+  `epistemic-graph[full]` base dependency.
+- The vendored OpenAPI specification generates 147 operations across 35 domains. The
+  generated paths are relative and cannot retain a source-spec authority.
+- The configured Gramps origin must be HTTPS. Redirects are not followed, path values
+  are encoded, and requests cannot change authority or override TLS policy.
+- Fixed credentials and delegated identity are runtime-only. Logs and exceptions omit
+  endpoints, subjects, record content, and response bodies.
 
-This project follows the standardized agent-package pattern:
+## Capability ownership
 
-- **Modular Design**: split into `api/` (client mixins) and `mcp/` (action-routed
-  tool modules) for cleaner organization.
-- **Dynamic Tool Registration**: action-routed dynamic tool tags, strictly
-  lowercase, each togglable with a `*TOOL` environment flag.
-- **A2A Agent Server**: a Pydantic-AI graph agent (console script `gramps-agent`)
-  that calls the MCP tool surface and exposes an AG-UI web interface.
-
-## Concept Registry
-
-This project implements or inherits the following ecosystem concepts:
-
-| Concept ID | Description | Source |
-|:-----------|:------------|:-------|
-| ECO-4.1 | MCP & Universal Skills | `agent-utilities` (inherited) |
-| AU-ECO.toolkit.journey-map-narrative | A2A Network & Consensus | `agent-utilities` (inherited) |
-
-> 📖 **Full Registry**: See [`agent-utilities/docs/overview.md`](https://github.com/Knuckles-Team/agent-utilities/blob/main/docs/overview.md) for the complete 5-Pillar concept index.
+The package owns human-reviewed ontology, source-preset, prompt, and skill inputs plus a
+release-generated signed capability bundle with exact local schema fingerprints,
+SHACL shapes, neutral fixtures, mappings, migrations, and an offline source attestation.
+It does not own deployment endpoints, tenant policy, source records, or external-live
+evidence. Missing or stale evidence fails closed.

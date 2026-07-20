@@ -10,7 +10,7 @@ class GrampsNameFormats(GrampsApiBase):
         """GET /name-formats/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/name-formats/",
+            url_template="/api/name-formats/",
             path_params=[],
             query_params=[],
             has_body=False,

@@ -10,7 +10,7 @@ class GrampsMetadata(GrampsApiBase):
         """GET /metadata/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/metadata/",
+            url_template="/api/metadata/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsMetadata(GrampsApiBase):
         """GET /metadata/researcher/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/metadata/researcher/",
+            url_template="/api/metadata/researcher/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsMetadata(GrampsApiBase):
         """PUT /metadata/researcher/"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/metadata/researcher/",
+            url_template="/api/metadata/researcher/",
             path_params=[],
             query_params=[],
             has_body=False,

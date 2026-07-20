@@ -6,14 +6,14 @@ spec(s) in ``gramps_mcp/specs/*.json`` and emits fleet-conformant, committed
 code:
 
 * ``gramps_mcp/api/api_client_<domain>.py`` — one method per OpenAPI operation,
-  composed into ``gramps_mcp.api_client.Api`` via multiple inheritance.
+  composed into ``gramps_mcp.api.Api`` via multiple inheritance.
 * ``gramps_mcp/api/_operation_manifest.py`` — the machine-readable
   ``operationId → method → action`` map that the coverage test asserts against and
   that drives the verbose 1:1 tool tier.
 * ``gramps_mcp/mcp/mcp_<domain>.py`` — one consolidated, action-routed MCP tool
   per domain exposing every operation as an ``action``.
 * ``gramps_mcp/mcp/__init__.py`` — ``TOOL_REGISTRY`` consumed by ``mcp_server.py``.
-* ``gramps_mcp/api_client.py`` — the composite ``Api`` class.
+* ``gramps_mcp/api/__init__.py`` — the composite ``Api`` class.
 
 The OpenAPI spec is derived from the documented Gramps REST routes
 (``gramps-project/gramps-web-api``) — see ``gramps_mcp/specs/``.
@@ -27,6 +27,7 @@ import json
 import keyword
 import re
 from pathlib import Path
+from urllib.parse import urlsplit
 
 PKG = Path(__file__).resolve().parent.parent / "gramps_mcp"
 SPECS_DIR = PKG / "specs"
@@ -55,8 +56,9 @@ def camel(domain: str) -> str:
 
 
 def server_template(spec: dict) -> str:
+    """Return only the deployment-neutral path prefix from the first server."""
     servers = spec.get("servers") or [{}]
-    return servers[0].get("url", "").rstrip("/")
+    return urlsplit(servers[0].get("url", "")).path.rstrip("/")
 
 
 def detect_pagination(http: str, query_params: list[str]) -> str:
@@ -257,8 +259,12 @@ def emit_mcp_module(domain: str, ops: list[dict]) -> None:
     lines = [
         AUTOGEN,
         "",
+        "import json",
+        "",
         "from typing import Any",
         "",
+        "from agent_utilities.mcp.action_dispatch import resolve_action",
+        "from agent_utilities.mcp.concurrency import run_blocking",
         "from fastmcp import Context, FastMCP",
         "from fastmcp.dependencies import Depends",
         "from pydantic import Field",
@@ -285,28 +291,30 @@ def emit_mcp_module(domain: str, ops: list[dict]) -> None:
         f'        """Manage Gramps {domain.replace("_", " ")} operations. '
         'CONCEPT:GM-OS.identity.grmp."""',
         "        if ctx:",
-        '            await ctx.info(f"Executing gramps_'
-        + domain
-        + ' action: {action}")',
-        "        import json",
+        f'            await ctx.info("Executing Gramps {domain.replace("_", " ")} operation")',
         "",
+        '        if len(params_json.encode("utf-8")) > 1_048_576:',
+        '            return {"error": "params_json exceeds the connector limit"}',
         "        try:",
         "            kwargs = json.loads(params_json) if params_json else {}",
-        "        except Exception as e:",
-        '            return {"error": f"Invalid params_json: {e}"}',
+        "        except (TypeError, ValueError):",
+        '            return {"error": "Invalid params_json"}',
         "        if not isinstance(kwargs, dict):",
         '            return {"error": "params_json must decode to a JSON object"}',
         "        kwargs = {k: v for k, v in kwargs.items() if v is not None}",
-        "",
-    ]
-    first = True
-    for op in ops:
-        kw = "if" if first else "elif"
-        first = False
-        lines.append(f'        {kw} action == "{op["action"]}":')
-        lines.append(f"            return client.{op['method']}(**kwargs)")
-    lines += [
-        '        raise ValueError(f"Unknown action: {action}")',
+        "        resolved = resolve_action(",
+        "            action,",
+        "            {",
+        *[f'                "{op["action"]}",' for op in ops],
+        "            },",
+        '            service="gramps",',
+        "        )",
+        "        if isinstance(resolved, dict):",
+        "            return resolved",
+        "        method = getattr(client, resolved, None)",
+        "        if method is None:",
+        '            return {"error": "Unknown action"}',
+        "        return await run_blocking(method, **kwargs)",
         "",
     ]
     (MCP_DIR / f"mcp_{domain}.py").write_text("\n".join(lines) + "\n")
@@ -353,15 +361,14 @@ def emit_manifest(by_domain: dict[str, list[dict]]) -> None:
 def emit_api_client(by_domain: dict[str, list[dict]]) -> None:
     domains = sorted(by_domain)
     imports = [
-        f"from gramps_mcp.api.api_client_{d} import Gramps{camel(d)}"
-        for d in domains
+        f"from gramps_mcp.api.api_client_{d} import Gramps{camel(d)}" for d in domains
     ]
     bases = ",\n    ".join(f"Gramps{camel(d)}" for d in domains)
     lines = [
-        "#!/usr/bin/python",
         AUTOGEN,
         "",
         *imports,
+        "from gramps_mcp.api.api_client_base import GrampsApiBase",
         "",
         "",
         f"class Api(\n    {bases},\n):",
@@ -369,8 +376,10 @@ def emit_api_client(by_domain: dict[str, list[dict]]) -> None:
         "",
         "    __slots__ = ()",
         "",
+        '__all__ = ["Api", "GrampsApiBase"]',
+        "",
     ]
-    (PKG / "api_client.py").write_text("\n".join(lines) + "\n")
+    (API_DIR / "__init__.py").write_text("\n".join(lines) + "\n")
 
 
 def emit_mcp_init(by_domain: dict[str, list[dict]]) -> None:
@@ -416,7 +425,7 @@ def main() -> None:
 
     ruff = shutil.which("ruff")
     if ruff:
-        targets = [str(API_DIR), str(MCP_DIR), str(PKG / "api_client.py")]
+        targets = [str(API_DIR), str(MCP_DIR)]
         subprocess.run([ruff, "check", "--fix", "--quiet", *targets], check=False)
         subprocess.run([ruff, "format", "--quiet", *targets], check=False)
     print(f"Generated {len(by_domain)} client modules + MCP tools.")

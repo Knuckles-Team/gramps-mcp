@@ -10,7 +10,7 @@ class GrampsTimeline(GrampsApiBase):
         """GET /people/{handle}/timeline"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/people/{handle}/timeline",
+            url_template="/api/people/{handle}/timeline",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTimeline(GrampsApiBase):
         """GET /families/{handle}/timeline"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/families/{handle}/timeline",
+            url_template="/api/families/{handle}/timeline",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsTimeline(GrampsApiBase):
         """GET /timelines/people/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/timelines/people/",
+            url_template="/api/timelines/people/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsTimeline(GrampsApiBase):
         """GET /timelines/families/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/timelines/families/",
+            url_template="/api/timelines/families/",
             path_params=[],
             query_params=[],
             has_body=False,

@@ -10,7 +10,7 @@ class GrampsEvents(GrampsApiBase):
         """GET /events/{handle1}/span/{handle2}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/events/{handle1}/span/{handle2}",
+            url_template="/api/events/{handle1}/span/{handle2}",
             path_params=["handle1", "handle2"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsEvents(GrampsApiBase):
         """GET /events/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/events/{handle}",
+            url_template="/api/events/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsEvents(GrampsApiBase):
         """GET /events/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/events/",
+            url_template="/api/events/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsEvents(GrampsApiBase):
         """GET /events/{phoenix_handle}/merge/{titanic_handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/events/{phoenix_handle}/merge/{titanic_handle}",
+            url_template="/api/events/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
             has_body=False,

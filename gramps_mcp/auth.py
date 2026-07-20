@@ -1,26 +1,21 @@
 #!/usr/bin/python
 
-"""Authentication for the Gramps API.
+"""Runtime-only authentication for a configured Gramps Web API authority."""
 
-Priority:
-1. **OIDC Delegation** (RFC 8693 Token Exchange) — when ``ENABLE_DELEGATION`` is
-   active, exchanges the IdP-issued user token for a downstream access token via the
-   shared ``agent_utilities.mcp.delegated_auth`` helper.
-2. **Fixed credentials** — a pre-minted JWT bearer token (``GRAMPS_TOKEN``) or a
-   username/password login (``GRAMPS_USERNAME`` / ``GRAMPS_PASSWORD``)
-   exchanged against ``/api/token/``.
-
-Credentials resolve live through the shared config layer (the one XDG
-``config.json`` / env), read at call time rather than frozen at import.
-"""
+from typing import Any
 
 from agent_utilities.base_utilities import get_logger
 from agent_utilities.core.config import setting
 from agent_utilities.core.exceptions import AuthError, UnauthorizedError
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
-from gramps_mcp.api_client import Api
+from .api import Api
 
 logger = get_logger(__name__)
+_client: Api | None = None
 
 
 def get_client(
@@ -28,63 +23,88 @@ def get_client(
     token: str | None = None,
     username: str | None = None,
     password: str | None = None,
-    verify: bool | None = None,
-    config: dict | None = None,
+    tls_profile: ResolvedTLSProfile | None = None,
+    config: dict[str, Any] | None = None,
 ) -> Api:
-    """Factory function to create the Gramps :class:`Api` client.
+    """Create a delegated or fixed-credential Gramps client.
 
-    Resolves auth via OIDC delegation, a fixed bearer token, or username/password
-    login. Settings read from the shared XDG config at call time.
+    Endpoint, credentials, identity-provider configuration, and TLS trust resolve at
+    runtime through AgentConfig. Delegated clients are request-scoped; the normal MCP
+    dependency path reuses one fixed-credential client for the process lifetime.
     """
+    global _client
+
     from agent_utilities.mcp.delegated_auth import (
         get_delegated_token,
-        get_user_identity,
         is_delegation_enabled,
     )
 
-    base_url = url if url is not None else setting("GRAMPS_URL")
-    token = token if token is not None else setting("GRAMPS_TOKEN")
-    username = username if username is not None else setting("GRAMPS_USERNAME")
-    password = password if password is not None else setting("GRAMPS_PASSWORD")
-    if verify is None:
-        verify = setting("GRAMPS_SSL_VERIFY", True)
+    delegated = is_delegation_enabled(config)
+    explicit = any(
+        value is not None for value in (url, token, username, password, tls_profile)
+    )
+    if not delegated and not explicit and _client is not None:
+        return _client
 
-    # --- Path 1: OIDC Delegation (RFC 8693 Token Exchange) ---
-    if is_delegation_enabled(config):
+    base_url = url or setting("GRAMPS_URL", "")
+    if not base_url:
+        raise RuntimeError("GRAMPS_URL is required")
+    fixed_token = token or setting("GRAMPS_TOKEN", "")
+    fixed_username = username or setting("GRAMPS_USERNAME", "")
+    fixed_password = password or setting("GRAMPS_PASSWORD", "")
+    if not delegated:
+        if fixed_token and (fixed_username or fixed_password):
+            raise RuntimeError(
+                "Configure either GRAMPS_TOKEN or the username/password pair"
+            )
+        if bool(fixed_username) != bool(fixed_password):
+            raise RuntimeError(
+                "GRAMPS_USERNAME and GRAMPS_PASSWORD must be configured together"
+            )
+        if not fixed_token and not (fixed_username and fixed_password):
+            raise RuntimeError(
+                "GRAMPS_TOKEN or GRAMPS_USERNAME/GRAMPS_PASSWORD is required"
+            )
+
+    profile = tls_profile or resolve_configured_tls_profile("gramps")
+
+    if delegated:
         try:
             delegated_token = get_delegated_token(
                 config=config,
                 audience=(config or {}).get("audience", base_url),
                 scopes=(config or {}).get("delegated_scopes", "api"),
-                verify=verify,
             )
-            identity = get_user_identity()
-            logger.info(
-                "Using OIDC delegated token for Gramps API",
-                extra={"user_email": identity.get("email"), "url": base_url},
-            )
-            return Api(url=base_url, token=delegated_token, verify=verify)
-        except Exception as e:
+            logger.info("Using OIDC delegated credentials")
+            return Api(url=base_url, token=delegated_token, tls_profile=profile)
+        except Exception as exc:
+            profile.cleanup()
             logger.error(
-                "OIDC delegation failed for Gramps",
-                extra={"error_type": type(e).__name__, "error_message": str(e)},
+                "OIDC delegation failed", extra={"error_type": type(exc).__name__}
             )
-            raise RuntimeError(f"Token exchange failed: {str(e)}") from e
+            raise RuntimeError("Token exchange failed") from None
 
-    # --- Path 2: Fixed Credentials (token or username/password login) ---
-    logger.info("Using fixed credentials for Gramps API")
+    logger.info("Using fixed credentials")
     try:
-        return Api(
+        client = Api(
             url=base_url,
-            token=token,
-            username=username,
-            password=password,
-            verify=verify,
+            token=fixed_token or None,
+            username=fixed_username or None,
+            password=fixed_password or None,
+            tls_profile=profile,
         )
-    except (AuthError, UnauthorizedError) as e:
+    except (AuthError, UnauthorizedError):
+        profile.cleanup()
         raise RuntimeError(
-            "AUTHENTICATION ERROR: The Gramps credentials provided are not "
-            f"valid for '{base_url}'. Check GRAMPS_URL and GRAMPS_TOKEN "
-            "(or GRAMPS_USERNAME / GRAMPS_PASSWORD). "
-            f"Error details: {str(e)}"
-        ) from e
+            "AUTHENTICATION ERROR: The configured Gramps credentials were rejected"
+        ) from None
+    except Exception as exc:
+        profile.cleanup()
+        raise RuntimeError(
+            "AUTHENTICATION ERROR: Failed to instantiate the Gramps client "
+            f"({type(exc).__name__})"
+        ) from None
+
+    if not explicit:
+        _client = client
+    return client

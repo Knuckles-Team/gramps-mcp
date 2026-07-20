@@ -10,7 +10,7 @@ class GrampsTasks(GrampsApiBase):
         """GET /tasks/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/tasks/",
+            url_template="/api/tasks/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTasks(GrampsApiBase):
         """GET /tasks/{task_id}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/tasks/{task_id}",
+            url_template="/api/tasks/{task_id}",
             path_params=["task_id"],
             query_params=[],
             has_body=False,

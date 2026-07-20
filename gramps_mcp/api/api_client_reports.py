@@ -10,7 +10,7 @@ class GrampsReports(GrampsApiBase):
         """GET /reports/{report_id}/file"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/reports/{report_id}/file",
+            url_template="/api/reports/{report_id}/file",
             path_params=["report_id"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsReports(GrampsApiBase):
         """POST /reports/{report_id}/file"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/reports/{report_id}/file",
+            url_template="/api/reports/{report_id}/file",
             path_params=["report_id"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsReports(GrampsApiBase):
         """GET /reports/{report_id}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/reports/{report_id}",
+            url_template="/api/reports/{report_id}",
             path_params=["report_id"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsReports(GrampsApiBase):
         """GET /reports/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/reports/",
+            url_template="/api/reports/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsReports(GrampsApiBase):
         """GET /reports/{report_id}/file/processed/{filename}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/reports/{report_id}/file/processed/{filename}",
+            url_template="/api/reports/{report_id}/file/processed/{filename}",
             path_params=["report_id", "filename"],
             query_params=[],
             has_body=False,

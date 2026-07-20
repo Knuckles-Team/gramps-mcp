@@ -10,7 +10,7 @@ class GrampsTrees(GrampsApiBase):
         """GET /trees/{tree_id}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/trees/{tree_id}",
+            url_template="/api/trees/{tree_id}",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTrees(GrampsApiBase):
         """PUT /trees/{tree_id}"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/trees/{tree_id}",
+            url_template="/api/trees/{tree_id}",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsTrees(GrampsApiBase):
         """GET /trees/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/trees/",
+            url_template="/api/trees/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsTrees(GrampsApiBase):
         """POST /trees/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/trees/",
+            url_template="/api/trees/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsTrees(GrampsApiBase):
         """POST /trees/{tree_id}/disable"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/disable",
+            url_template="/api/trees/{tree_id}/disable",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsTrees(GrampsApiBase):
         """POST /trees/{tree_id}/enable"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/enable",
+            url_template="/api/trees/{tree_id}/enable",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -82,7 +82,7 @@ class GrampsTrees(GrampsApiBase):
         """POST /trees/{tree_id}/repair"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/repair",
+            url_template="/api/trees/{tree_id}/repair",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -94,7 +94,7 @@ class GrampsTrees(GrampsApiBase):
         """POST /trees/{tree_id}/migrate"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/migrate",
+            url_template="/api/trees/{tree_id}/migrate",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -106,7 +106,7 @@ class GrampsTrees(GrampsApiBase):
         """GET /trees/{tree_id}/config"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/config",
+            url_template="/api/trees/{tree_id}/config",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -118,7 +118,7 @@ class GrampsTrees(GrampsApiBase):
         """PUT /trees/{tree_id}/config"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/config",
+            url_template="/api/trees/{tree_id}/config",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,
@@ -130,7 +130,7 @@ class GrampsTrees(GrampsApiBase):
         """POST /trees/{tree_id}/verify"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/trees/{tree_id}/verify",
+            url_template="/api/trees/{tree_id}/verify",
             path_params=["tree_id"],
             query_params=[],
             has_body=False,

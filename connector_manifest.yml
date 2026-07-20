@@ -150,17 +150,27 @@ sync:
   title_field: gramps_id
   text_field: description
   updated_field: change
-  pagination: null
+  pagination: page
   doc_type: event
+  tool_schema_sha256: 0bacef97a3338bc3e2f68f956bbc17df376baadd5f3f21688b24bb8b0ec48388
   raw:
     server: gramps-mcp
     tool: gramps_events
     action: get_events
+    params_style: json
+    params:
+      pagesize: 100
     records_path: data
     id_field: handle
     title_field: gramps_id
     text_field: description
     updated_field: change
+    pagination: page
+    page_kind: number
+    page_param: page
+    page_size_param: pagesize
+    page_size: 100
+    start_page: 1
     doc_type: event
 - preset: gramps-families
   server: gramps-mcp
@@ -171,17 +181,27 @@ sync:
   title_field: gramps_id
   text_field: gramps_id
   updated_field: change
-  pagination: null
+  pagination: page
   doc_type: family
+  tool_schema_sha256: 523983a3055fa1b483fa9f91d2f54490826b4b4e37bcd34152c4d261a4d5646a
   raw:
     server: gramps-mcp
     tool: gramps_families
     action: get_families
+    params_style: json
+    params:
+      pagesize: 100
     records_path: data
     id_field: handle
     title_field: gramps_id
     text_field: gramps_id
     updated_field: change
+    pagination: page
+    page_kind: number
+    page_param: page
+    page_size_param: pagesize
+    page_size: 100
+    start_page: 1
     doc_type: family
 - preset: gramps-people
   server: gramps-mcp
@@ -192,31 +212,44 @@ sync:
   title_field: gramps_id
   text_field: gramps_id
   updated_field: change
-  pagination: null
+  pagination: page
   doc_type: person
+  tool_schema_sha256: bdde859672e50c0ea1a552f97f8a189fc97897a67af81d95f68b486fb6d69a52
   raw:
     server: gramps-mcp
     tool: gramps_people
     action: get_people
+    params_style: json
+    params:
+      pagesize: 100
     records_path: data
     id_field: handle
     title_field: gramps_id
     text_field: gramps_id
     updated_field: change
+    pagination: page
+    page_kind: number
+    page_param: page
+    page_size_param: pagesize
+    page_size: 100
+    start_page: 1
     doc_type: person
 provenance:
   generated_by: scripts/generate_connector_manifests.py
-  generated_at: '2026-07-09T00:00:00Z'
+  generated_at: '2026-07-18T14:21:05Z'
   source_artifacts:
   - a2a.json
   - gramps_mcp/connectors/mcp_source_presets.json
+  - gramps_mcp/connectors/tool_schema_fingerprints.json
   - gramps_mcp/ontology/gramps.ttl
   integrity:
     algorithm: urdna2015-sha256
     hash: 7897b6a649b5f9100cb32ffbde864e155c153d1e51a884fe714ddcd3a70f926d
     triple_count: 67
   signer: ontology-manifest-generator
-  signature: 194e4e437cfc9c8f323033bb4c3621fe4b2eefae8083277e11ce0877a62e70ce
+  signature_algorithm: ed25519
+  signing_public_key: q0Cp7bmQMqJhbofGKKw8xXC6KbFzukBDDke0UYVi8y4
+  signature: 4PcMd-vPl2_GJCOvHoU4kzXp4BW8h5RjbrluR3botVxlPmfdhJw9Ig0VrvCH_K3cQII8MrgZXA0sEAwXzlf4Cg
 policy:
   pii_fields: {}
   tenant_boundary: null

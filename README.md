@@ -1,61 +1,42 @@
 # Gramps MCP
-## CLI or API | MCP | Agent
+
+## API client | MCP server | A2A agent
 
 ![PyPI - Version](https://img.shields.io/pypi/v/gramps-mcp)
-![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
-![PyPI - Downloads](https://img.shields.io/pypi/dd/gramps-mcp)
-![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/gramps-mcp)
+![MCP Server](https://badge.mcpx.dev?type=server "MCP Server")
 ![PyPI - License](https://img.shields.io/pypi/l/gramps-mcp)
-![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/gramps-mcp)
 
 *Version: 1.0.1*
 
-> **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
-> interfaces, the integrated A2A agent server, and guidance for provisioning the
-> backing platform are maintained in the
-> [official documentation](https://knuckles-team.github.io/gramps-mcp/).
+`gramps-mcp` exposes the public Gramps Web API as a typed Python client, a compact
+action-routed MCP server, and an optional A2A agent. All instance endpoints,
+credentials, identity-provider settings, TLS trust, tenant policy, and observability
+destinations are supplied at runtime.
 
----
+## Key capabilities
 
-## Table of Contents
+- Thirty-five condensed MCP domains cover people, families, events, places,
+  relationships, sources, citations, media, DNA, imports, exports, trees, users, and
+  supporting Gramps operations.
+- The verbose surface is generated from the vendored OpenAPI operation manifest.
+- Blocking HTTP calls are moved off the async MCP event loop through the shared current
+  Agent Utilities dispatcher.
+- HTTPS peer and hostname verification are mandatory and configured through an
+  AgentConfig-backed TLS profile; this package has no boolean verification bypass.
+- One comprehensive skill applies research evidence, living-person privacy, and
+  read-before-write safety across the complete surface.
+- Neutral ontology and source-preset inputs can be compiled centrally into a signed
+  GraphOS capability. The provider exposes no direct graph-write tool.
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [Available MCP Tools](#available-mcp-tools)
-- [Installation](#installation)
-- [Usage](#usage)
-- [MCP](#mcp)
-- [Documentation](#documentation)
+## Available MCP tools
 
----
-
-## Overview
-
-**Gramps MCP MCP Server + A2A Agent**
-
-Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)
-
-This repository is actively maintained - Contributions are welcome!
-
-## Key Features
-
-- **Action-routed MCP tools** — each domain is exposed as a single MCP tool that routes
-  to many underlying operations via an `action` argument, keeping the tool surface small.
-- **Three interfaces, one package** — use it as a Python **API client**, an **MCP server**
-  (`stdio` / `streamable-http` / `sse`), or a Pydantic-AI **A2A agent**.
-- **`agent-utilities` native** — built on the shared framework (auth, action router,
-  telemetry, governance) for fleet consistency.
-- **Per-tool toggles** — enable or disable each tool domain with environment switches.
-- **Enterprise-ready** — OTEL/Langfuse telemetry and optional Eunomia access governance.
-
-## Available MCP Tools
-
-Each tool is **action-routed**: pass an `action` and a JSON `params_json` payload. Tool
-domains can be toggled on or off with the listed environment variable. The table below is
-**auto-generated from the live server** by the `mcp-readme-table` pre-commit hook
-(`python -m agent_utilities.mcp.readme_tools`) — do not edit it by hand.
+Each condensed tool accepts an `action` plus a JSON string in `params_json`. Domain
+toggles are enabled unless a deployment disables them. This table is generated from the
+registered server surface.
 
 <!-- MCP-TOOLS-TABLE:START -->
+
+#### Condensed action-routed tools (`MCP_TOOL_MODE=condensed`)
 
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
@@ -95,411 +76,411 @@ domains can be toggled on or off with the listed environment variable. The table
 | `gramps_types` | `TYPESTOOL` | Manage Gramps types operations. CONCEPT:GM-OS.identity.grmp. |
 | `gramps_users` | `USERSTOOL` | Manage Gramps users operations. CONCEPT:GM-OS.identity.grmp. |
 
-_35 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>147 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `gramps_delete_bookmark_edit` | `BOOKMARKSTOOL` | DELETE /bookmarks/{namespace}/{handle} |
+| `gramps_delete_config` | `CONFIGTOOL` | DELETE /config/{key}/ |
+| `gramps_delete_filter` | `FILTERSTOOL` | DELETE /filters/{namespace}/{name} |
+| `gramps_delete_user` | `GRANULARTOOL` | DELETE /users/{user_name}/ |
+| `gramps_get_bookmark` | `BOOKMARKSTOOL` | GET /bookmarks/{namespace} |
+| `gramps_get_bookmarks` | `BOOKMARKSTOOL` | GET /bookmarks/ |
+| `gramps_get_citation` | `CITATIONSTOOL` | GET /citations/{handle} |
+| `gramps_get_citations` | `CITATIONSTOOL` | GET /citations/ |
+| `gramps_get_config` | `CONFIGTOOL` | GET /config/{key}/ |
+| `gramps_get_configs` | `CONFIGTOOL` | GET /config/ |
+| `gramps_get_confirm_email` | `GRANULARTOOL` | GET /users/-/email/confirm/ |
+| `gramps_get_custom_type` | `GRANULARTOOL` | GET /types/custom/{datatype} |
+| `gramps_get_custom_types` | `GRANULARTOOL` | GET /types/custom/ |
+| `gramps_get_default_type` | `GRANULARTOOL` | GET /types/default/{datatype} |
+| `gramps_get_default_type_map` | `GRANULARTOOL` | GET /types/default/{datatype}/map |
+| `gramps_get_default_types` | `GRANULARTOOL` | GET /types/default/ |
+| `gramps_get_event` | `EVENTSTOOL` | GET /events/{handle} |
+| `gramps_get_event_span` | `EVENTSTOOL` | GET /events/{handle1}/span/{handle2} |
+| `gramps_get_events` | `EVENTSTOOL` | GET /events/ |
+| `gramps_get_exporter` | `EXPORTERSTOOL` | GET /exporters/{extension} |
+| `gramps_get_exporter_file` | `EXPORTERSTOOL` | GET /exporters/{extension}/file |
+| `gramps_get_exporter_file_result` | `EXPORTERSTOOL` | GET /exporters/{extension}/file/processed/{filename} |
+| `gramps_get_exporters` | `EXPORTERSTOOL` | GET /exporters/ |
+| `gramps_get_facts` | `FACTSTOOL` | GET /facts/ |
+| `gramps_get_families` | `FAMILIESTOOL` | GET /families/ |
+| `gramps_get_family` | `FAMILIESTOOL` | GET /families/{handle} |
+| `gramps_get_family_timeline` | `GRANULARTOOL` | GET /families/{handle}/timeline |
+| `gramps_get_filter` | `FILTERSTOOL` | GET /filters/{namespace}/{name} |
+| `gramps_get_filters` | `FILTERSTOOL` | GET /filters/ |
+| `gramps_get_filters_namespace` | `FILTERSTOOL` | GET /filters/{namespace} |
+| `gramps_get_get_name_group` | `GRANULARTOOL` | GET /name-groups/{surname} |
+| `gramps_get_holiday` | `GRANULARTOOL` | GET /holidays/{country}/{year}/{month}/{day} |
+| `gramps_get_holidays` | `GRANULARTOOL` | GET /holidays/ |
+| `gramps_get_importer` | `GRANULARTOOL` | GET /importers/{extension} |
+| `gramps_get_importers` | `GRANULARTOOL` | GET /importers/ |
+| `gramps_get_living` | `GRANULARTOOL` | GET /living/{handle} |
+| `gramps_get_living_dates` | `GRANULARTOOL` | GET /living/{handle}/dates |
+| `gramps_get_media_archive_filename` | `GRANULARTOOL` | GET /media/archive/{filename} |
+| `gramps_get_media_face_detection` | `GRANULARTOOL` | GET /media/{handle}/face_detection |
+| `gramps_get_media_file` | `GRANULARTOOL` | GET /media/{handle}/file |
+| `gramps_get_media_object` | `GRANULARTOOL` | GET /media/{handle} |
+| `gramps_get_media_objects` | `GRANULARTOOL` | GET /media/ |
+| `gramps_get_merge_citation` | `CITATIONSTOOL` | GET /citations/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_merge_event` | `EVENTSTOOL` | GET /events/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_merge_media` | `GRANULARTOOL` | GET /media/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_merge_note` | `GRANULARTOOL` | GET /notes/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_merge_place` | `GRANULARTOOL` | GET /places/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_merge_repository` | `GRANULARTOOL` | GET /repositories/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_merge_source` | `GRANULARTOOL` | GET /sources/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_get_metadata` | `GRANULARTOOL` | GET /metadata/ |
+| `gramps_get_metadata_researcher` | `GRANULARTOOL` | GET /metadata/researcher/ |
+| `gramps_get_name_formats` | `GRANULARTOOL` | GET /name-formats/ |
+| `gramps_get_name_groups` | `GRANULARTOOL` | GET /name-groups/ |
+| `gramps_get_note` | `GRANULARTOOL` | GET /notes/{handle} |
+| `gramps_get_notes` | `GRANULARTOOL` | GET /notes/ |
+| `gramps_get_oidccallbackresource` | `GRANULARTOOL` | GET /oidc/callback/ |
+| `gramps_get_oidccallbackresource_provider` | `GRANULARTOOL` | GET /oidc/callback/{provider_id} |
+| `gramps_get_oidcconfigresource` | `GRANULARTOOL` | GET /oidc/config/ |
+| `gramps_get_oidcloginresource` | `GRANULARTOOL` | GET /oidc/login/ |
+| `gramps_get_oidclogoutresource` | `GRANULARTOOL` | GET /oidc/logout/ |
+| `gramps_get_oidctokenexchangeresource` | `GRANULARTOOL` | GET /oidc/tokens/ |
+| `gramps_get_people` | `GRANULARTOOL` | GET /people/ |
+| `gramps_get_person` | `GRANULARTOOL` | GET /people/{handle} |
+| `gramps_get_person_dna_matches` | `DNATOOL` | GET /people/{handle}/dna/matches |
+| `gramps_get_person_timeline` | `GRANULARTOOL` | GET /people/{handle}/timeline |
+| `gramps_get_person_ydna` | `DNATOOL` | GET /people/{handle}/ydna |
+| `gramps_get_place` | `GRANULARTOOL` | GET /places/{handle} |
+| `gramps_get_places` | `GRANULARTOOL` | GET /places/ |
+| `gramps_get_relation` | `GRANULARTOOL` | GET /relations/{handle1}/{handle2} |
+| `gramps_get_relations` | `GRANULARTOOL` | GET /relations/{handle1}/{handle2}/all |
+| `gramps_get_report` | `GRANULARTOOL` | GET /reports/{report_id} |
+| `gramps_get_report_file` | `GRANULARTOOL` | GET /reports/{report_id}/file |
+| `gramps_get_report_file_result` | `GRANULARTOOL` | GET /reports/{report_id}/file/processed/{filename} |
+| `gramps_get_reports` | `GRANULARTOOL` | GET /reports/ |
+| `gramps_get_repositories` | `GRANULARTOOL` | GET /repositories/ |
+| `gramps_get_repository` | `GRANULARTOOL` | GET /repositories/{handle} |
+| `gramps_get_reset_password` | `GRANULARTOOL` | GET /users/-/password/reset/ |
+| `gramps_get_search` | `GRANULARTOOL` | GET /search/ |
+| `gramps_get_set_name_group` | `GRANULARTOOL` | GET /name-groups/{surname}/{group} |
+| `gramps_get_source` | `GRANULARTOOL` | GET /sources/{handle} |
+| `gramps_get_sources` | `GRANULARTOOL` | GET /sources/ |
+| `gramps_get_tag` | `GRANULARTOOL` | GET /tags/{handle} |
+| `gramps_get_tags` | `GRANULARTOOL` | GET /tags/ |
+| `gramps_get_task` | `GRANULARTOOL` | GET /tasks/{task_id} |
+| `gramps_get_tasks` | `GRANULARTOOL` | GET /tasks/ |
+| `gramps_get_timeline_families` | `GRANULARTOOL` | GET /timelines/families/ |
+| `gramps_get_timeline_people` | `GRANULARTOOL` | GET /timelines/people/ |
+| `gramps_get_token_create_owner` | `GRANULARTOOL` | GET /token/create_owner/ |
+| `gramps_get_transaction_history` | `GRANULARTOOL` | GET /transactions/history/{transaction_id} |
+| `gramps_get_transaction_undo` | `GRANULARTOOL` | GET /transactions/history/{transaction_id}/undo |
+| `gramps_get_transactions_history` | `GRANULARTOOL` | GET /transactions/history/ |
+| `gramps_get_translation` | `GRANULARTOOL` | GET /translations/{language} |
+| `gramps_get_translations` | `GRANULARTOOL` | GET /translations/ |
+| `gramps_get_tree` | `GRANULARTOOL` | GET /trees/{tree_id} |
+| `gramps_get_tree_config` | `GRANULARTOOL` | GET /trees/{tree_id}/config |
+| `gramps_get_trees` | `GRANULARTOOL` | GET /trees/ |
+| `gramps_get_types` | `GRANULARTOOL` | GET /types/ |
+| `gramps_get_user` | `GRANULARTOOL` | GET /users/{user_name}/ |
+| `gramps_get_users` | `GRANULARTOOL` | GET /users/ |
+| `gramps_post_change_password` | `GRANULARTOOL` | POST /users/{user_name}/password/change |
+| `gramps_post_chat` | `CHATTOOL` | POST /chat/ |
+| `gramps_post_delete_objects` | `GRANULARTOOL` | POST /objects/delete/ |
+| `gramps_post_delete_objects_by_handle` | `GRANULARTOOL` | POST /objects/delete-by-handle/ |
+| `gramps_post_disable_tree` | `GRANULARTOOL` | POST /trees/{tree_id}/disable |
+| `gramps_post_dna_match_parser` | `DNATOOL` | POST /parsers/dna-match |
+| `gramps_post_enable_tree` | `GRANULARTOOL` | POST /trees/{tree_id}/enable |
+| `gramps_post_exporter_file` | `EXPORTERSTOOL` | POST /exporters/{extension}/file |
+| `gramps_post_families` | `FAMILIESTOOL` | POST /families/ |
+| `gramps_post_filters_namespace` | `FILTERSTOOL` | POST /filters/{namespace} |
+| `gramps_post_get_name_group` | `GRANULARTOOL` | POST /name-groups/{surname} |
+| `gramps_post_importer_file` | `GRANULARTOOL` | POST /importers/{extension}/file |
+| `gramps_post_media_archive` | `GRANULARTOOL` | POST /media/archive/ |
+| `gramps_post_media_archive_upload_zip` | `GRANULARTOOL` | POST /media/archive/upload/zip |
+| `gramps_post_media_objects` | `GRANULARTOOL` | POST /media/ |
+| `gramps_post_media_ocr` | `GRANULARTOOL` | POST /media/{handle}/ocr |
+| `gramps_post_merge_family` | `FAMILIESTOOL` | POST /families/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_post_merge_person` | `GRANULARTOOL` | POST /people/{phoenix_handle}/merge/{titanic_handle} |
+| `gramps_post_migrate_tree` | `GRANULARTOOL` | POST /trees/{tree_id}/migrate |
+| `gramps_post_name_groups` | `GRANULARTOOL` | POST /name-groups/ |
+| `gramps_post_objects` | `GRANULARTOOL` | POST /objects/ |
+| `gramps_post_oidcbackchannellogoutresource` | `GRANULARTOOL` | POST /oidc/backchannel-logout/ |
+| `gramps_post_register` | `GRANULARTOOL` | POST /users/{user_name}/register/ |
+| `gramps_post_repair_tree` | `GRANULARTOOL` | POST /trees/{tree_id}/repair |
+| `gramps_post_report_file` | `GRANULARTOOL` | POST /reports/{report_id}/file |
+| `gramps_post_reset_password` | `GRANULARTOOL` | POST /users/-/password/reset/ |
+| `gramps_post_search_index` | `GRANULARTOOL` | POST /search/index/ |
+| `gramps_post_set_name_group` | `GRANULARTOOL` | POST /name-groups/{surname}/{group} |
+| `gramps_post_token` | `GRANULARTOOL` | POST /token/ |
+| `gramps_post_token_create_owner` | `GRANULARTOOL` | POST /token/create_owner/ |
+| `gramps_post_token_refresh` | `GRANULARTOOL` | POST /token/refresh/ |
+| `gramps_post_transaction_undo` | `GRANULARTOOL` | POST /transactions/history/{transaction_id}/undo |
+| `gramps_post_transactions` | `GRANULARTOOL` | POST /transactions/ |
+| `gramps_post_translation` | `GRANULARTOOL` | POST /translations/{language} |
+| `gramps_post_trees` | `GRANULARTOOL` | POST /trees/ |
+| `gramps_post_trigger_reset_password` | `GRANULARTOOL` | POST /users/{user_name}/password/reset/trigger/ |
+| `gramps_post_user` | `GRANULARTOOL` | POST /users/{user_name}/ |
+| `gramps_post_user_create_owner` | `GRANULARTOOL` | POST /users/{user_name}/create_owner/ |
+| `gramps_post_users` | `GRANULARTOOL` | POST /users/ |
+| `gramps_post_verify` | `GRANULARTOOL` | POST /trees/{tree_id}/verify |
+| `gramps_put_bookmark_edit` | `BOOKMARKSTOOL` | PUT /bookmarks/{namespace}/{handle} |
+| `gramps_put_config` | `CONFIGTOOL` | PUT /config/{key}/ |
+| `gramps_put_filters_namespace` | `FILTERSTOOL` | PUT /filters/{namespace} |
+| `gramps_put_media_file` | `GRANULARTOOL` | PUT /media/{handle}/file |
+| `gramps_put_metadata_researcher` | `GRANULARTOOL` | PUT /metadata/researcher/ |
+| `gramps_put_tree` | `GRANULARTOOL` | PUT /trees/{tree_id} |
+| `gramps_put_tree_config` | `GRANULARTOOL` | PUT /trees/{tree_id}/config |
+| `gramps_put_user` | `GRANULARTOOL` | PUT /users/{user_name}/ |
+
+</details>
+
+_35 action-routed tool(s) · 147 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (**`intent` default** — the six verb-tools, granular set loaded on demand · `condensed` action-routed · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
 ## Installation
 
-Pick the extra that matches what you want to run:
+| Extra | Installs | Intended use |
+| --- | --- | --- |
+| `gramps-mcp[mcp]` | Agent Utilities MCP runtime and the mandatory full epistemic-graph base dependency | MCP tool hosting |
+| `gramps-mcp[agent]` | Current `agent-runtime` plus Logfire | Integrated A2A agent |
+| `gramps-mcp[all]` | MCP and agent runtime | Both entry points |
 
-| Extra | Installs | Use when |
-|-------|----------|----------|
-| `gramps-mcp[mcp]` | Slim MCP server only (`agent-utilities[mcp]` — FastMCP/FastAPI) | You only run the **MCP server** (smallest install / image) |
-| `gramps-mcp[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated A2A agent** |
-| `gramps-mcp[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
+Run without a durable installation:
 
 ```bash
-# MCP server only (recommended for tool hosting — slim deps)
+uvx --from "gramps-mcp[mcp]" gramps-mcp
+uvx --from "gramps-mcp[agent]" gramps-agent
+```
+
+Or install into an environment:
+
+```bash
 uv pip install "gramps-mcp[mcp]"
-
-# Full agent runtime (Pydantic AI + epistemic-graph engine)
 uv pip install "gramps-mcp[agent]"
-
-# Everything (development)
-uv pip install "gramps-mcp[all]"      # or: python -m pip install "gramps-mcp[all]"
 ```
 
-### Install with `uvx` (no install — run on demand)
+Every install receives `epistemic-graph[full]` through Agent Utilities. The connector
+does not start an insecure engine listener or select a machine-specific graph database.
+AgentConfig owns engine topology and identity.
+
+## Runtime configuration
+
+The checked-in MCP configuration is reference-only:
+
+```json
+{
+  "mcpServers": {
+    "gramps-mcp": {
+      "command": "uvx",
+      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp"],
+      "env": {
+        "MCP_TOOL_MODE": "condensed",
+        "GRAMPS_TOKEN": "env://GRAMPS_TOKEN",
+        "GRAMPS_URL": "env://GRAMPS_URL"
+      }
+    }
+  }
+}
+```
+
+An alias-aware GraphOS launcher resolves the two references before creating the child
+process. Other launchers must inject the values through their own runtime secret
+mechanism. Never replace references with a credential or endpoint in a committed file.
+
+| Setting | Purpose |
+| --- | --- |
+| `GRAMPS_URL` | Absolute HTTPS origin of the selected Gramps Web API |
+| `GRAMPS_TOKEN` | Fixed bearer credential when delegation is inactive |
+| `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` | Optional login pair when a fixed token is not used |
+| `TLS_PROFILE` / `TLS_PROFILES_REF` | Verified system/private trust and optional mTLS |
+| `MCP_TOOL_MODE` | `condensed`, `verbose`, `both`, or `intent` |
+
+The endpoint must not contain credentials, a query, or a fragment. The retired boolean
+verification switch is unsupported; trust policy is a resolved TLS profile and cannot
+be disabled per request.
+
+Validate configuration without printing resolved values:
 
 ```bash
-uvx --from "gramps-mcp[mcp]" gramps-mcp      # MCP server (slim)
-uvx --from "gramps-mcp[agent]" gramps-agent  # A2A agent server (full runtime)
+agent-utilities-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
 ```
-
-### Container images (`:mcp` vs `:agent`)
-
-One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
-
-| Image tag | Build target | Contents | Entrypoint |
-|-----------|--------------|----------|------------|
-| `knucklessg1/gramps-mcp:mcp` | `--target mcp` | `gramps-mcp[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `gramps-mcp` |
-| `knucklessg1/gramps-mcp:latest` | `--target agent` (default) | `gramps-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `gramps-agent` |
-
-```bash
-docker build --target mcp   -t knucklessg1/gramps-mcp:mcp    docker/   # slim MCP server
-docker build --target agent -t knucklessg1/gramps-mcp:latest docker/   # full agent
-```
-
-`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
-agent (`:latest`) with a co-located `:mcp` sidecar.
-
-### Knowledge-graph database (`epistemic-graph`)
-
-The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
-transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
-across multiple agents — run **epistemic-graph as its own database container** and point the
-agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
-config, and the full database architecture (with diagrams) are documented in the
-[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
-The slim `[mcp]` server does **not** require the database.
-
-### Console scripts
-
-After installation the following entry points are available on your `PATH`:
-
-| Command | Description |
-|---------|-------------|
-| `gramps-mcp` | Launch the MCP server |
-| `gramps-agent` | Launch the A2A agent server |
 
 ## Usage
 
-### As a Python API client
+### Python client
 
 ```python
 from gramps_mcp.auth import get_client
 
 client = get_client()
-status = client.get_system_status()
-print(status)
+try:
+    result = client.get_people(page=1, pagesize=25)
+    print(result.status_code)
+finally:
+    client.close()
 ```
 
-### As an MCP server (CLI)
-
-```bash
-# Local stdio (for IDEs)
-gramps-mcp
-
-# Networked streamable-http
-gramps-mcp --transport streamable-http --host 0.0.0.0 --port 8000
-```
-
-### Calling an MCP tool
-
-Tools are action-routed — pass an `action` plus a JSON `params_json` string:
+### MCP tool call
 
 ```json
 {
-  "tool": "system_operations",
+  "tool": "gramps_people",
   "arguments": {
-    "action": "status",
-    "params_json": "{}"
+    "action": "get_people",
+    "params_json": "{\"page\":1,\"pagesize\":25}"
   }
 }
 ```
 
-## MCP
+Use `gramps-genealogy-operations` for evidence handling, privacy controls, stable-handle
+resolution, and safe mutations. Merges, imports, deletes, tree repair or migration,
+transaction undo, user changes, and token/password operations require explicit scope and
+approval.
 
-> **Install the slim `[mcp]` extra.** The MCP examples below install
-> `gramps-mcp[mcp]` — the MCP-server extra that pulls only the FastMCP / FastAPI
-> tooling (`agent-utilities[mcp]`). It deliberately **excludes** the heavy agent
-> runtime (the epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`,
-> `tree-sitter`), so `uvx`/container installs are dramatically smaller and faster.
-> Use the full `[agent]` extra only when you need the integrated A2A agent
-> (see [Installation](#installation)).
+## Containers
 
-### MCP Configuration Examples
-
-<!-- MCP-CONFIG-EXAMPLES:START -->
-
-> **Install the slim `[mcp]` extra.** All examples install `gramps-mcp[mcp]` — the
-> MCP-server extra that pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`).
-> It deliberately **excludes** the heavy agent runtime (`pydantic-ai`, the epistemic-graph
-> engine, `dspy`, `llama-index`), so `uvx` / container installs are far smaller. Use the
-> full `[agent]` extra only when you need the integrated Pydantic AI agent.
-
-#### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
-
-```json
-{
-  "mcpServers": {
-    "gramps-mcp": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "gramps-mcp[mcp]",
-        "gramps-mcp"
-      ],
-      "env": {
-        "MCP_TOOL_MODE": "condensed",
-        "BOOKMARKSTOOL": "True",
-        "CHATTOOL": "True",
-        "CITATIONSTOOL": "True",
-        "CONFIGTOOL": "True",
-        "DNATOOL": "True",
-        "EVENTSTOOL": "True",
-        "EXPORTERSTOOL": "True",
-        "FACTSTOOL": "True",
-        "FAMILIESTOOL": "True",
-        "FILTERSTOOL": "True",
-        "GRAMPS_PASSWORD": "your_password_here",
-        "GRAMPS_TOKEN": "your_jwt_here",
-        "GRAMPS_URL": "https://gramps.arpa",
-        "GRAMPS_USERNAME": "owner",
-        "HOLIDAYSTOOL": "True",
-        "IMPORTERSTOOL": "True",
-        "LIVINGTOOL": "True",
-        "MEDIATOOL": "True",
-        "METADATATOOL": "True",
-        "NAME_FORMATSTOOL": "True",
-        "NAME_GROUPSTOOL": "True",
-        "NOTESTOOL": "True",
-        "OIDCTOOL": "True",
-        "PEOPLETOOL": "True",
-        "PLACESTOOL": "True",
-        "RELATIONSTOOL": "True",
-        "REPORTSTOOL": "True",
-        "REPOSITORIESTOOL": "True",
-        "SEARCHTOOL": "True",
-        "SOURCESTOOL": "True",
-        "TAGSTOOL": "True",
-        "TASKSTOOL": "True",
-        "TIMELINETOOL": "True",
-        "TOKENTOOL": "True",
-        "TRANSACTIONSTOOL": "True",
-        "TRANSLATIONSTOOL": "True",
-        "TREESTOOL": "True",
-        "TYPESTOOL": "True",
-        "USERSTOOL": "True"
-      }
-    }
-  }
-}
-```
-
-#### Streamable-HTTP Transport (networked / production)
-
-```json
-{
-  "mcpServers": {
-    "gramps-mcp": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "gramps-mcp[mcp]",
-        "gramps-mcp",
-        "--transport",
-        "streamable-http",
-        "--port",
-        "8000"
-      ],
-      "env": {
-        "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
-        "PORT": "8000",
-        "MCP_TOOL_MODE": "condensed",
-        "BOOKMARKSTOOL": "True",
-        "CHATTOOL": "True",
-        "CITATIONSTOOL": "True",
-        "CONFIGTOOL": "True",
-        "DNATOOL": "True",
-        "EVENTSTOOL": "True",
-        "EXPORTERSTOOL": "True",
-        "FACTSTOOL": "True",
-        "FAMILIESTOOL": "True",
-        "FILTERSTOOL": "True",
-        "GRAMPS_PASSWORD": "your_password_here",
-        "GRAMPS_TOKEN": "your_jwt_here",
-        "GRAMPS_URL": "https://gramps.arpa",
-        "GRAMPS_USERNAME": "owner",
-        "HOLIDAYSTOOL": "True",
-        "IMPORTERSTOOL": "True",
-        "LIVINGTOOL": "True",
-        "MEDIATOOL": "True",
-        "METADATATOOL": "True",
-        "NAME_FORMATSTOOL": "True",
-        "NAME_GROUPSTOOL": "True",
-        "NOTESTOOL": "True",
-        "OIDCTOOL": "True",
-        "PEOPLETOOL": "True",
-        "PLACESTOOL": "True",
-        "RELATIONSTOOL": "True",
-        "REPORTSTOOL": "True",
-        "REPOSITORIESTOOL": "True",
-        "SEARCHTOOL": "True",
-        "SOURCESTOOL": "True",
-        "TAGSTOOL": "True",
-        "TASKSTOOL": "True",
-        "TIMELINETOOL": "True",
-        "TOKENTOOL": "True",
-        "TRANSACTIONSTOOL": "True",
-        "TRANSLATIONSTOOL": "True",
-        "TREESTOOL": "True",
-        "TYPESTOOL": "True",
-        "USERSTOOL": "True"
-      }
-    }
-  }
-}
-```
-
-Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
-
-```json
-{
-  "mcpServers": {
-    "gramps-mcp": {
-      "url": "http://localhost:8000/gramps-mcp/mcp"
-    }
-  }
-}
-```
-
-Deploying the Streamable-HTTP server via Docker:
+The multi-stage Dockerfile provides separate MCP and agent targets:
 
 ```bash
-docker run -d \
-  --name gramps-mcp-mcp \
-  -p 8000:8000 \
-  -e TRANSPORT=streamable-http \
-  -e HOST=0.0.0.0 \
-  -e PORT=8000 \
-  -e MCP_TOOL_MODE=condensed \
-  -e BOOKMARKSTOOL=True \
-  -e CHATTOOL=True \
-  -e CITATIONSTOOL=True \
-  -e CONFIGTOOL=True \
-  -e DNATOOL=True \
-  -e EVENTSTOOL=True \
-  -e EXPORTERSTOOL=True \
-  -e FACTSTOOL=True \
-  -e FAMILIESTOOL=True \
-  -e FILTERSTOOL=True \
-  -e GRAMPS_PASSWORD=your_password_here \
-  -e GRAMPS_TOKEN=your_jwt_here \
-  -e GRAMPS_URL=https://gramps.arpa \
-  -e GRAMPS_USERNAME=owner \
-  -e HOLIDAYSTOOL=True \
-  -e IMPORTERSTOOL=True \
-  -e LIVINGTOOL=True \
-  -e MEDIATOOL=True \
-  -e METADATATOOL=True \
-  -e NAME_FORMATSTOOL=True \
-  -e NAME_GROUPSTOOL=True \
-  -e NOTESTOOL=True \
-  -e OIDCTOOL=True \
-  -e PEOPLETOOL=True \
-  -e PLACESTOOL=True \
-  -e RELATIONSTOOL=True \
-  -e REPORTSTOOL=True \
-  -e REPOSITORIESTOOL=True \
-  -e SEARCHTOOL=True \
-  -e SOURCESTOOL=True \
-  -e TAGSTOOL=True \
-  -e TASKSTOOL=True \
-  -e TIMELINETOOL=True \
-  -e TOKENTOOL=True \
-  -e TRANSACTIONSTOOL=True \
-  -e TRANSLATIONSTOOL=True \
-  -e TREESTOOL=True \
-  -e TYPESTOOL=True \
-  -e USERSTOOL=True \
-  knucklessg1/gramps-mcp:mcp
+docker build --target mcp -t gramps-mcp:mcp -f docker/Dockerfile .
+docker build --target agent -t gramps-mcp:agent-local -f docker/Dockerfile .
 ```
 
-_Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
-<!-- MCP-CONFIG-EXAMPLES:END -->
+Compose image references, model selection, MCP endpoint, credentials, and telemetry are
+externalized. Published ports bind to loopback by default; any wider network exposure
+must add authenticated MCP transport, authorization policy, and ingress TLS.
 
-<!-- BEGIN GENERATED: additional-deployment-options -->
-### Additional Deployment Options
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
 
-`gramps-mcp` can also run as a **local container** (Docker / Podman / `uv`) or be
-consumed from a **remote deployment**. The
-[Deployment guide](https://knuckles-team.github.io/gramps-mcp/deployment/) has full,
-copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable-http**,
-**local container / uv**, and **remote URL**:
+The package contributes only provider-owned inputs:
 
-- **Local container / uv** — launch the server from `mcp_config.json` via `uvx`,
-  `docker run`, or `podman run`, or point at a local streamable-http container by `url`.
-- **Remote URL** — connect to a server deployed behind Caddy at
-  `http://gramps-mcp.arpa/mcp` using the `"url"` key.
-<!-- END GENERATED: additional-deployment-options -->
+- a mapping of the public Gramps data model;
+- neutral people, family, and event source presets;
+- one provider skill and canonical prompts;
+- entry points that prove which distribution owns each input.
 
-## Install Python Package
+The committed release-generated schema-v2 bundle adds exact local MCP schema
+fingerprints, a signed manifest, SHACL shapes, neutral mappings and fixtures, a
+migration ledger, and an offline source attestation. It contains no live record,
+instance extension, endpoint, credential, local path, tenant mapping, or external-live
+claim. Genealogy ingestion also requires approved tenant, ACL, consent, classification,
+retention, provenance, redaction, and deletion policy. Missing or stale evidence fails
+closed.
 
-```bash
-python -m pip install gramps-mcp
-```
+Runtime endpoints, credentials, TLS trust, identity, tree/tenant policy, retention, and
+observability destinations are deployment inputs and never packaged values. Read
+[Configuration, trust, and privacy](docs/configuration.md) before enabling a network
+transport, GraphOS delegation, source synchronization, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->
+
+## Privacy and observability
+
+Genealogy can expose living-person identities, family relationships, dates, places,
+notes, media, DNA, contact details, and authentication data. Keep telemetry content
+capture disabled unless a separately approved policy permits it. Export bounded status,
+counts, timings, and error classes rather than prompts, responses, tool payloads,
+records, endpoints, credentials, or filesystem paths.
+
+See the [documentation](https://knuckles-team.github.io/gramps-mcp/) for configuration,
+deployment, and operational guidance.
 
 ## Environment Variables
 
-Every variable the server reads, grouped by purpose.
+<!-- ENV-VARS-TABLE:START -->
 
-### Connection & Credentials (Gramps)
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `GRAMPS_URL` | Base Gramps Web API URL | `https://gramps.arpa` |
-| `GRAMPS_TOKEN` | JWT bearer token (from the login flow) | — |
-| `GRAMPS_USERNAME` | Username for the login flow (when no token) | — |
-| `GRAMPS_PASSWORD` | Password for the login flow (when no token) | — |
-| `GRAMPS_SSL_VERIFY` | TLS verification | `True` |
+#### Package environment variables
 
-### MCP server / transport
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `TRANSPORT` | `stdio`, `streamable-http`, or `sse` | `stdio` |
-| `HOST` | Bind host (HTTP transports) | `0.0.0.0` |
-| `PORT` | Bind port (HTTP transports) | `8000` |
-| `MCP_TOOL_MODE` | Tool surface: `condensed`, `verbose`, or `both` | `both` |
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `HOST` | `127.0.0.1` |  |
+| `PORT` | `8000` |  |
+| `TRANSPORT` | `stdio` | stdio \| streamable-http \| sse |
+| `MCP_TOOL_MODE` | `condensed` | condensed \| verbose \| both \| intent |
+| `ENABLE_OTEL` | `False` |  |
+| `OTEL_EXPORTER_OTLP_HEADERS_REF` | `secret://telemetry/headers` | OTEL_EXPORTER_OTLP_ENDPOINT is supplied at runtime. |
+| `LANGFUSE_CAPTURE_CONTENT` | `false` |  |
+| `EUNOMIA_TYPE` | `none` | none \| embedded \| remote |
+| `BOOKMARKSTOOL` | `True` |  |
+| `CHATTOOL` | `True` |  |
+| `CITATIONSTOOL` | `True` |  |
+| `CONFIGTOOL` | `True` |  |
+| `DNATOOL` | `True` |  |
+| `EVENTSTOOL` | `True` |  |
+| `EXPORTERSTOOL` | `True` |  |
+| `FACTSTOOL` | `True` |  |
+| `FAMILIESTOOL` | `True` |  |
+| `FILTERSTOOL` | `True` |  |
+| `HOLIDAYSTOOL` | `True` |  |
+| `IMPORTERSTOOL` | `True` |  |
+| `LIVINGTOOL` | `True` |  |
+| `MEDIATOOL` | `True` |  |
+| `METADATATOOL` | `True` |  |
+| `NAME_FORMATSTOOL` | `True` |  |
+| `NAME_GROUPSTOOL` | `True` |  |
+| `NOTESTOOL` | `True` |  |
+| `OIDCTOOL` | `True` |  |
+| `PEOPLETOOL` | `True` |  |
+| `PLACESTOOL` | `True` |  |
+| `RELATIONSTOOL` | `True` |  |
+| `REPORTSTOOL` | `True` |  |
+| `REPOSITORIESTOOL` | `True` |  |
+| `SEARCHTOOL` | `True` |  |
+| `SOURCESTOOL` | `True` |  |
+| `TAGSTOOL` | `True` |  |
+| `TASKSTOOL` | `True` |  |
+| `TIMELINETOOL` | `True` |  |
+| `TOKENTOOL` | `True` |  |
+| `TRANSACTIONSTOOL` | `True` |  |
+| `TRANSLATIONSTOOL` | `True` |  |
+| `TREESTOOL` | `True` |  |
+| `TYPESTOOL` | `True` |  |
+| `USERSTOOL` | `True` |  |
 
-### Telemetry & governance
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ENABLE_OTEL` | Enable OpenTelemetry export | `True` |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint | — |
-| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` / `OTEL_EXPORTER_OTLP_SECRET_KEY` | OTLP auth keys | — |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP protocol (e.g. `http/protobuf`) | — |
-| `EUNOMIA_TYPE` | Authorization mode: `none`, `embedded`, `remote` | `none` |
-| `EUNOMIA_POLICY_FILE` | Embedded policy file | `mcp_policies.json` |
-| `EUNOMIA_REMOTE_URL` | Remote Eunomia server URL | — |
+#### Inherited agent-utilities variables (apply to every connector)
 
-### Tool toggles
-Each action-routed tool can be disabled individually via its toggle env var (set to `false`).
-The full list is in the [Available MCP Tools](#available-mcp-tools) table above (e.g.
-`PEOPLETOOL`, `FAMILIESTOOL`, `EVENTSTOOL`, `PLACESTOOL`, `SOURCESTOOL`, `MEDIATOOL`).
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
+| `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
+| `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
+| `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
+| `EUNOMIA_POLICY_FILE` | `mcp_policies.json` | Embedded Eunomia policy file |
+| `EUNOMIA_REMOTE_URL` | — | Remote Eunomia authorization server URL |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | — | OTLP collector endpoint |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP child auth: `oidc-client-credentials` \| `basic` \| `none` |
+| `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
+| `OIDC_CLIENT_SECRET_REF` | `secret://identity/oidc-client-secret` | Runtime secret reference for the OIDC service account |
+| `MCP_BASIC_AUTH_USERNAME` | — | HTTP Basic username (`MCP_CLIENT_AUTH=basic`) |
+| `MCP_BASIC_AUTH_PASSWORD_REF` | `secret://identity/mcp-basic-password` | Runtime secret reference for HTTP Basic auth (`MCP_CLIENT_AUTH=basic`) |
+| `DEBUG` | `False` | Verbose logging |
+| `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
+| `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
+| `PROVIDER` | `openai` | LLM provider for the agent |
+| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-See [`.env.example`](.env.example) for a copy-paste starting point.
-
-## Documentation
-
-Full documentation is published to the GitHub Pages site and mirrored under `docs/`:
-
-- [Documentation site](https://knuckles-team.github.io/gramps-mcp/)
-- [Overview](docs/overview.md)
-- [Installation](docs/installation.md)
-- [Usage](docs/usage.md)
-- [Deployment](docs/deployment.md)
-- [Platform](docs/platform.md)
-- [Concept Registry](docs/concepts.md)
+_43 package + 18 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+<!-- ENV-VARS-TABLE:END -->
 
 
-<!-- BEGIN agent-os-genesis-deploy (generated; do not edit between markers) -->
+<!-- BEGIN agent-utilities-deployment (generated; do not edit between markers) -->
 
-## Deploy with `agent-os-genesis`
+## Deploy with `agent-utilities-deployment`
 
-This package can be provisioned for you — skill-guided — by the **`agent-os-genesis`**
-universal skill (its *single-package deploy mode*): it picks your install method, seeds
-secrets to OpenBao/Vault (or `.env`), trusts your enterprise CA, registers the MCP
-server, and verifies it — the same machinery that stands up the whole Agent OS, narrowed
-to just this package. Ask your agent to **"deploy `gramps-mcp` with agent-os-genesis"**.
+Provision this package with the consolidated **`agent-utilities-deployment`**
+workflow. It selects an installed-package, editable-source, or immutable-container
+path; records only runtime secret and TLS-profile references in `AgentConfig`; and
+runs doctor, registration, policy, observability, and rollback gates. Ask your agent
+to **"deploy `gramps-mcp` with agent-utilities-deployment"**.
 
 | Install mode | Command |
 |------|---------|
-| Bare-metal, prod (PyPI) | `uvx gramps-mcp` · or `uv tool install gramps-mcp` |
-| Bare-metal, dev (editable) | `uv pip install -e ".[all]"` · or `pip install -e ".[all]"` |
-| Container, prod | deploy `knucklessg1/gramps-mcp:latest` via docker-compose / swarm / podman / podman-compose / kubernetes |
-| Container, dev (editable) | deploy `docker/compose.dev.yml` (source-mounted at `/src`; edits live on restart) |
+| Installed package | `uv tool install "gramps-mcp[mcp]"`, then run `gramps-mcp` |
+| Editable source | `uv pip install -e ".[agent]"`, then run `gramps-mcp` |
+| Immutable container | deploy `registry.example.invalid/gramps-mcp@sha256:<digest>` through the operator-selected orchestrator |
 
-Secrets are read-existing + seeded via `vault_sync` — you are only prompted for what's missing.
+The repository embeds no deployment profile, credential value, certificate path, or
+environment-specific endpoint. Supply those at runtime through `AgentConfig` and the
+configured secret provider.
 
-<!-- END agent-os-genesis-deploy -->
+<!-- END agent-utilities-deployment -->

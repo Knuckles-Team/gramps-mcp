@@ -10,7 +10,7 @@ class GrampsImporters(GrampsApiBase):
         """POST /importers/{extension}/file"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/importers/{extension}/file",
+            url_template="/api/importers/{extension}/file",
             path_params=["extension"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsImporters(GrampsApiBase):
         """GET /importers/{extension}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/importers/{extension}",
+            url_template="/api/importers/{extension}",
             path_params=["extension"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsImporters(GrampsApiBase):
         """GET /importers/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/importers/",
+            url_template="/api/importers/",
             path_params=[],
             query_params=[],
             has_body=False,

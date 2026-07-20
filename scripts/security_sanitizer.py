@@ -34,6 +34,24 @@ SECRET_PATTERNS = [
     ),
 ]
 
+PRIVACY_PATTERNS = [
+    ("Personal email provider", re.compile(r"\bgmail\.com\b", re.IGNORECASE)),
+    ("Environment-specific domain", re.compile(r"\.arpa\b", re.IGNORECASE)),
+    (
+        "Windows user path",
+        re.compile(r"[A-Za-z]:\\Users(?:\\|/)", re.IGNORECASE),
+    ),
+    ("WSL user path", re.compile(r"/(?:mnt/c|home/apps)/", re.IGNORECASE)),
+    ("Retired MCP module", re.compile(r"agent_utilities\.mcp_utilities")),
+]
+
+FORBIDDEN_PATHS = {
+    "gramps_mcp/api_client.py",
+    "gramps_mcp/kg_ingest.py",
+    "gramps_mcp/kg_media.py",
+    "gramps_mcp/mcp/mcp_kg.py",
+}
+
 EXCLUDED_DIRS = {
     ".git",
     ".venv",
@@ -164,6 +182,10 @@ def scan_repository(repo_path: Path):
     violations = []
     files_to_scan = get_repo_files(repo_path)
 
+    for relative in sorted(FORBIDDEN_PATHS):
+        if (repo_path / relative).exists():
+            violations.append(f"Retired or generated artifact is present: {relative}")
+
     for file_path in files_to_scan:
         if not file_path.is_file():
             continue
@@ -216,6 +238,10 @@ def scan_repository(repo_path: Path):
                                 f"Potential unmasked secret ({label}) detected in {rel_path}:{idx}\n"
                                 f"  Line: {line.strip()}"
                             )
+                for label, pattern in PRIVACY_PATTERNS:
+                    if pattern.search(line):
+                        rel_path = file_path.relative_to(repo_path)
+                        violations.append(f"{label} detected in {rel_path}:{idx}")
         except Exception:
             pass
 

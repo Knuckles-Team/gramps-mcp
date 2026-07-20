@@ -10,7 +10,7 @@ class GrampsSearch(GrampsApiBase):
         """GET /search/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/search/",
+            url_template="/api/search/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsSearch(GrampsApiBase):
         """POST /search/index/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/search/index/",
+            url_template="/api/search/index/",
             path_params=[],
             query_params=[],
             has_body=False,

@@ -1,52 +1,16 @@
 {
   "mcpServers": {
     "gramps-mcp": {
-      "command": "uv",
+      "command": "uvx",
       "args": [
-        "run",
+        "--from",
+        "gramps-mcp[mcp]",
         "gramps-mcp"
       ],
       "env": {
         "MCP_TOOL_MODE": "condensed",
-        "BOOKMARKSTOOL": "True",
-        "CHATTOOL": "True",
-        "CITATIONSTOOL": "True",
-        "CONFIGTOOL": "True",
-        "DNATOOL": "True",
-        "EVENTSTOOL": "True",
-        "EXPORTERSTOOL": "True",
-        "FACTSTOOL": "True",
-        "FAMILIESTOOL": "True",
-        "FILTERSTOOL": "True",
-        "GRAMPS_PASSWORD": "your_password_here",
-        "GRAMPS_TOKEN": "your_jwt_here",
-        "GRAMPS_URL": "https://gramps.arpa",
-        "GRAMPS_USERNAME": "owner",
-        "HOLIDAYSTOOL": "True",
-        "IMPORTERSTOOL": "True",
-        "LIVINGTOOL": "True",
-        "MEDIATOOL": "True",
-        "METADATATOOL": "True",
-        "NAME_FORMATSTOOL": "True",
-        "NAME_GROUPSTOOL": "True",
-        "NOTESTOOL": "True",
-        "OIDCTOOL": "True",
-        "PEOPLETOOL": "True",
-        "PLACESTOOL": "True",
-        "RELATIONSTOOL": "True",
-        "REPORTSTOOL": "True",
-        "REPOSITORIESTOOL": "True",
-        "SEARCHTOOL": "True",
-        "SOURCESTOOL": "True",
-        "TAGSTOOL": "True",
-        "TASKSTOOL": "True",
-        "TIMELINETOOL": "True",
-        "TOKENTOOL": "True",
-        "TRANSACTIONSTOOL": "True",
-        "TRANSLATIONSTOOL": "True",
-        "TREESTOOL": "True",
-        "TYPESTOOL": "True",
-        "USERSTOOL": "True"
+        "GRAMPS_TOKEN": "env://GRAMPS_TOKEN",
+        "GRAMPS_URL": "env://GRAMPS_URL"
       }
     }
   }

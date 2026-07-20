@@ -1,0 +1,49 @@
+{
+  "connector": "gramps-mcp",
+  "fixtures": [
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "gramps-events",
+      "record": {
+        "acl_public": false,
+        "change": "2000-01-01T00:00:00Z",
+        "description": "Synthetic content used only for contract validation.",
+        "gramps_id": "Synthetic certification record",
+        "handle": "fixture-record"
+      }
+    },
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "gramps-families",
+      "record": {
+        "acl_public": false,
+        "change": "2000-01-01T00:00:00Z",
+        "gramps_id": "Synthetic content used only for contract validation.",
+        "handle": "fixture-record"
+      }
+    },
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "gramps-people",
+      "record": {
+        "acl_public": false,
+        "change": "2000-01-01T00:00:00Z",
+        "gramps_id": "Synthetic content used only for contract validation.",
+        "handle": "fixture-record"
+      }
+    }
+  ],
+  "schema_version": "1"
+}

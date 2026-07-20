@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gramps Genealogy Operations"
+  short_description: "Research and manage Gramps genealogy safely"
+  default_prompt: "Use $gramps-genealogy-operations to research this genealogy question with cited Gramps evidence."

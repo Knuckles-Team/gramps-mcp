@@ -10,7 +10,7 @@ class GrampsPeople(GrampsApiBase):
         """GET /people/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/people/{handle}",
+            url_template="/api/people/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsPeople(GrampsApiBase):
         """GET /people/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/people/",
+            url_template="/api/people/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsPeople(GrampsApiBase):
         """POST /people/{phoenix_handle}/merge/{titanic_handle}"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/people/{phoenix_handle}/merge/{titanic_handle}",
+            url_template="/api/people/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
             has_body=False,

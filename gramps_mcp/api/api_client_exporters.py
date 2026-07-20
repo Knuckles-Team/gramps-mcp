@@ -10,7 +10,7 @@ class GrampsExporters(GrampsApiBase):
         """GET /exporters/{extension}/file"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/exporters/{extension}/file",
+            url_template="/api/exporters/{extension}/file",
             path_params=["extension"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsExporters(GrampsApiBase):
         """POST /exporters/{extension}/file"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/exporters/{extension}/file",
+            url_template="/api/exporters/{extension}/file",
             path_params=["extension"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsExporters(GrampsApiBase):
         """GET /exporters/{extension}/file/processed/{filename}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/exporters/{extension}/file/processed/{filename}",
+            url_template="/api/exporters/{extension}/file/processed/{filename}",
             path_params=["extension", "filename"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsExporters(GrampsApiBase):
         """GET /exporters/{extension}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/exporters/{extension}",
+            url_template="/api/exporters/{extension}",
             path_params=["extension"],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsExporters(GrampsApiBase):
         """GET /exporters/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/exporters/",
+            url_template="/api/exporters/",
             path_params=[],
             query_params=[],
             has_body=False,

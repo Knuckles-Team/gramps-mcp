@@ -111,10 +111,8 @@ gramps-agent
 
 **Why:** These files expose private filesystem paths, credentials, and internal infrastructure details when pushed to GitHub publicly.
 
-**Where to put scratch work instead:**
-- Use `~/workspace/scratch/` for temporary scripts and experiments
-- Use `~/workspace/reports/` for command output and reports
-- Keep test scripts in the `tests/` directory following proper pytest conventions
+**Where to put scratch work instead:** use an operator-selected temporary directory
+outside the repository. Keep real test modules in `tests/`.
 
 ## ⛔ Keep the Repository Root Pristine — No Scratch / Temp / Debug Files
 
@@ -137,9 +135,9 @@ config, docs, lockfiles). The only hidden directories allowed at root are
 **Why:** scratch at the root leaks private paths/credentials, bloats the tree,
 and erodes a pristine codebase.
 
-**Where scratch goes instead:** `~/workspace/scratch/` (experiments),
-`~/workspace/reports/` (command output); tests go in `tests/` (pytest).
-Before finishing a task, run `git status` and confirm no stray root files were added.
+**Where scratch goes instead:** an operator-selected temporary directory outside the
+repository; tests go in `tests/` (pytest). Before finishing a task, run `git status`
+and confirm no stray root files were added.
 
 ## Working Discipline — think, simplify, stay surgical, verify
 
@@ -186,25 +184,22 @@ why rather than bypassing it.
 
 ## Working with Git Worktrees (multi-session)
 
-Multiple agents/sessions work the `agent-packages/*` repos concurrently. **Do not
-edit the canonical checkout** (`/home/apps/workspace/agent-packages/<repo>`) — a
-background `repository-manager` sync can reset its working tree and discard
-uncommitted edits. Take your own git worktree on your own branch instead:
+Multiple agents/sessions can work on the repository concurrently. **Do not edit a
+managed canonical checkout** because an automated sync can reset its working tree and
+discard uncommitted edits. Take an external git worktree on a distinct branch instead:
 
 ```bash
 # preferred — repository-manager MCP:
-rm_worktree add <repo> <your-branch>      # -> /home/apps/worktrees/<repo>/<your-branch>
+rm_worktree add <repo> <your-branch>
 
 # raw-git fallback:
-git -C agent-packages/<repo> checkout main
-git -C agent-packages/<repo> worktree add /home/apps/worktrees/<repo>/<branch> -b <branch>
+git -C <repo> worktree add <external-worktree-root>/<repo>/<branch> -b <branch>
 ```
 
 Work in the worktree and **commit often** (commits survive a working-tree reset).
 Each session must use a **distinct branch** — git allows a branch in only one
-worktree, which is what keeps concurrent sessions from colliding. Worktrees live
-under `/home/apps/worktrees/` (outside the workspace scan, so the sync leaves them
-alone).
+worktree, which keeps concurrent sessions from colliding. Keep worktrees outside the
+managed workspace so automated scans leave them alone.
 
 **Finishing work in a worktree** — run this sequence before calling it done:
 1. **Pre-commit green** — `pre-commit run --all-files`; resolve every issue per the

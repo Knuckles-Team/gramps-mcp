@@ -1,0 +1,37 @@
+{
+  "api_version": "graphos.io/v1",
+  "artifacts": {
+    "a2a.json": "261f8e709741c0584206e83fffef23e35c7035635c4d230c3254709e94229ba3",
+    "connector_manifest.yml": "c422bca12a6c12a8c4e40a4f261044aec548a65b001a2f3fbfa43e10a93815da",
+    "gramps_mcp/connectors/mcp_source_presets.json": "7e345fd4ff6234e92b61ea1a858cef1a6f1a1a061b1b5f5d96ad91bf647d606b",
+    "gramps_mcp/connectors/tool_schema_fingerprints.json": "6788881a5b46ebbdbc1d30d535f4b361c462e4bdf8b74aa7d964f8eb2363ea81",
+    "gramps_mcp/ontology/fixtures/records.json": "6ca9808c4287bb2bf58d9dc63cb6a3ff4419af8130efadbbc7655c74beba72c4",
+    "gramps_mcp/ontology/gramps.ttl": "f183c6e85286b4a996ce614ae9a26ee80bd7955734a4126400ef18fd7ff63adb",
+    "gramps_mcp/ontology/mappings/source.yaml": "80d7b1342780826fbb51cfbf42fa6ae1d18aa8fd67d884b11337b2a51158aad6",
+    "gramps_mcp/ontology/migrations/manifest.json": "9ccfe3842d51ba18a875b7a59fa9e95115448168f46d8fa9680902b143274836",
+    "gramps_mcp/ontology/shapes/connector.shacl.ttl": "35909d47e512a1a5367b11a1c3cb1d58627305636b8f099215d2da7df776a727"
+  },
+  "checks": {
+    "declared_tool_schema": "passed",
+    "manifest_integrity": "passed",
+    "privacy_contract": "passed",
+    "shacl_parse": "passed",
+    "synthetic_fixture_contract": "passed"
+  },
+  "compatibility": {
+    "agent_utilities": ">=1.27.1,<2",
+    "bundle_schema": "2",
+    "epistemic_graph": ">=2.23.1,<3"
+  },
+  "connector": "gramps-mcp",
+  "kind": "ConnectorSourceAttestation",
+  "live_certified": false,
+  "mode": "offline-source",
+  "schema_version": "2",
+  "signature": "1gU9nuHH0zT1AuA_u8LdS3LcP9094NmBsLjq3c2C3eDgZvJGIDb-HNEOUIkvGY3X8PBYTXnrpQEJV5Tmf0kWBw",
+  "signature_algorithm": "ed25519",
+  "signer": "ontology-manifest-generator",
+  "signing_public_key": "q0Cp7bmQMqJhbofGKKw8xXC6KbFzukBDDke0UYVi8y4",
+  "status": "source-validated",
+  "validated_at": "2026-07-18T14:21:05Z"
+}

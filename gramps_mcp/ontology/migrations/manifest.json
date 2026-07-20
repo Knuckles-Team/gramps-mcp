@@ -1,0 +1,6 @@
+{
+  "connector": "gramps-mcp",
+  "current_ontology_source": "gramps",
+  "migrations": [],
+  "schema_version": "1"
+}

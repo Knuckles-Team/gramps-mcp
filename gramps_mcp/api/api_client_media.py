@@ -10,7 +10,7 @@ class GrampsMedia(GrampsApiBase):
         """GET /media/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/media/{handle}",
+            url_template="/api/media/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsMedia(GrampsApiBase):
         """POST /media/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/media/",
+            url_template="/api/media/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsMedia(GrampsApiBase):
         """GET /media/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/media/",
+            url_template="/api/media/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsMedia(GrampsApiBase):
         """GET /media/{phoenix_handle}/merge/{titanic_handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/media/{phoenix_handle}/merge/{titanic_handle}",
+            url_template="/api/media/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsMedia(GrampsApiBase):
         """GET /media/{handle}/file"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/media/{handle}/file",
+            url_template="/api/media/{handle}/file",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsMedia(GrampsApiBase):
         """PUT /media/{handle}/file"""
         return self._call(
             http="PUT",
-            url_template="https://gramps.arpa/api/media/{handle}/file",
+            url_template="/api/media/{handle}/file",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -82,7 +82,7 @@ class GrampsMedia(GrampsApiBase):
         """GET /media/{handle}/face_detection"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/media/{handle}/face_detection",
+            url_template="/api/media/{handle}/face_detection",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -94,7 +94,7 @@ class GrampsMedia(GrampsApiBase):
         """POST /media/{handle}/ocr"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/media/{handle}/ocr",
+            url_template="/api/media/{handle}/ocr",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -106,7 +106,7 @@ class GrampsMedia(GrampsApiBase):
         """POST /media/archive/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/media/archive/",
+            url_template="/api/media/archive/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -118,7 +118,7 @@ class GrampsMedia(GrampsApiBase):
         """GET /media/archive/{filename}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/media/archive/{filename}",
+            url_template="/api/media/archive/{filename}",
             path_params=["filename"],
             query_params=[],
             has_body=False,
@@ -130,7 +130,7 @@ class GrampsMedia(GrampsApiBase):
         """POST /media/archive/upload/zip"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/media/archive/upload/zip",
+            url_template="/api/media/archive/upload/zip",
             path_params=[],
             query_params=[],
             has_body=False,

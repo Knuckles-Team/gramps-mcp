@@ -10,7 +10,7 @@ class GrampsTags(GrampsApiBase):
         """GET /tags/{handle}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/tags/{handle}",
+            url_template="/api/tags/{handle}",
             path_params=["handle"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsTags(GrampsApiBase):
         """GET /tags/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/tags/",
+            url_template="/api/tags/",
             path_params=[],
             query_params=[],
             has_body=False,

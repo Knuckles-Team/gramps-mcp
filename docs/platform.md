@@ -1,23 +1,19 @@
-# Backing Platform — Gramps MCP
+# Backing platform
 
-`gramps-mcp` is a **client** of a backing service instance. This page provides a
-Docker recipe for deploying one locally to serve as the target of
-`GRAMPS_URL`.
+Gramps MCP connects to an operator-managed Gramps Web API. It does not install or modify
+that service, choose a tree, create an owner, or infer a deployment topology.
 
-!!! note "Backing-system recipe"
-    Each connector in the ecosystem follows the same convention — a
-    `docs/platform.md` recipe for the system it integrates with, accompanied by a
-    sample Compose stack. Systems offered only as a managed service have no local
-    recipe.
+Provide the HTTPS origin and one supported authentication path through AgentConfig:
 
-## Single-node deployment (Compose)
+- delegated identity when the Gramps and identity-provider deployment supports it;
+- a scoped fixed bearer token; or
+- a runtime username/password pair exchanged for short-lived tokens.
 
-```yaml
-# docker/platform.compose.yml — replace with the real backing-service recipe
-services:
-  platform:
-    image: REPLACE_ME
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-```
+Use the smallest Gramps role required by enabled domains. Administrative surfaces such
+as users, tokens, configuration, trees, imports, transactions, and owner creation should
+normally be disabled for research-only deployments.
+
+Private trust and mTLS belong to the shared TLS profile, not to provider code. A Gramps
+instance with custom data or plugins remains usable through its public API, but this
+repository does not store customized instance schemas or mappings. Live capability
+discovery and mapping belong to the central governed compiler.

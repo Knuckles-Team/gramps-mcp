@@ -10,7 +10,7 @@ class GrampsNameGroups(GrampsApiBase):
         """GET /name-groups/{surname}/{group}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/name-groups/{surname}/{group}",
+            url_template="/api/name-groups/{surname}/{group}",
             path_params=["surname", "group"],
             query_params=[],
             has_body=False,
@@ -22,7 +22,7 @@ class GrampsNameGroups(GrampsApiBase):
         """POST /name-groups/{surname}/{group}"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/name-groups/{surname}/{group}",
+            url_template="/api/name-groups/{surname}/{group}",
             path_params=["surname", "group"],
             query_params=[],
             has_body=False,
@@ -34,7 +34,7 @@ class GrampsNameGroups(GrampsApiBase):
         """GET /name-groups/{surname}"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/name-groups/{surname}",
+            url_template="/api/name-groups/{surname}",
             path_params=["surname"],
             query_params=[],
             has_body=False,
@@ -46,7 +46,7 @@ class GrampsNameGroups(GrampsApiBase):
         """POST /name-groups/{surname}"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/name-groups/{surname}",
+            url_template="/api/name-groups/{surname}",
             path_params=["surname"],
             query_params=[],
             has_body=False,
@@ -58,7 +58,7 @@ class GrampsNameGroups(GrampsApiBase):
         """GET /name-groups/"""
         return self._call(
             http="GET",
-            url_template="https://gramps.arpa/api/name-groups/",
+            url_template="/api/name-groups/",
             path_params=[],
             query_params=[],
             has_body=False,
@@ -70,7 +70,7 @@ class GrampsNameGroups(GrampsApiBase):
         """POST /name-groups/"""
         return self._call(
             http="POST",
-            url_template="https://gramps.arpa/api/name-groups/",
+            url_template="/api/name-groups/",
             path_params=[],
             query_params=[],
             has_body=False,
