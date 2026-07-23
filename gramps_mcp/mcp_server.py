@@ -14,7 +14,7 @@ from gramps_mcp.api._operation_manifest import OPERATIONS
 from gramps_mcp.auth import get_client
 from gramps_mcp.mcp import TOOL_REGISTRY
 
-__version__ = "1.0.1"
+__version__ = "2.0.0"
 
 logger = get_logger(name="MCP_Server")
 logger.setLevel(logging.INFO)
