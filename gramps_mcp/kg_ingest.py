@@ -3,16 +3,16 @@
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. This is the record-source twin of
 the blob ingestion in :mod:`gramps_mcp.kg_media`: the connector natively pushes its
 genealogy data into the ONE epistemic-graph knowledge graph as **typed OWL nodes**
-(``:Person``, ``:Family``, ``:Event``, ``:Place``, …) plus kinship/participation links.
+(``:Person``, ``:Family``, ``:Event``, ``:Place``, …) plus kinship/participation links,
+through the required ``agent_utilities.knowledge_graph.memory.native_ingest`` authority
+— the one connector write path; there is no self-contained fallback transaction here.
 
-Ingestion rides the shared fleet primitive
-``agent_utilities.knowledge_graph.memory.native_ingest`` when it is available; because
-that primitive is not yet in every installed ``agent_utilities``, the import is GUARDED
-and a self-contained txn fallback (the same fast ``GraphComputeEngine()._client`` + txn
-dance) is used otherwise. Either way everything is dependency-/engine-guarded: with no KG
-stack or no reachable engine every entry point **no-ops** (returns ``None``), so the
-connector runs with zero KG infrastructure. Node ids follow ``gramps:<class>:<handle>``
-and each ``type`` matches a class the package's ``gramps.ttl`` federates.
+The MCP tool surface (``gramps_mcp.mcp.mcp_kg``) exposes these as best-effort tools that
+must never raise on an unreachable/misconfigured KG stack, so ``ingest_entities`` /
+``ingest_documents`` stay **best-effort**: they return ``None`` (never raise) for empty
+input or when the shared primitive reports :class:`NativeIngestError` (no reachable
+engine, or a malformed record). Node ids follow ``gramps:<class>:<handle>`` and each
+``node_type`` matches a class the package's ``gramps.ttl`` federates.
 """
 
 from __future__ import annotations
@@ -20,90 +20,18 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from agent_utilities.knowledge_graph.memory.native_ingest import (
+    NativeIngestError,
+    ingest_documents as _native_ingest_documents,
+    ingest_entities as _native_ingest_entities,
+)
+
 logger = logging.getLogger("gramps_mcp.kg")
 
 _SOURCE = "gramps-mcp"
 _DOMAIN = "gramps"
 
 _GENDER = {0: "female", 1: "male", 2: "unknown"}
-
-
-# --------------------------------------------------------------------------- #
-# write path — delegate to the shared primitive, else a self-contained fallback
-# --------------------------------------------------------------------------- #
-def _native() -> Any | None:
-    """Return the shared native_ingest module, or ``None`` when unavailable."""
-    try:
-        from agent_utilities.knowledge_graph.memory import native_ingest
-
-        return native_ingest
-    except Exception as e:  # noqa: BLE001 — primitive not installed yet
-        logger.debug("native_ingest primitive unavailable: %s", e)
-        return None
-
-
-def _fallback_client() -> tuple[Any | None, str]:
-    """Return ``(engine_client, graph_name)`` or ``(None, "")`` when unavailable."""
-    try:
-        from agent_utilities.knowledge_graph.core.graph_compute import (
-            GraphComputeEngine,
-        )
-    except Exception as e:  # noqa: BLE001 — KG stack absent
-        logger.debug("KG ingest unavailable (import): %s", e)
-        return None, ""
-    try:
-        engine = GraphComputeEngine()
-        client = getattr(engine, "_client", None)
-        if client is None:
-            return None, ""
-        return client, (getattr(engine, "graph_name", None) or "__commons__")
-    except Exception as e:  # noqa: BLE001 — engine unreachable
-        logger.debug("KG ingest: engine unreachable: %s", e)
-        return None, ""
-
-
-def _fallback_write(
-    entities: list[dict[str, Any]],
-    relationships: list[dict[str, Any]] | None,
-    *,
-    client: Any | None,
-    graph: str | None,
-) -> dict[str, int] | None:
-    """Self-contained txn write when the shared primitive is not importable."""
-    entities = [e for e in (entities or []) if e.get("id")]
-    if not entities:
-        return None
-    if client is None:
-        client, graph = _fallback_client()
-    if client is None:
-        return None
-    graph = graph or "__commons__"
-    try:
-        txn = client.txn.begin(graph=graph)
-        for ent in entities:
-            props = {k: v for k, v in ent.items() if k != "id" and v is not None}
-            props.setdefault("source", _SOURCE)
-            props.setdefault("domain", _DOMAIN)
-            client.txn.add_node(txn, ent["id"], props)
-        committed = client.txn.commit(txn)
-    except Exception as e:  # noqa: BLE001 — engine/txn failure is non-fatal
-        logger.warning("KG ingest: txn failed: %s", e)
-        return None
-    if not committed:
-        logger.warning("KG ingest: txn not committed (conflict)")
-        return None
-
-    edges = 0
-    for rel in relationships or []:
-        try:
-            client.edges.add(
-                rel["source"], rel["target"], {"type": rel.get("type", "RELATED")}
-            )
-            edges += 1
-        except Exception as e:  # noqa: BLE001 — pure edge link, best-effort
-            logger.debug("KG ingest: edge skipped: %s", e)
-    logger.info("KG ingest: wrote %d nodes, %d edges", len(entities), edges)
-    return {"nodes": len(entities), "edges": edges}
 
 
 def ingest_entities(
@@ -115,22 +43,28 @@ def ingest_entities(
     client: Any | None = None,
     graph: str | None = None,
 ) -> dict[str, int] | None:
-    """Write typed OWL nodes (+ edges) into epistemic-graph. Never raises.
+    """Write typed OWL nodes (+ edges) into epistemic-graph. Best-effort, never raises.
 
-    ``entities``: ``[{"id":..., "type":<owl:Class>, ...props}]``.
-    ``relationships``: ``[{"source":id, "target":id, "type":<link>}]``.
-    Returns ``{"nodes":n, "edges":m}`` or ``None`` (no engine / empty / failure).
-    ``client``/``graph`` may be injected (tests); otherwise resolved on demand.
+    ``entities``: ``[{"id":..., "node_type":<owl:Class>, ...props}]``.
+    ``relationships``: ``[{"source":id, "target":id, "relationship":<link>}]``.
+    Returns ``{"nodes":n, "edges":m}`` or ``None`` (empty input / no reachable engine /
+    malformed record). ``client``/``graph`` may be injected (tests); otherwise the
+    process-owned governed authority is resolved on demand.
     """
     if not entities:
         return None
-    if client is None:
-        native = _native()
-        if native is not None:
-            return native.ingest_entities(
-                entities, relationships, source=source, domain=domain
-            )
-    return _fallback_write(entities, relationships, client=client, graph=graph)
+    try:
+        return _native_ingest_entities(
+            entities,
+            relationships,
+            source=source,
+            domain=domain,
+            client=client,
+            graph=graph,
+        )
+    except NativeIngestError as exc:
+        logger.debug("KG ingest unavailable/failed: %s", exc)
+        return None
 
 
 def ingest_documents(
@@ -141,25 +75,16 @@ def ingest_documents(
     client: Any | None = None,
     graph: str | None = None,
 ) -> dict[str, int] | None:
-    """Write text records (e.g. genealogy notes) as ``:Document`` nodes. Never raises."""
+    """Write text records (e.g. genealogy notes) as ``:Document`` nodes. Best-effort."""
     if not documents:
         return None
-    if client is None:
-        native = _native()
-        if native is not None:
-            return native.ingest_documents(documents, source=source, domain=domain)
-    nodes: list[dict[str, Any]] = []
-    for doc in documents:
-        did = doc.get("id")
-        text = doc.get("text") or doc.get("content")
-        if not did or not text:
-            continue
-        node = {k: v for k, v in doc.items() if k != "content" and v is not None}
-        node["id"] = did
-        node["type"] = "Document"
-        node["text"] = text
-        nodes.append(node)
-    return _fallback_write(nodes, None, client=client, graph=graph)
+    try:
+        return _native_ingest_documents(
+            documents, source=source, domain=domain, client=client, graph=graph
+        )
+    except NativeIngestError as exc:
+        logger.debug("KG ingest unavailable/failed: %s", exc)
+        return None
 
 
 # --------------------------------------------------------------------------- #
@@ -209,7 +134,7 @@ def ingest_people(
         entities.append(
             {
                 "id": pid,
-                "type": "Person",
+                "node_type": "Person",
                 "name": _display_name(person),
                 "grampsId": person.get("gramps_id"),
                 "handle": handle,
@@ -222,7 +147,7 @@ def ingest_people(
                 {
                     "source": pid,
                     "target": f"gramps:Family:{fam}",
-                    "type": "spouseInFamily",
+                    "relationship": "spouseInFamily",
                 }
             )
         for fam in _refs(person, "parent_family_list"):
@@ -230,7 +155,7 @@ def ingest_people(
                 {
                     "source": pid,
                     "target": f"gramps:Family:{fam}",
-                    "type": "childInFamily",
+                    "relationship": "childInFamily",
                 }
             )
         for ev in _refs(person, "event_ref_list"):
@@ -238,12 +163,16 @@ def ingest_people(
                 {
                     "source": pid,
                     "target": f"gramps:Event:{ev}",
-                    "type": "participatedInEvent",
+                    "relationship": "participatedInEvent",
                 }
             )
         for md in _refs(person, "media_list"):
             relationships.append(
-                {"source": pid, "target": f"gramps:MediaAsset:{md}", "type": "hasMedia"}
+                {
+                    "source": pid,
+                    "target": f"gramps:MediaAsset:{md}",
+                    "relationship": "hasMedia",
+                }
             )
     return ingest_entities(entities, relationships, client=client, graph=graph)
 
@@ -268,7 +197,7 @@ def ingest_families(
         entities.append(
             {
                 "id": fid,
-                "type": "Family",
+                "node_type": "Family",
                 "grampsId": fam.get("gramps_id"),
                 "handle": handle,
                 "familyRelType": rel_type,
@@ -280,7 +209,7 @@ def ingest_families(
                 {
                     "source": fid,
                     "target": f"gramps:Person:{fam['father_handle']}",
-                    "type": "hasFather",
+                    "relationship": "hasFather",
                 }
             )
         if fam.get("mother_handle"):
@@ -288,7 +217,7 @@ def ingest_families(
                 {
                     "source": fid,
                     "target": f"gramps:Person:{fam['mother_handle']}",
-                    "type": "hasMother",
+                    "relationship": "hasMother",
                 }
             )
         for child in _refs(fam, "child_ref_list"):
@@ -296,7 +225,7 @@ def ingest_families(
                 {
                     "source": fid,
                     "target": f"gramps:Person:{child}",
-                    "type": "hasChild",
+                    "relationship": "hasChild",
                 }
             )
     return ingest_entities(entities, relationships, client=client, graph=graph)
@@ -325,7 +254,7 @@ def ingest_events(
         entities.append(
             {
                 "id": eid,
-                "type": "Event",
+                "node_type": "Event",
                 "grampsId": ev.get("gramps_id"),
                 "handle": handle,
                 "eventType": ev_type,
@@ -340,7 +269,7 @@ def ingest_events(
                 {
                     "source": eid,
                     "target": f"gramps:Place:{place}",
-                    "type": "occurredAtPlace",
+                    "relationship": "occurredAtPlace",
                 }
             )
     return ingest_entities(entities, relationships, client=client, graph=graph)
