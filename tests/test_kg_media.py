@@ -61,6 +61,7 @@ def test_ingest_media_blob_stores_bytes_and_metadata():
 def test_ingest_media_blob_defaults_mime_and_name():
     store = _FakeMediaStore()
     res = ingest_media_blob(b"x", media={"gramps_id": "O0009"}, store=store)
+    assert res is not None
     assert res["media_type"] == "file"
     _, kw = store.calls[0]
     assert kw["mime_type"] == "application/octet-stream"

@@ -114,6 +114,7 @@ def test_generated_operation_manifest_contains_relative_paths_only():
     for node in tree.body:
         if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
             if node.target.id == "OPERATIONS":
+                assert node.value is not None
                 operations = ast.literal_eval(node.value)
                 break
     assert operations
