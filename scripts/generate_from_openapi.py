@@ -23,6 +23,8 @@ Re-run after refreshing the specs:  ``python scripts/generate_from_openapi.py``
 
 from __future__ import annotations
 
+import argparse
+import ast
 import json
 import keyword
 import re
@@ -408,18 +410,236 @@ def emit_mcp_init(by_domain: dict[str, list[dict]]) -> None:
     (MCP_DIR / "__init__.py").write_text("\n".join(lines) + "\n")
 
 
-def main() -> None:
+# --------------------------------------------------------------- reconciler
+#
+# Regenerating whole files on every run is the defect this reconciler exists
+# to remove: it would silently overwrite hand-maintained code. So the default
+# mode of this script is now READ-ONLY reconciliation -- it diffs the
+# vendored spec(s) against the committed source and reports drift, never
+# writes. ``--scaffold`` is the old full-generation behavior, kept only for a
+# brand-new repo with no MCP module yet (it refuses to touch anything that
+# already exists). ``--apply`` inserts ONLY the additive delta (new handlers
+# for actions the spec added) in the exact shape the file already uses --
+# gramps routes through ``resolve_action(action, {<action set>}, ...)``
+# rather than an elif chain, so "the shape" here means splicing new string
+# literals into that set -- and never touches an existing line; renames,
+# signature changes, and removals are reported for a human, never
+# auto-applied.
+
+
+class Finding:
+    __slots__ = ("kind", "domain", "action", "detail")
+
+    def __init__(self, kind: str, domain: str, detail: str, action: str | None = None):
+        self.kind = kind
+        self.domain = domain
+        self.action = action
+        self.detail = detail
+
+    def __str__(self) -> str:
+        return f"[{self.kind}] {self.domain}: {self.detail}"
+
+
+def _extract_handled_actions(src: str) -> set[str]:
+    """Extract the set of action strings a gramps mcp_<domain>.py module
+    routes, by finding the ``resolve_action(action, {...}, service=...)``
+    call and reading the string constants out of its set-literal second
+    argument via ``ast`` -- not by re-deriving it, so a hand-edited set still
+    reconciles honestly against what the code actually does.
+    """
+    tree = ast.parse(src)
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "resolve_action"
+            and len(node.args) >= 2
+            and isinstance(node.args[1], ast.Set)
+        ):
+            return {
+                elt.value
+                for elt in node.args[1].elts
+                if isinstance(elt, ast.Constant) and isinstance(elt.value, str)
+            }
+    return set()
+
+
+def _extract_client_signatures(src: str) -> dict[str, tuple]:
+    """Parse an ``api_client_<domain>.py`` module and return
+    ``{method_name: (http, url_template, path_params, query_params, has_body)}``
+    by reading each method's ``self._call(...)`` keyword arguments via ``ast``.
+    """
+    sigs: dict[str, tuple] = {}
+    tree = ast.parse(src)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        call = None
+        for n in ast.walk(node):
+            if (
+                isinstance(n, ast.Call)
+                and isinstance(n.func, ast.Attribute)
+                and n.func.attr == "_call"
+            ):
+                call = n
+                break
+        if call is None:
+            continue
+        kwargs = {kw.arg: kw.value for kw in call.keywords if kw.arg}
+        try:
+            http = ast.literal_eval(kwargs["http"])
+            url_template = ast.literal_eval(kwargs["url_template"])
+            path_params = tuple(ast.literal_eval(kwargs["path_params"]))
+            query_params = tuple(sorted(ast.literal_eval(kwargs["query_params"])))
+            has_body = ast.literal_eval(kwargs["has_body"])
+        except (KeyError, ValueError):
+            continue
+        sigs[node.name] = (http, url_template, path_params, query_params, has_body)
+    return sigs
+
+
+def _op_signature(op: dict) -> tuple:
+    return (
+        op["http"],
+        op["url_template"],
+        tuple(op["path_params"]),
+        tuple(sorted(op["query_params"])),
+        op["has_body"],
+    )
+
+
+def reconcile(by_domain: dict[str, list[dict]]) -> list[Finding]:
+    """Compare the current spec(s) against the existing hand-maintained
+    source. Read-only -- never writes anything.
+    """
+    findings: list[Finding] = []
+    existing_mcp_domains = {
+        p.stem[len("mcp_") :]
+        for p in MCP_DIR.glob("mcp_*.py")
+        if p.stem != "__init__" and p.read_text(errors="ignore").startswith(AUTOGEN)
+    }
+    spec_domains = set(by_domain)
+
+    for domain in sorted(spec_domains - existing_mcp_domains):
+        findings.append(
+            Finding(
+                "NEW DOMAIN",
+                domain,
+                f"{len(by_domain[domain])} action(s) in the spec, no mcp_{domain}.py "
+                f"yet -- scaffold is for a brand-new repo only "
+                f"(refuses if any mcp_*.py already exists); hand-author this domain's "
+                f"file once, then reconcile/--apply will track it going forward.",
+            )
+        )
+
+    for domain in sorted(existing_mcp_domains - spec_domains):
+        findings.append(
+            Finding(
+                "ORPHANED DOMAIN",
+                domain,
+                f"mcp_{domain}.py exists but the domain no longer appears in the "
+                f"spec(s) at all -- likely dropped upstream. Not auto-removed.",
+            )
+        )
+
+    for domain in sorted(spec_domains & existing_mcp_domains):
+        ops = by_domain[domain]
+        spec_actions = {op["action"]: op for op in ops}
+        mcp_path = MCP_DIR / f"mcp_{domain}.py"
+        mcp_src = mcp_path.read_text()
+        handled = _extract_handled_actions(mcp_src)
+
+        for action in sorted(set(spec_actions) - handled):
+            op = spec_actions[action]
+            findings.append(
+                Finding(
+                    "MISSING HANDLER",
+                    domain,
+                    f"action '{action}' ({op['operation_id']}) is in the spec but "
+                    f"resolve_action()'s set in mcp_{domain}.py doesn't route it.",
+                    action=action,
+                )
+            )
+
+        for action in sorted(handled - set(spec_actions)):
+            findings.append(
+                Finding(
+                    "ORPHANED HANDLER",
+                    domain,
+                    f"mcp_{domain}.py routes action '{action}' but the spec no longer "
+                    f"has a matching operation -- likely renamed or removed upstream.",
+                    action=action,
+                )
+            )
+
+        client_path = API_DIR / f"api_client_{domain}.py"
+        if client_path.exists():
+            client_sigs = _extract_client_signatures(client_path.read_text())
+            for action in sorted(set(spec_actions) & handled):
+                op = spec_actions[action]
+                method = op["method"]
+                if method not in client_sigs:
+                    continue
+                if client_sigs[method] != _op_signature(op):
+                    findings.append(
+                        Finding(
+                            "SIGNATURE DRIFT",
+                            domain,
+                            f"operation '{op['operation_id']}' (method {method}) "
+                            f"parameters changed: code has {client_sigs[method]}, spec "
+                            f"now has {_op_signature(op)}.",
+                            action=action,
+                        )
+                    )
+    return findings
+
+
+def print_report(findings: list[Finding]) -> None:
+    if not findings:
+        print(
+            "reconcile: OK -- no drift between the vendored spec(s) and the "
+            "committed source."
+        )
+        return
+    by_kind: dict[str, int] = {}
+    for f in findings:
+        by_kind[f.kind] = by_kind.get(f.kind, 0) + 1
+        print(str(f))
+    print()
+    print(
+        "reconcile: DRIFT FOUND -- "
+        + ", ".join(f"{n} {k}" for k, n in sorted(by_kind.items()))
+    )
+
+
+def scaffold(by_domain: dict[str, list[dict]]) -> None:
+    """One-time bootstrap for a brand-new repo with no MCP module yet.
+
+    Refuses outright if any mcp_<domain>.py already exists -- scaffold never
+    overwrites hand-maintained code. Use the default reconcile mode (or
+    --apply) on an established repo instead.
+    """
     API_DIR.mkdir(exist_ok=True)
     MCP_DIR.mkdir(exist_ok=True)
-    by_domain = collect_operations()
+    existing = [
+        p
+        for p in MCP_DIR.glob("mcp_*.py")
+        if p.stem != "__init__" and p.read_text(errors="ignore").startswith(AUTOGEN)
+    ]
+    if existing:
+        print(
+            f"scaffold: refusing -- {len(existing)} mcp_*.py file(s) already exist "
+            f"({', '.join(sorted(p.name for p in existing))}). scaffold is for a "
+            f"brand-new repo only; use the default reconcile mode (or --apply) "
+            f"instead."
+        )
+        raise SystemExit(1)
     for domain, ops in by_domain.items():
         emit_client_module(domain, ops)
         emit_mcp_module(domain, ops)
     emit_manifest(by_domain)
     emit_api_client(by_domain)
     emit_mcp_init(by_domain)
-    # Reflow the emitted code to satisfy the ruff-format pre-commit gate so that
-    # re-running the generator is idempotent under the project's quality bar.
     import shutil
     import subprocess
 
@@ -428,7 +648,127 @@ def main() -> None:
         targets = [str(API_DIR), str(MCP_DIR)]
         subprocess.run([ruff, "check", "--fix", "--quiet", *targets], check=False)
         subprocess.run([ruff, "format", "--quiet", *targets], check=False)
-    print(f"Generated {len(by_domain)} client modules + MCP tools.")
+    print(f"scaffold: generated {len(by_domain)} client modules + MCP tools.")
+
+
+def _apply_domain(domain: str, ops: list[dict], missing_actions: set[str]) -> bool:
+    """Additively insert handlers for ``missing_actions`` into
+    ``mcp_<domain>.py`` (splice new string literals into the
+    ``resolve_action(...)`` set) and ``api_client_<domain>.py`` (append new
+    methods at the end of the class). Never rewrites, reorders, or deletes an
+    existing line. Returns True if anything changed.
+    """
+    mcp_path = MCP_DIR / f"mcp_{domain}.py"
+    client_path = API_DIR / f"api_client_{domain}.py"
+    if not mcp_path.exists() or not client_path.exists():
+        return False
+
+    ops_by_action = {op["action"]: op for op in ops}
+    new_ops = [ops_by_action[a] for a in sorted(missing_actions) if a in ops_by_action]
+    if not new_ops:
+        return False
+
+    # 1. api_client_<domain>.py -- append new methods at the end of the class.
+    client_lines = client_path.read_text().splitlines()
+    insertion: list[str] = []
+    for op in new_ops:
+        doc = op["summary"].replace('"', "'")
+        insertion += [
+            f"    def {op['method']}(self, **kwargs) -> Response:",
+            f'        """{doc}"""',
+            "        return self._call(",
+            f"            http={op['http']!r},",
+            f"            url_template={op['url_template']!r},",
+            f"            path_params={op['path_params']!r},",
+            f"            query_params={op['query_params']!r},",
+            f"            has_body={op['has_body']!r},",
+            f"            paginate={op['paginate']!r},",
+            "            kwargs=kwargs,",
+            "        )",
+            "",
+        ]
+    while client_lines and client_lines[-1] == "":
+        client_lines.pop()
+    client_lines += [""] + insertion
+    client_path.write_text("\n".join(client_lines) + "\n")
+
+    # 2. mcp_<domain>.py -- splice new action strings into the
+    #    resolve_action(...) set literal, right before its closing "},".
+    mcp_lines = mcp_path.read_text().splitlines()
+    open_idx = next(i for i, line in enumerate(mcp_lines) if line.strip() == "{")
+    close_idx = next(
+        i for i in range(open_idx + 1, len(mcp_lines)) if mcp_lines[i].strip() == "},"
+    )
+    new_set_lines = [f'                "{op["action"]}",' for op in new_ops]
+    mcp_lines = mcp_lines[:close_idx] + new_set_lines + mcp_lines[close_idx:]
+
+    # 3. Keep the "Action to perform. One of: ..." Field description in sync
+    #    -- purely additive text appended before the closing quote, skipping
+    #    any action the description already lists.
+    for i, line in enumerate(mcp_lines):
+        if 'description="Action to perform. One of:' in line:
+            already_listed = set(re.findall(r"'([^']+)'", line))
+            still_new = [op for op in new_ops if op["action"] not in already_listed]
+            if still_new:
+                added = ", ".join(f"'{op['action']}'" for op in still_new)
+                mcp_lines[i] = line.rstrip()[:-1] + f', {added}"'
+            break
+
+    mcp_path.write_text("\n".join(mcp_lines) + "\n")
+    return True
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Reconcile (default, read-only) the vendored OpenAPI spec(s) against "
+            "the committed, hand-maintained MCP source; --scaffold bootstraps a "
+            "brand-new repo once; --apply additively inserts new handlers only."
+        )
+    )
+    parser.add_argument(
+        "--scaffold",
+        action="store_true",
+        help="One-time bootstrap for a brand-new repo with no MCP module yet. "
+        "Refuses to touch anything that already exists.",
+    )
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Additively insert handlers for actions the spec has but the code "
+        "doesn't. Never touches an existing line; renames, signature changes, "
+        "and removals are reported for a human, never auto-applied.",
+    )
+    args = parser.parse_args()
+
+    by_domain = collect_operations()
+
+    if args.scaffold:
+        scaffold(by_domain)
+        return
+
+    findings = reconcile(by_domain)
+
+    if args.apply:
+        missing_by_domain: dict[str, set[str]] = {}
+        for f in findings:
+            if f.kind == "MISSING HANDLER" and f.action is not None:
+                missing_by_domain.setdefault(f.domain, set()).add(f.action)
+        changed_any = False
+        for domain, actions in missing_by_domain.items():
+            if _apply_domain(domain, by_domain[domain], actions):
+                changed_any = True
+                print(
+                    f"apply: inserted {len(actions)} handler(s) into domain '{domain}'."
+                )
+        if changed_any:
+            emit_manifest(by_domain)
+            print("apply: regenerated _operation_manifest.py (pure derived data).")
+        findings = reconcile(by_domain)
+
+    print_report(findings)
+    if findings:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
