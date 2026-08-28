@@ -8,6 +8,15 @@ import sys
 from pathlib import Path
 
 
+def _public_class_methods(node: ast.ClassDef) -> set[str]:
+    return {
+        item.name
+        for item in node.body
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and not item.name.startswith("_")
+    }
+
+
 def _public_api_methods(root: Path) -> set[str]:
     methods: set[str] = set()
     api_dir = root / "gramps_mcp" / "api"
@@ -16,13 +25,8 @@ def _public_api_methods(root: Path) -> set[str]:
             continue
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=path.name)
         for node in ast.walk(tree):
-            if not isinstance(node, ast.ClassDef):
-                continue
-            for item in node.body:
-                if isinstance(
-                    item, (ast.FunctionDef, ast.AsyncFunctionDef)
-                ) and not item.name.startswith("_"):
-                    methods.add(item.name)
+            if isinstance(node, ast.ClassDef):
+                methods |= _public_class_methods(node)
     return methods
 
 
@@ -42,25 +46,45 @@ def _manifest_values(root: Path, key: str) -> set[str]:
     return set()
 
 
+def _resolve_action_set_node(node: ast.Call) -> ast.Set | ast.List | ast.Tuple | None:
+    """Return a ``resolve_action(action, {...}, ...)`` call's set/list/tuple
+    second argument, or ``None`` when ``node`` isn't such a call.
+    """
+    if not (isinstance(node.func, ast.Name) and node.func.id == "resolve_action"):
+        return None
+    if len(node.args) < 2 or not isinstance(
+        node.args[1], (ast.Set, ast.List, ast.Tuple)
+    ):
+        return None
+    return node.args[1]
+
+
+def _string_constants(elts: list[ast.expr]) -> set[str]:
+    return {
+        element.value
+        for element in elts
+        if isinstance(element, ast.Constant) and isinstance(element.value, str)
+    }
+
+
+def _condensed_actions_in_module(tree: ast.AST) -> set[str]:
+    actions: set[str] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        set_node = _resolve_action_set_node(node)
+        if set_node is None:
+            continue
+        actions |= _string_constants(set_node.elts)
+    return actions
+
+
 def _condensed_actions(root: Path) -> set[str]:
     actions: set[str] = set()
     mcp_dir = root / "gramps_mcp" / "mcp"
     for path in sorted(mcp_dir.glob("mcp_*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=path.name)
-        for node in ast.walk(tree):
-            if not isinstance(node, ast.Call):
-                continue
-            if not (
-                isinstance(node.func, ast.Name) and node.func.id == "resolve_action"
-            ):
-                continue
-            if len(node.args) < 2 or not isinstance(
-                node.args[1], (ast.Set, ast.List, ast.Tuple)
-            ):
-                continue
-            for element in node.args[1].elts:
-                if isinstance(element, ast.Constant) and isinstance(element.value, str):
-                    actions.add(element.value)
+        actions |= _condensed_actions_in_module(tree)
     return actions
 
 
