@@ -53,6 +53,47 @@ def media_store() -> Any | None:
         return None
 
 
+def _media_type_for(mime: str) -> str:
+    if mime.startswith("image"):
+        return "image"
+    if mime.startswith("audio"):
+        return "audio"
+    if mime.startswith("video"):
+        return "video"
+    return "file"
+
+
+def _media_extra_fields(media: dict[str, Any]) -> dict[str, Any]:
+    return {k: media[k] for k in _MEDIA_FIELDS if media.get(k) is not None}
+
+
+def _media_display_name(media: dict[str, Any]) -> str:
+    return media.get("desc") or media.get("path") or media.get("gramps_id") or "media"
+
+
+def _store_media(
+    store: Any,
+    data: bytes,
+    media_type: str,
+    mime: str,
+    source: str,
+    name: str,
+    extra: dict[str, Any],
+) -> Any | None:
+    try:
+        return store.store_media(
+            data,
+            media_type=media_type,
+            mime_type=mime,
+            source=source,
+            name=name,
+            extra=extra,
+        )
+    except Exception as e:  # noqa: BLE001 — engine/store failure is non-fatal
+        logger.warning("KG media ingest: store_media failed: %s", e)
+        return None
+
+
 def ingest_media_blob(
     data: bytes | None,
     *,
@@ -76,30 +117,11 @@ def ingest_media_blob(
 
     media = media or {}
     mime = mime_type or media.get("mime") or "application/octet-stream"
-    if mime.startswith("image"):
-        media_type = "image"
-    elif mime.startswith("audio"):
-        media_type = "audio"
-    elif mime.startswith("video"):
-        media_type = "video"
-    else:
-        media_type = "file"
+    media_type = _media_type_for(mime)
+    extra = _media_extra_fields(media)
+    name = _media_display_name(media)
 
-    extra = {k: media[k] for k in _MEDIA_FIELDS if media.get(k) is not None}
-    name = media.get("desc") or media.get("path") or media.get("gramps_id") or "media"
-
-    try:
-        stored = st.store_media(
-            data,
-            media_type=media_type,
-            mime_type=mime,
-            source=source,
-            name=name,
-            extra=extra,
-        )
-    except Exception as e:  # noqa: BLE001 — engine/store failure is non-fatal
-        logger.warning("KG media ingest: store_media failed: %s", e)
-        return None
+    stored = _store_media(st, data, media_type, mime, source, name, extra)
     if stored is None:
         return None
 

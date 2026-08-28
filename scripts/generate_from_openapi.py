@@ -28,6 +28,7 @@ import ast
 import json
 import keyword
 import re
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -104,10 +105,9 @@ def _param_entry(name: str, schema: dict, required: bool, description) -> dict:
     }
 
 
-def normalize_params(params: list, op: dict, spec: dict) -> list[dict]:
-    """Flatten path/query params + top-level requestBody fields into typed entries."""
+def _param_entries_from_list(params: list, spec: dict, seen: set[str]) -> list[dict]:
+    """Flatten declared path/query parameters into typed entries, deduped by name."""
     out: list[dict] = []
-    seen: set[str] = set()
     for p in params:
         p = _resolve_ref(spec, p)
         name = p.get("name")
@@ -122,94 +122,162 @@ def normalize_params(params: list, op: dict, spec: dict) -> list[dict]:
                 p.get("description"),
             )
         )
-    request_body = _resolve_ref(spec, op.get("requestBody") or {})
-    if request_body:
-        content = request_body.get("content") or {}
-        media: dict = content.get("application/json") or next(
-            iter(content.values()), {}
-        )
-        schema = _resolve_ref(spec, (media or {}).get("schema") or {})
-        props = schema.get("properties") or {}
-        required = set(schema.get("required") or [])
-        if props:
-            for pname, pschema in props.items():
-                if pname in seen:
-                    continue
-                seen.add(pname)
-                ps = _resolve_ref(spec, pschema)
-                out.append(
-                    _param_entry(pname, ps, pname in required, ps.get("description"))
-                )
-        else:
-            out.append(
-                {
-                    "name": "body",
-                    "type": "object",
-                    "required": bool(request_body.get("required")),
-                    "description": "Request body (JSON object).",
-                }
-            )
     return out
+
+
+def _request_body_schema(spec: dict, op: dict) -> tuple[dict, dict] | None:
+    """Return ``(request_body, resolved_media_schema)``, or ``None`` when there is no body."""
+    request_body = _resolve_ref(spec, op.get("requestBody") or {})
+    if not request_body:
+        return None
+    content = request_body.get("content") or {}
+    media: dict = content.get("application/json") or next(iter(content.values()), {})
+    schema = _resolve_ref(spec, (media or {}).get("schema") or {})
+    return request_body, schema
+
+
+def _param_entries_from_body(spec: dict, op: dict, seen: set[str]) -> list[dict]:
+    """Flatten top-level requestBody fields into typed entries, deduped by name."""
+    resolved = _request_body_schema(spec, op)
+    if resolved is None:
+        return []
+    request_body, schema = resolved
+    props = schema.get("properties") or {}
+    if not props:
+        return [
+            {
+                "name": "body",
+                "type": "object",
+                "required": bool(request_body.get("required")),
+                "description": "Request body (JSON object).",
+            }
+        ]
+    required = set(schema.get("required") or [])
+    out: list[dict] = []
+    for pname, pschema in props.items():
+        if pname in seen:
+            continue
+        seen.add(pname)
+        ps = _resolve_ref(spec, pschema)
+        out.append(_param_entry(pname, ps, pname in required, ps.get("description")))
+    return out
+
+
+def normalize_params(params: list, op: dict, spec: dict) -> list[dict]:
+    """Flatten path/query params + top-level requestBody fields into typed entries."""
+    seen: set[str] = set()
+    out = _param_entries_from_list(params, spec, seen)
+    out.extend(_param_entries_from_body(spec, op, seen))
+    return out
+
+
+@dataclass
+class _SpecContext:
+    """The per-spec-file context an operation is built against."""
+
+    spec: dict
+    base: str
+    shared: list
+
+
+@dataclass
+class _OperationRegistry:
+    """Cross-domain method-name and per-domain action-name dedup state."""
+
+    global_methods: set[str] = field(default_factory=set)
+    domain_actions: dict[str, set[str]] = field(default_factory=dict)
+
+    def unique_method(self, candidate: str) -> str:
+        while candidate in self.global_methods:
+            candidate += "_x"
+        self.global_methods.add(candidate)
+        return candidate
+
+    def unique_action(self, domain: str, candidate: str) -> str:
+        seen = self.domain_actions.setdefault(domain, set())
+        while candidate in seen:
+            candidate += "_x"
+        seen.add(candidate)
+        return candidate
+
+
+def _iter_path_operations(methods: dict):
+    """Yield the real HTTP-method ``(http, op)`` pairs for one path item."""
+    for http, op in methods.items():
+        if http not in HTTP_METHODS or not isinstance(op, dict):
+            continue
+        yield http, op
+
+
+def _operation_path_params(params: list, path: str) -> list[str]:
+    path_params = [p["name"] for p in params if p.get("in") == "path"]
+    for token in re.findall(r"\{([^}]+)\}", path):
+        if token not in path_params:
+            path_params.append(token)
+    return path_params
+
+
+def _operation_entry(
+    http: str,
+    op: dict,
+    path: str,
+    ctx: _SpecContext,
+    registry: _OperationRegistry,
+) -> tuple[str, dict, bool]:
+    """Build one operation_meta dict; returns ``(domain, entry, was_synthetic_id)``."""
+    tag = (op.get("tags") or ["default"])[0]
+    domain = snake(tag)
+    op_id = op.get("operationId")
+    synthetic = not op_id
+    if not op_id:
+        op_id = snake(f"{http}_{path}")
+    params = list(ctx.shared) + list(op.get("parameters") or [])
+    path_params = _operation_path_params(params, path)
+    query_params = [p["name"] for p in params if p.get("in") == "query"]
+    has_body = "requestBody" in op
+
+    method_name = registry.unique_method(snake(op_id))
+    action = registry.unique_action(domain, snake(op_id))
+
+    summary = (op.get("summary") or op.get("description") or op_id).strip()
+    summary = re.sub(r"\s+", " ", summary.splitlines()[0])[:160]
+
+    entry = {
+        "operation_id": op_id,
+        "method": method_name,
+        "action": action,
+        "domain": domain,
+        "http": http.upper(),
+        "url_template": ctx.base + path,
+        "path_params": path_params,
+        "query_params": query_params,
+        "has_body": has_body,
+        "paginate": detect_pagination(http, query_params),
+        "summary": summary,
+        "params": normalize_params(params, op, ctx.spec),
+    }
+    return domain, entry, synthetic
 
 
 def collect_operations() -> dict[str, list[dict]]:
     """Return ``{domain: [operation_meta, ...]}`` across all vendored specs."""
     by_domain: dict[str, list[dict]] = {}
-    global_methods: set[str] = set()
+    registry = _OperationRegistry()
     synthetic = 0
 
     for spec_path in sorted(SPECS_DIR.glob("*.json")):
         spec = json.loads(spec_path.read_text())
-        base = server_template(spec)
+        ctx_base = server_template(spec)
 
         for path, methods in (spec.get("paths") or {}).items():
             shared = methods.get("parameters", []) if isinstance(methods, dict) else []
-            for http, op in methods.items():
-                if http not in HTTP_METHODS or not isinstance(op, dict):
-                    continue
-                tag = (op.get("tags") or ["default"])[0]
-                domain = snake(tag)
-                op_id = op.get("operationId")
-                if not op_id:
-                    synthetic += 1
-                    op_id = snake(f"{http}_{path}")
-                params = list(shared) + list(op.get("parameters") or [])
-                path_params = [p["name"] for p in params if p.get("in") == "path"]
-                for token in re.findall(r"\{([^}]+)\}", path):
-                    if token not in path_params:
-                        path_params.append(token)
-                query_params = [p["name"] for p in params if p.get("in") == "query"]
-                has_body = "requestBody" in op
-
-                method_name = snake(op_id)
-                while method_name in global_methods:
-                    method_name += "_x"
-                global_methods.add(method_name)
-
-                actions_seen = {o["action"] for o in by_domain.get(domain, [])}
-                action = snake(op_id)
-                while action in actions_seen:
-                    action += "_x"
-
-                summary = (op.get("summary") or op.get("description") or op_id).strip()
-                summary = re.sub(r"\s+", " ", summary.splitlines()[0])[:160]
-
-                by_domain.setdefault(domain, []).append(
-                    {
-                        "operation_id": op_id,
-                        "method": method_name,
-                        "action": action,
-                        "domain": domain,
-                        "http": http.upper(),
-                        "url_template": base + path,
-                        "path_params": path_params,
-                        "query_params": query_params,
-                        "has_body": has_body,
-                        "paginate": detect_pagination(http, query_params),
-                        "summary": summary,
-                        "params": normalize_params(params, op, spec),
-                    }
+            ctx = _SpecContext(spec=spec, base=ctx_base, shared=shared)
+            for http, op in _iter_path_operations(methods):
+                domain, entry, was_synthetic = _operation_entry(
+                    http, op, path, ctx, registry
                 )
+                synthetic += was_synthetic
+                by_domain.setdefault(domain, []).append(entry)
 
     print(
         f"Collected {sum(len(v) for v in by_domain.values())} operations "
@@ -464,6 +532,32 @@ def _extract_handled_actions(src: str) -> set[str]:
     return set()
 
 
+def _find_call_node(func: ast.FunctionDef) -> ast.Call | None:
+    """Find the ``self._call(...)`` call inside one method body, if any."""
+    for n in ast.walk(func):
+        if (
+            isinstance(n, ast.Call)
+            and isinstance(n.func, ast.Attribute)
+            and n.func.attr == "_call"
+        ):
+            return n
+    return None
+
+
+def _signature_from_call(call: ast.Call) -> tuple | None:
+    """Read a ``self._call(...)``'s literal keyword arguments into a signature tuple."""
+    kwargs = {kw.arg: kw.value for kw in call.keywords if kw.arg}
+    try:
+        http = ast.literal_eval(kwargs["http"])
+        url_template = ast.literal_eval(kwargs["url_template"])
+        path_params = tuple(ast.literal_eval(kwargs["path_params"]))
+        query_params = tuple(sorted(ast.literal_eval(kwargs["query_params"])))
+        has_body = ast.literal_eval(kwargs["has_body"])
+    except (KeyError, ValueError):
+        return None
+    return (http, url_template, path_params, query_params, has_body)
+
+
 def _extract_client_signatures(src: str) -> dict[str, tuple]:
     """Parse an ``api_client_<domain>.py`` module and return
     ``{method_name: (http, url_template, path_params, query_params, has_body)}``
@@ -474,27 +568,12 @@ def _extract_client_signatures(src: str) -> dict[str, tuple]:
     for node in ast.walk(tree):
         if not isinstance(node, ast.FunctionDef):
             continue
-        call = None
-        for n in ast.walk(node):
-            if (
-                isinstance(n, ast.Call)
-                and isinstance(n.func, ast.Attribute)
-                and n.func.attr == "_call"
-            ):
-                call = n
-                break
+        call = _find_call_node(node)
         if call is None:
             continue
-        kwargs = {kw.arg: kw.value for kw in call.keywords if kw.arg}
-        try:
-            http = ast.literal_eval(kwargs["http"])
-            url_template = ast.literal_eval(kwargs["url_template"])
-            path_params = tuple(ast.literal_eval(kwargs["path_params"]))
-            query_params = tuple(sorted(ast.literal_eval(kwargs["query_params"])))
-            has_body = ast.literal_eval(kwargs["has_body"])
-        except (KeyError, ValueError):
-            continue
-        sigs[node.name] = (http, url_template, path_params, query_params, has_body)
+        signature = _signature_from_call(call)
+        if signature is not None:
+            sigs[node.name] = signature
     return sigs
 
 
@@ -508,11 +587,96 @@ def _op_signature(op: dict) -> tuple:
     )
 
 
+def _new_domain_findings(spec_domains: set[str], existing: set[str], by_domain: dict) -> list[Finding]:
+    return [
+        Finding(
+            "NEW DOMAIN",
+            domain,
+            f"{len(by_domain[domain])} action(s) in the spec, no mcp_{domain}.py "
+            f"yet -- scaffold is for a brand-new repo only "
+            f"(refuses if any mcp_*.py already exists); hand-author this domain's "
+            f"file once, then reconcile/--apply will track it going forward.",
+        )
+        for domain in sorted(spec_domains - existing)
+    ]
+
+
+def _orphaned_domain_findings(spec_domains: set[str], existing: set[str]) -> list[Finding]:
+    return [
+        Finding(
+            "ORPHANED DOMAIN",
+            domain,
+            f"mcp_{domain}.py exists but the domain no longer appears in the "
+            f"spec(s) at all -- likely dropped upstream. Not auto-removed.",
+        )
+        for domain in sorted(existing - spec_domains)
+    ]
+
+
+def _handler_findings(domain: str, spec_actions: dict, handled: set[str]) -> list[Finding]:
+    findings: list[Finding] = []
+    for action in sorted(set(spec_actions) - handled):
+        op = spec_actions[action]
+        findings.append(
+            Finding(
+                "MISSING HANDLER",
+                domain,
+                f"action '{action}' ({op['operation_id']}) is in the spec but "
+                f"resolve_action()'s set in mcp_{domain}.py doesn't route it.",
+                action=action,
+            )
+        )
+    for action in sorted(handled - set(spec_actions)):
+        findings.append(
+            Finding(
+                "ORPHANED HANDLER",
+                domain,
+                f"mcp_{domain}.py routes action '{action}' but the spec no longer "
+                f"has a matching operation -- likely renamed or removed upstream.",
+                action=action,
+            )
+        )
+    return findings
+
+
+def _signature_drift_findings(domain: str, spec_actions: dict, handled: set[str]) -> list[Finding]:
+    client_path = API_DIR / f"api_client_{domain}.py"
+    if not client_path.exists():
+        return []
+    client_sigs = _extract_client_signatures(client_path.read_text())
+    findings: list[Finding] = []
+    for action in sorted(set(spec_actions) & handled):
+        op = spec_actions[action]
+        method = op["method"]
+        if method not in client_sigs:
+            continue
+        if client_sigs[method] != _op_signature(op):
+            findings.append(
+                Finding(
+                    "SIGNATURE DRIFT",
+                    domain,
+                    f"operation '{op['operation_id']}' (method {method}) "
+                    f"parameters changed: code has {client_sigs[method]}, spec "
+                    f"now has {_op_signature(op)}.",
+                    action=action,
+                )
+            )
+    return findings
+
+
+def _domain_findings(domain: str, ops: list[dict]) -> list[Finding]:
+    spec_actions = {op["action"]: op for op in ops}
+    mcp_path = MCP_DIR / f"mcp_{domain}.py"
+    handled = _extract_handled_actions(mcp_path.read_text())
+    findings = _handler_findings(domain, spec_actions, handled)
+    findings += _signature_drift_findings(domain, spec_actions, handled)
+    return findings
+
+
 def reconcile(by_domain: dict[str, list[dict]]) -> list[Finding]:
     """Compare the current spec(s) against the existing hand-maintained
     source. Read-only -- never writes anything.
     """
-    findings: list[Finding] = []
     existing_mcp_domains = {
         p.stem[len("mcp_") :]
         for p in MCP_DIR.glob("mcp_*.py")
@@ -520,77 +684,11 @@ def reconcile(by_domain: dict[str, list[dict]]) -> list[Finding]:
     }
     spec_domains = set(by_domain)
 
-    for domain in sorted(spec_domains - existing_mcp_domains):
-        findings.append(
-            Finding(
-                "NEW DOMAIN",
-                domain,
-                f"{len(by_domain[domain])} action(s) in the spec, no mcp_{domain}.py "
-                f"yet -- scaffold is for a brand-new repo only "
-                f"(refuses if any mcp_*.py already exists); hand-author this domain's "
-                f"file once, then reconcile/--apply will track it going forward.",
-            )
-        )
-
-    for domain in sorted(existing_mcp_domains - spec_domains):
-        findings.append(
-            Finding(
-                "ORPHANED DOMAIN",
-                domain,
-                f"mcp_{domain}.py exists but the domain no longer appears in the "
-                f"spec(s) at all -- likely dropped upstream. Not auto-removed.",
-            )
-        )
-
+    findings: list[Finding] = []
+    findings += _new_domain_findings(spec_domains, existing_mcp_domains, by_domain)
+    findings += _orphaned_domain_findings(spec_domains, existing_mcp_domains)
     for domain in sorted(spec_domains & existing_mcp_domains):
-        ops = by_domain[domain]
-        spec_actions = {op["action"]: op for op in ops}
-        mcp_path = MCP_DIR / f"mcp_{domain}.py"
-        mcp_src = mcp_path.read_text()
-        handled = _extract_handled_actions(mcp_src)
-
-        for action in sorted(set(spec_actions) - handled):
-            op = spec_actions[action]
-            findings.append(
-                Finding(
-                    "MISSING HANDLER",
-                    domain,
-                    f"action '{action}' ({op['operation_id']}) is in the spec but "
-                    f"resolve_action()'s set in mcp_{domain}.py doesn't route it.",
-                    action=action,
-                )
-            )
-
-        for action in sorted(handled - set(spec_actions)):
-            findings.append(
-                Finding(
-                    "ORPHANED HANDLER",
-                    domain,
-                    f"mcp_{domain}.py routes action '{action}' but the spec no longer "
-                    f"has a matching operation -- likely renamed or removed upstream.",
-                    action=action,
-                )
-            )
-
-        client_path = API_DIR / f"api_client_{domain}.py"
-        if client_path.exists():
-            client_sigs = _extract_client_signatures(client_path.read_text())
-            for action in sorted(set(spec_actions) & handled):
-                op = spec_actions[action]
-                method = op["method"]
-                if method not in client_sigs:
-                    continue
-                if client_sigs[method] != _op_signature(op):
-                    findings.append(
-                        Finding(
-                            "SIGNATURE DRIFT",
-                            domain,
-                            f"operation '{op['operation_id']}' (method {method}) "
-                            f"parameters changed: code has {client_sigs[method]}, spec "
-                            f"now has {_op_signature(op)}.",
-                            action=action,
-                        )
-                    )
+        findings += _domain_findings(domain, by_domain[domain])
     return findings
 
 
@@ -651,6 +749,79 @@ def scaffold(by_domain: dict[str, list[dict]]) -> None:
     print(f"scaffold: generated {len(by_domain)} client modules + MCP tools.")
 
 
+def _render_client_insertion(op: dict) -> list[str]:
+    doc = op["summary"].replace('"', "'")
+    return [
+        f"    def {op['method']}(self, **kwargs) -> Response:",
+        f'        """{doc}"""',
+        "        return self._call(",
+        f"            http={op['http']!r},",
+        f"            url_template={op['url_template']!r},",
+        f"            path_params={op['path_params']!r},",
+        f"            query_params={op['query_params']!r},",
+        f"            has_body={op['has_body']!r},",
+        f"            paginate={op['paginate']!r},",
+        "            kwargs=kwargs,",
+        "        )",
+        "",
+    ]
+
+
+def _append_client_methods(client_path: Path, new_ops: list[dict]) -> None:
+    """Append new methods at the end of an ``api_client_<domain>.py`` class."""
+    client_lines = client_path.read_text().splitlines()
+    insertion: list[str] = []
+    for op in new_ops:
+        insertion += _render_client_insertion(op)
+    while client_lines and client_lines[-1] == "":
+        client_lines.pop()
+    client_lines += [""] + insertion
+    client_path.write_text("\n".join(client_lines) + "\n")
+
+
+def _splice_action_strings(mcp_lines: list[str], new_ops: list[dict]) -> list[str]:
+    """Splice new action string literals into the ``resolve_action(...)`` set,
+    right before its closing ``},``.
+    """
+    open_idx = next(i for i, line in enumerate(mcp_lines) if line.strip() == "{")
+    close_idx = next(
+        i for i in range(open_idx + 1, len(mcp_lines)) if mcp_lines[i].strip() == "},"
+    )
+    new_set_lines = [f'                "{op["action"]}",' for op in new_ops]
+    return mcp_lines[:close_idx] + new_set_lines + mcp_lines[close_idx:]
+
+
+def _appended_description_line(line: str, new_ops: list[dict]) -> str:
+    """Append any not-yet-listed action onto one "Action to perform. One of:
+    ..." Field description line, before its closing quote.
+    """
+    already_listed = set(re.findall(r"'([^']+)'", line))
+    still_new = [op for op in new_ops if op["action"] not in already_listed]
+    if not still_new:
+        return line
+    added = ", ".join(f"'{op['action']}'" for op in still_new)
+    return line.rstrip()[:-1] + f', {added}"'
+
+
+def _sync_action_description(mcp_lines: list[str], new_ops: list[dict]) -> list[str]:
+    """Keep the "Action to perform. One of: ..." Field description in sync --
+    purely additive text appended before the closing quote, skipping any
+    action the description already lists.
+    """
+    for i, line in enumerate(mcp_lines):
+        if 'description="Action to perform. One of:' in line:
+            mcp_lines[i] = _appended_description_line(line, new_ops)
+            break
+    return mcp_lines
+
+
+def _apply_mcp_module(mcp_path: Path, new_ops: list[dict]) -> None:
+    mcp_lines = mcp_path.read_text().splitlines()
+    mcp_lines = _splice_action_strings(mcp_lines, new_ops)
+    mcp_lines = _sync_action_description(mcp_lines, new_ops)
+    mcp_path.write_text("\n".join(mcp_lines) + "\n")
+
+
 def _apply_domain(domain: str, ops: list[dict], missing_actions: set[str]) -> bool:
     """Additively insert handlers for ``missing_actions`` into
     ``mcp_<domain>.py`` (splice new string literals into the
@@ -668,54 +839,33 @@ def _apply_domain(domain: str, ops: list[dict], missing_actions: set[str]) -> bo
     if not new_ops:
         return False
 
-    # 1. api_client_<domain>.py -- append new methods at the end of the class.
-    client_lines = client_path.read_text().splitlines()
-    insertion: list[str] = []
-    for op in new_ops:
-        doc = op["summary"].replace('"', "'")
-        insertion += [
-            f"    def {op['method']}(self, **kwargs) -> Response:",
-            f'        """{doc}"""',
-            "        return self._call(",
-            f"            http={op['http']!r},",
-            f"            url_template={op['url_template']!r},",
-            f"            path_params={op['path_params']!r},",
-            f"            query_params={op['query_params']!r},",
-            f"            has_body={op['has_body']!r},",
-            f"            paginate={op['paginate']!r},",
-            "            kwargs=kwargs,",
-            "        )",
-            "",
-        ]
-    while client_lines and client_lines[-1] == "":
-        client_lines.pop()
-    client_lines += [""] + insertion
-    client_path.write_text("\n".join(client_lines) + "\n")
-
-    # 2. mcp_<domain>.py -- splice new action strings into the
-    #    resolve_action(...) set literal, right before its closing "},".
-    mcp_lines = mcp_path.read_text().splitlines()
-    open_idx = next(i for i, line in enumerate(mcp_lines) if line.strip() == "{")
-    close_idx = next(
-        i for i in range(open_idx + 1, len(mcp_lines)) if mcp_lines[i].strip() == "},"
-    )
-    new_set_lines = [f'                "{op["action"]}",' for op in new_ops]
-    mcp_lines = mcp_lines[:close_idx] + new_set_lines + mcp_lines[close_idx:]
-
-    # 3. Keep the "Action to perform. One of: ..." Field description in sync
-    #    -- purely additive text appended before the closing quote, skipping
-    #    any action the description already lists.
-    for i, line in enumerate(mcp_lines):
-        if 'description="Action to perform. One of:' in line:
-            already_listed = set(re.findall(r"'([^']+)'", line))
-            still_new = [op for op in new_ops if op["action"] not in already_listed]
-            if still_new:
-                added = ", ".join(f"'{op['action']}'" for op in still_new)
-                mcp_lines[i] = line.rstrip()[:-1] + f', {added}"'
-            break
-
-    mcp_path.write_text("\n".join(mcp_lines) + "\n")
+    _append_client_methods(client_path, new_ops)
+    _apply_mcp_module(mcp_path, new_ops)
     return True
+
+
+def _missing_handlers_by_domain(findings: list[Finding]) -> dict[str, set[str]]:
+    missing_by_domain: dict[str, set[str]] = {}
+    for f in findings:
+        if f.kind == "MISSING HANDLER" and f.action is not None:
+            missing_by_domain.setdefault(f.domain, set()).add(f.action)
+    return missing_by_domain
+
+
+def _apply_missing_handlers(
+    by_domain: dict[str, list[dict]], findings: list[Finding]
+) -> list[Finding]:
+    """Insert every missing handler additively, then re-run reconcile fresh."""
+    missing_by_domain = _missing_handlers_by_domain(findings)
+    changed_any = False
+    for domain, actions in missing_by_domain.items():
+        if _apply_domain(domain, by_domain[domain], actions):
+            changed_any = True
+            print(f"apply: inserted {len(actions)} handler(s) into domain '{domain}'.")
+    if changed_any:
+        emit_manifest(by_domain)
+        print("apply: regenerated _operation_manifest.py (pure derived data).")
+    return reconcile(by_domain)
 
 
 def main() -> None:
@@ -748,23 +898,8 @@ def main() -> None:
         return
 
     findings = reconcile(by_domain)
-
     if args.apply:
-        missing_by_domain: dict[str, set[str]] = {}
-        for f in findings:
-            if f.kind == "MISSING HANDLER" and f.action is not None:
-                missing_by_domain.setdefault(f.domain, set()).add(f.action)
-        changed_any = False
-        for domain, actions in missing_by_domain.items():
-            if _apply_domain(domain, by_domain[domain], actions):
-                changed_any = True
-                print(
-                    f"apply: inserted {len(actions)} handler(s) into domain '{domain}'."
-                )
-        if changed_any:
-            emit_manifest(by_domain)
-            print("apply: regenerated _operation_manifest.py (pure derived data).")
-        findings = reconcile(by_domain)
+        findings = _apply_missing_handlers(by_domain, findings)
 
     print_report(findings)
     if findings:

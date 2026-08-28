@@ -6,6 +6,7 @@ from __future__ import annotations
 import logging
 import threading
 import time
+from dataclasses import dataclass, field
 from typing import Any, TypeVar
 from urllib.parse import quote, urlsplit
 
@@ -67,6 +68,70 @@ def _validated_secret(
     return rendered
 
 
+def _validate_max_retries(max_retries: int) -> None:
+    if not isinstance(max_retries, int) or not 0 <= max_retries <= 10:
+        raise ParameterError("max_retries must be between 0 and 10")
+
+
+def _validate_host_text(host: str) -> None:
+    if not 1 <= len(host.encode("utf-8")) <= _MAX_URL_BYTES or _invalid_url_text(host):
+        raise MissingParameterError("GRAMPS_URL is required and must be valid")
+
+
+def _parsed_host(host: str):
+    parsed = urlsplit(host)
+    try:
+        _ = parsed.port
+    except ValueError:
+        raise ParameterError("GRAMPS_URL is invalid") from None
+    return parsed
+
+
+def _validate_host_authority(parsed: Any) -> None:
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise ParameterError("GRAMPS_URL must be an absolute HTTPS URL")
+    if parsed.username or parsed.password:
+        raise ParameterError("GRAMPS_URL must not contain credentials")
+    if parsed.query or parsed.fragment:
+        raise ParameterError("GRAMPS_URL must not contain a query or fragment")
+
+
+def _validated_host_url(url: str | None) -> str:
+    """Return the configured authority, rejecting anything but a bare HTTPS origin."""
+    host = str(url or "").strip().rstrip("/")
+    _validate_host_text(host)
+    parsed = _parsed_host(host)
+    _validate_host_authority(parsed)
+    return host
+
+
+def _validate_credential_mode(
+    token: str | None, username: str | None, password: str | None
+) -> None:
+    """A client authenticates by exactly one of: fixed token, or user+pass."""
+    if token and (username or password):
+        raise ParameterError("Configure either a token or a username/password pair")
+    if bool(username) != bool(password):
+        raise MissingParameterError(
+            "GRAMPS_USERNAME and GRAMPS_PASSWORD must be configured together"
+        )
+    if not token and not (username and password):
+        raise MissingParameterError(
+            "Configure GRAMPS_TOKEN or GRAMPS_USERNAME and GRAMPS_PASSWORD"
+        )
+
+
+@dataclass
+class _PaginationState:
+    """Fixed request shape reused across every page of one paginated call."""
+
+    method: str
+    url: str
+    params: dict = field(default_factory=dict)
+    pagesize: int = 1
+    max_pages: int = 10
+
+
 class GrampsApiBase:
     """Base client used by every generated Gramps API domain mixin."""
 
@@ -81,36 +146,9 @@ class GrampsApiBase:
         debug: bool = False,
     ) -> None:
         logger.setLevel(logging.DEBUG if debug else logging.ERROR)
-        if not isinstance(max_retries, int) or not 0 <= max_retries <= 10:
-            raise ParameterError("max_retries must be between 0 and 10")
-
-        host = str(url or "").strip().rstrip("/")
-        if not 1 <= len(host.encode("utf-8")) <= _MAX_URL_BYTES or _invalid_url_text(
-            host
-        ):
-            raise MissingParameterError("GRAMPS_URL is required and must be valid")
-        parsed = urlsplit(host)
-        try:
-            _ = parsed.port
-        except ValueError:
-            raise ParameterError("GRAMPS_URL is invalid") from None
-        if parsed.scheme != "https" or not parsed.hostname:
-            raise ParameterError("GRAMPS_URL must be an absolute HTTPS URL")
-        if parsed.username or parsed.password:
-            raise ParameterError("GRAMPS_URL must not contain credentials")
-        if parsed.query or parsed.fragment:
-            raise ParameterError("GRAMPS_URL must not contain a query or fragment")
-
-        if token and (username or password):
-            raise ParameterError("Configure either a token or a username/password pair")
-        if bool(username) != bool(password):
-            raise MissingParameterError(
-                "GRAMPS_USERNAME and GRAMPS_PASSWORD must be configured together"
-            )
-        if not token and not (username and password):
-            raise MissingParameterError(
-                "Configure GRAMPS_TOKEN or GRAMPS_USERNAME and GRAMPS_PASSWORD"
-            )
+        _validate_max_retries(max_retries)
+        host = _validated_host_url(url)
+        _validate_credential_mode(token, username, password)
 
         self.url = host
         self.debug = debug
@@ -212,36 +250,41 @@ class GrampsApiBase:
         self._token_expiry = time.monotonic() + max(1.0, lifetime - 60.0)
         return self._token
 
+    def _token_is_valid(self) -> bool:
+        return bool(self._token) and (
+            self._token_is_fixed or time.monotonic() < self._token_expiry
+        )
+
+    def _refresh_or_reauthenticate(self) -> str:
+        """Try the refresh token first, then fall back to username/password."""
+        if self._refresh_token:
+            try:
+                return self._accept_token_payload(
+                    self._token_request(
+                        "/api/token/refresh/",
+                        {"refresh_token": self._refresh_token},
+                    )
+                )
+            except AuthError:
+                if not (self._username and self._password):
+                    raise
+        if not (self._username and self._password):
+            raise AuthError("Gramps authentication must be renewed")
+        return self._accept_token_payload(
+            self._token_request(
+                "/api/token/",
+                {"username": self._username, "password": self._password},
+            )
+        )
+
     def _ensure_token(self) -> str:
         """Return a fixed or current short-lived bearer token."""
-        if self._token and (
-            self._token_is_fixed or time.monotonic() < self._token_expiry
-        ):
+        if self._token_is_valid():
             return self._token
         with self._token_lock:
-            if self._token and (
-                self._token_is_fixed or time.monotonic() < self._token_expiry
-            ):
+            if self._token_is_valid():
                 return self._token
-            if self._refresh_token:
-                try:
-                    return self._accept_token_payload(
-                        self._token_request(
-                            "/api/token/refresh/",
-                            {"refresh_token": self._refresh_token},
-                        )
-                    )
-                except AuthError:
-                    if not (self._username and self._password):
-                        raise
-            if not (self._username and self._password):
-                raise AuthError("Gramps authentication must be renewed")
-            return self._accept_token_payload(
-                self._token_request(
-                    "/api/token/",
-                    {"username": self._username, "password": self._password},
-                )
-            )
+            return self._refresh_or_reauthenticate()
 
     def _auth_headers(self, content_type: str | None = "application/json") -> dict:
         headers = {
@@ -253,9 +296,8 @@ class GrampsApiBase:
         return headers
 
     # --------------------------------------------------------------- url build
-    def _resolve_url(self, url_template: str, path_kwargs: dict[str, Any]) -> str:
-        """Resolve a generated relative template against the configured authority."""
-        template = str(url_template or "")
+    @staticmethod
+    def _validate_relative_template(template: str) -> None:
         if not 1 <= len(
             template.encode("utf-8")
         ) <= _MAX_URL_BYTES or _invalid_url_text(template):
@@ -263,9 +305,9 @@ class GrampsApiBase:
         parsed = urlsplit(template)
         if parsed.scheme or parsed.netloc or parsed.query or parsed.fragment:
             raise ParameterError("API URL template must be a relative path")
-        path = template
-        if not path.startswith("/"):
-            path = "/" + path
+
+    @staticmethod
+    def _substitute_path_params(path: str, path_kwargs: dict[str, Any]) -> str:
         for key, value in (path_kwargs or {}).items():
             rendered = str(value)
             if not 1 <= len(
@@ -273,11 +315,37 @@ class GrampsApiBase:
             ) <= _MAX_PATH_VALUE_BYTES or _has_controls(rendered):
                 raise ParameterError("Path parameter is invalid")
             path = path.replace("{" + key + "}", quote(rendered, safe=""))
+        return path
+
+    def _resolve_url(self, url_template: str, path_kwargs: dict[str, Any]) -> str:
+        """Resolve a generated relative template against the configured authority."""
+        template = str(url_template or "")
+        self._validate_relative_template(template)
+        path = template if template.startswith("/") else "/" + template
+        path = self._substitute_path_params(path, path_kwargs)
         if "{" in path or "}" in path:
             raise MissingParameterError("A required path parameter is missing")
         return f"{self.url}{path}"
 
     # ----------------------------------------------------------------- request
+    def _validate_same_authority(self, url: str) -> None:
+        request_url = urlsplit(url)
+        configured = urlsplit(self.url)
+        if (
+            request_url.scheme != configured.scheme
+            or request_url.netloc != configured.netloc
+        ):
+            raise ParameterError("Request authority differs from GRAMPS_URL")
+
+    @staticmethod
+    def _raise_for_status(response: requests.Response) -> None:
+        if response.status_code == 401:
+            raise AuthError("Gramps API rejected the active credential")
+        if response.status_code == 403:
+            raise UnauthorizedError("Gramps API denied the requested operation")
+        if not 200 <= response.status_code < 300:
+            raise ApiError(f"Gramps API returned HTTP {response.status_code}")
+
     def _request(
         self,
         method: str,
@@ -287,13 +355,7 @@ class GrampsApiBase:
         data: Any | None = None,
     ) -> requests.Response:
         """Perform one bounded request with transient retries and no redirects."""
-        request_url = urlsplit(url)
-        configured = urlsplit(self.url)
-        if (
-            request_url.scheme != configured.scheme
-            or request_url.netloc != configured.netloc
-        ):
-            raise ParameterError("Request authority differs from GRAMPS_URL")
+        self._validate_same_authority(url)
 
         attempt = 0
         while True:
@@ -317,12 +379,7 @@ class GrampsApiBase:
                 time.sleep(self._retry_delay(response, attempt))
                 attempt += 1
                 continue
-            if response.status_code == 401:
-                raise AuthError("Gramps API rejected the active credential")
-            if response.status_code == 403:
-                raise UnauthorizedError("Gramps API denied the requested operation")
-            if not 200 <= response.status_code < 300:
-                raise ApiError(f"Gramps API returned HTTP {response.status_code}")
+            self._raise_for_status(response)
             return response
 
     @staticmethod
@@ -350,6 +407,25 @@ class GrampsApiBase:
         return content
 
     # -------------------------------------------------------------- pagination
+    def _paginate(
+        self, state: _PaginationState, total: int, page: int, fetched: int
+    ) -> list:
+        """Collect every remaining page beyond the first, honoring the caps in state."""
+        collected: list = []
+        while total and fetched < total and page < state.max_pages:
+            page += 1
+            state.params["page"] = page
+            response = self._request(state.method, state.url, params=state.params)
+            chunk = self._decode(response)
+            items = chunk if isinstance(chunk, list) else self._extract_items(chunk)
+            if not items:
+                break
+            collected.extend(items)
+            fetched += len(items)
+            if len(items) < state.pagesize:
+                break
+        return collected
+
     def _fetch_all_pages(
         self, method: str, url: str, params: dict, max_pages: int
     ) -> tuple[requests.Response, list]:
@@ -358,25 +434,21 @@ class GrampsApiBase:
         first = self._request(method, url, params=params)
         body = self._decode(first)
         all_data = list(body) if isinstance(body, list) else self._extract_items(body)
-        max_pages = max_pages if max_pages and max_pages > 0 else 10
-        max_pages = min(max_pages, 1_000)
+        bounded_max_pages = min(max_pages, 1_000) if max_pages and max_pages > 0 else 10
 
-        total = self._total_count(first)
-        pagesize = int(params.get("pagesize", len(all_data) or 1) or 1)
-        page = int(params.get("page", 1) or 1)
-        fetched = len(all_data)
-        while total and fetched < total and page < max_pages:
-            page += 1
-            params["page"] = page
-            response = self._request(method, url, params=params)
-            chunk = self._decode(response)
-            items = chunk if isinstance(chunk, list) else self._extract_items(chunk)
-            if not items:
-                break
-            all_data.extend(items)
-            fetched += len(items)
-            if len(items) < pagesize:
-                break
+        state = _PaginationState(
+            method=method,
+            url=url,
+            params=params,
+            pagesize=int(params.get("pagesize", len(all_data) or 1) or 1),
+            max_pages=bounded_max_pages,
+        )
+        starting_page = int(params.get("page", 1) or 1)
+        all_data.extend(
+            self._paginate(
+                state, self._total_count(first), starting_page, len(all_data)
+            )
+        )
         return first, all_data
 
     @staticmethod
@@ -401,6 +473,53 @@ class GrampsApiBase:
         return 0
 
     # ----------------------------------------------------------- generated call
+    @staticmethod
+    def _drop_none_values(kwargs: dict) -> dict:
+        return {
+            key: value for key, value in (kwargs or {}).items() if value is not None
+        }
+
+    @staticmethod
+    def _pop_matching(kwargs: dict, keys: list[str]) -> dict:
+        return {key: kwargs.pop(key) for key in keys if key in kwargs}
+
+    @staticmethod
+    def _extract_body(has_body: bool, kwargs: dict) -> tuple[Any, dict]:
+        """Pull an explicit ``body`` kwarg, or fold the remaining kwargs into one."""
+        if not has_body:
+            return None, kwargs
+        body = kwargs.pop("body", None)
+        if body is None and kwargs:
+            return kwargs, {}
+        return body, kwargs
+
+    @classmethod
+    def _split_call_kwargs(
+        cls,
+        path_params: list[str],
+        query_params: list[str],
+        has_body: bool,
+        kwargs: dict,
+    ) -> tuple[dict, dict, Any]:
+        """Split raw call kwargs into (path_kwargs, query params, body)."""
+        kwargs = cls._drop_none_values(kwargs)
+        path_kwargs = cls._pop_matching(kwargs, path_params)
+        params = cls._pop_matching(kwargs, query_params)
+        body, kwargs = cls._extract_body(has_body, kwargs)
+        params.update(kwargs)
+        return path_kwargs, params, body
+
+    def _dispatch_call(
+        self, http: str, url: str, params: dict, body: Any, paginate: str
+    ) -> Response:
+        if http.upper() == "GET" and paginate == "offset":
+            max_pages = int(params.pop("max_pages", 0) or 0)
+            response, decoded = self._fetch_all_pages(http, url, params, max_pages)
+            return Response(response=response, data=decoded)
+        params.pop("max_pages", None)
+        response = self._request(http, url, params=params, json=body)
+        return Response(response=response, data=self._decode(response))
+
     def _call(
         self,
         http: str,
@@ -413,29 +532,11 @@ class GrampsApiBase:
     ) -> Response:
         """Dispatch one generated operation."""
         try:
-            kwargs = {
-                key: value for key, value in (kwargs or {}).items() if value is not None
-            }
-            path_kwargs = {key: kwargs.pop(key) for key in path_params if key in kwargs}
+            path_kwargs, params, body = self._split_call_kwargs(
+                path_params, query_params, has_body, kwargs
+            )
             url = self._resolve_url(url_template, path_kwargs)
-
-            params = {key: kwargs.pop(key) for key in query_params if key in kwargs}
-            body = None
-            if has_body:
-                body = kwargs.pop("body", None)
-                if body is None and kwargs:
-                    body = kwargs
-                    kwargs = {}
-            params.update(kwargs)
-
-            if http.upper() == "GET" and paginate == "offset":
-                max_pages = int(params.pop("max_pages", 0) or 0)
-                response, decoded = self._fetch_all_pages(http, url, params, max_pages)
-                return Response(response=response, data=decoded)
-
-            params.pop("max_pages", None)
-            response = self._request(http, url, params=params, json=body)
-            return Response(response=response, data=self._decode(response))
+            return self._dispatch_call(http, url, params, body, paginate)
         except (
             ApiError,
             AuthError,
@@ -448,6 +549,18 @@ class GrampsApiBase:
             raise ParameterError("Invalid API parameters") from None
         except (TypeError, ValueError):
             raise ParameterError("Invalid API parameters") from None
+
+    @staticmethod
+    def _invalid_endpoint_path(rendered: str, parsed: Any) -> bool:
+        return (
+            not 1 <= len(rendered.encode("utf-8")) <= _MAX_URL_BYTES
+            or _invalid_url_text(rendered)
+            or parsed.scheme
+            or parsed.netloc
+            or parsed.query
+            or parsed.fragment
+            or any(segment == ".." for segment in parsed.path.split("/"))
+        )
 
     def api_request(
         self,
@@ -462,15 +575,7 @@ class GrampsApiBase:
             raise ParameterError("Unsupported HTTP method")
         rendered = str(endpoint or "")
         parsed = urlsplit(rendered)
-        if (
-            not 1 <= len(rendered.encode("utf-8")) <= _MAX_URL_BYTES
-            or _invalid_url_text(rendered)
-            or parsed.scheme
-            or parsed.netloc
-            or parsed.query
-            or parsed.fragment
-            or any(segment == ".." for segment in parsed.path.split("/"))
-        ):
+        if self._invalid_endpoint_path(rendered, parsed):
             raise ParameterError("API endpoint path is invalid")
         url = self._resolve_url(parsed.path, {})
         response = self._request(method, url, params=params, json=json, data=data)
