@@ -231,6 +231,43 @@ def ingest_families(
     return ingest_entities(entities, relationships, client=client, graph=graph)
 
 
+def _event_type_text(ev: dict[str, Any]) -> Any:
+    ev_type = ev.get("type")
+    if isinstance(ev_type, dict):
+        return ev_type.get("string") or ev_type.get("value")
+    return ev_type
+
+
+def _event_date_text(ev: dict[str, Any]) -> str | None:
+    date = ev.get("date")
+    if isinstance(date, dict):
+        date = date.get("text") or date.get("dateval") or date.get("sortval")
+    return str(date) if date is not None else None
+
+
+def _event_entity(ev: dict[str, Any], handle: str, eid: str) -> dict[str, Any]:
+    return {
+        "id": eid,
+        "node_type": "Event",
+        "grampsId": ev.get("gramps_id"),
+        "handle": handle,
+        "eventType": _event_type_text(ev),
+        "eventDate": _event_date_text(ev),
+        "description": ev.get("description"),
+        "externalToolId": handle,
+    }
+
+
+def _event_place_relationship(eid: str, place: Any) -> dict[str, Any] | None:
+    if not place:
+        return None
+    return {
+        "source": eid,
+        "target": f"gramps:Place:{place}",
+        "relationship": "occurredAtPlace",
+    }
+
+
 def ingest_events(
     events: list[dict[str, Any]],
     *,
@@ -245,31 +282,8 @@ def ingest_events(
         if not handle:
             continue
         eid = f"gramps:Event:{handle}"
-        ev_type = ev.get("type")
-        if isinstance(ev_type, dict):
-            ev_type = ev_type.get("string") or ev_type.get("value")
-        date = ev.get("date")
-        if isinstance(date, dict):
-            date = date.get("text") or date.get("dateval") or date.get("sortval")
-        entities.append(
-            {
-                "id": eid,
-                "node_type": "Event",
-                "grampsId": ev.get("gramps_id"),
-                "handle": handle,
-                "eventType": ev_type,
-                "eventDate": str(date) if date is not None else None,
-                "description": ev.get("description"),
-                "externalToolId": handle,
-            }
-        )
-        place = ev.get("place")
-        if place:
-            relationships.append(
-                {
-                    "source": eid,
-                    "target": f"gramps:Place:{place}",
-                    "relationship": "occurredAtPlace",
-                }
-            )
+        entities.append(_event_entity(ev, handle, eid))
+        relationship = _event_place_relationship(eid, ev.get("place"))
+        if relationship:
+            relationships.append(relationship)
     return ingest_entities(entities, relationships, client=client, graph=graph)
