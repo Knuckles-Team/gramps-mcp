@@ -13,7 +13,18 @@ from gramps_mcp.auth import get_client
 
 
 def register_families_tools(mcp: FastMCP):
-    @mcp.tool(tags={"families"})
+    @mcp.tool(
+        tags={"families"},
+        annotations={
+            "readOnlyHint": False,
+            "destructiveHint": False,
+            "idempotentHint": False,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def gramps_families(
         action: Literal[
             "get_families", "get_family", "post_families", "post_merge_family"

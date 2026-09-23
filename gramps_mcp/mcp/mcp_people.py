@@ -13,7 +13,18 @@ from gramps_mcp.auth import get_client
 
 
 def register_people_tools(mcp: FastMCP):
-    @mcp.tool(tags={"people"})
+    @mcp.tool(
+        tags={"people"},
+        annotations={
+            "readOnlyHint": False,
+            "destructiveHint": False,
+            "idempotentHint": False,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def gramps_people(
         action: Literal["get_people", "get_person", "post_merge_person"] = Field(
             description="Action to perform. One of: 'get_person', 'get_people', 'post_merge_person'"

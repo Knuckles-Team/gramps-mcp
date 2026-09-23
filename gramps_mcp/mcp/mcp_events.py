@@ -13,7 +13,18 @@ from gramps_mcp.auth import get_client
 
 
 def register_events_tools(mcp: FastMCP):
-    @mcp.tool(tags={"events"})
+    @mcp.tool(
+        tags={"events"},
+        annotations={
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def gramps_events(
         action: Literal[
             "get_event", "get_event_span", "get_events", "get_merge_event"
