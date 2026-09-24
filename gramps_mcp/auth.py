@@ -2,18 +2,9 @@
 
 """Runtime-only authentication for a configured Gramps Web API authority."""
 
-import httpx
-from agent_connector_sdk.auth.delegation import (
-    DelegationSettings,
-    current_user_token,
-    exchange_token,
-)
+from agent_connector_sdk.auth.delegation import DelegationSettings, delegated_token
 from agent_connector_sdk.config import setting
-from agent_connector_sdk.exceptions import (
-    AuthError,
-    LoginRequiredError,
-    UnauthorizedError,
-)
+from agent_connector_sdk.exceptions import AuthError, UnauthorizedError
 from agent_connector_sdk.tls.profile import ResolvedTLSProfile
 from agent_connector_sdk.tls.resolve import resolve_tls_profile
 from agent_connector_sdk.utilities import get_logger
@@ -60,15 +51,9 @@ def _build_delegated_client(
     base_url: str, settings: DelegationSettings, profile: ResolvedTLSProfile
 ) -> Api:
     try:
-        subject_token = current_user_token()
-        if not subject_token:
-            raise LoginRequiredError("no verified caller token to delegate")
-        with httpx.Client(timeout=30) as http_client:
-            delegated_token = exchange_token(
-                settings, subject_token=subject_token, http_client=http_client
-            ).value
+        token = delegated_token(settings)
         logger.info("Using OIDC delegated credentials")
-        return Api(url=base_url, token=delegated_token, tls_profile=profile)
+        return Api(url=base_url, token=token, tls_profile=profile)
     except Exception as exc:
         profile.cleanup()
         logger.error(
