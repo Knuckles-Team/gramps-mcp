@@ -2,15 +2,21 @@
 
 """Runtime-only authentication for a configured Gramps Web API authority."""
 
-from typing import Any
-
-from agent_utilities.base_utilities import get_logger
-from agent_utilities.core.config import setting
-from agent_utilities.core.exceptions import AuthError, UnauthorizedError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
+import httpx
+from agent_connector_sdk.auth.delegation import (
+    DelegationSettings,
+    current_user_token,
+    exchange_token,
 )
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.exceptions import (
+    AuthError,
+    LoginRequiredError,
+    UnauthorizedError,
+)
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
+from agent_connector_sdk.utilities import get_logger
 
 from .api import Api
 
@@ -51,16 +57,16 @@ def _validate_fixed_credential_mode(
 
 
 def _build_delegated_client(
-    base_url: str, config: dict[str, Any] | None, profile: ResolvedTLSProfile
+    base_url: str, settings: DelegationSettings, profile: ResolvedTLSProfile
 ) -> Api:
-    from agent_utilities.mcp.delegated_auth import get_delegated_token
-
     try:
-        delegated_token = get_delegated_token(
-            config=config,
-            audience=(config or {}).get("audience", base_url),
-            scopes=(config or {}).get("delegated_scopes", "api"),
-        )
+        subject_token = current_user_token()
+        if not subject_token:
+            raise LoginRequiredError("no verified caller token to delegate")
+        with httpx.Client(timeout=30) as http_client:
+            delegated_token = exchange_token(
+                settings, subject_token=subject_token, http_client=http_client
+            ).value
         logger.info("Using OIDC delegated credentials")
         return Api(url=base_url, token=delegated_token, tls_profile=profile)
     except Exception as exc:
@@ -106,7 +112,6 @@ def get_client(
     username: str | None = None,
     password: str | None = None,
     tls_profile: ResolvedTLSProfile | None = None,
-    config: dict[str, Any] | None = None,
 ) -> Api:
     """Create a delegated or fixed-credential Gramps client.
 
@@ -116,25 +121,23 @@ def get_client(
     """
     global _client
 
-    from agent_utilities.mcp.delegated_auth import is_delegation_enabled
-
-    delegated = is_delegation_enabled(config)
+    settings = DelegationSettings.from_settings()
     explicit = any(
         value is not None for value in (url, token, username, password, tls_profile)
     )
-    if not delegated and not explicit and _client is not None:
+    if not settings.enabled and not explicit and _client is not None:
         return _client
 
     base_url, fixed_token, fixed_username, fixed_password = _resolve_client_credentials(
         url, token, username, password
     )
-    if not delegated:
+    if not settings.enabled:
         _validate_fixed_credential_mode(fixed_token, fixed_username, fixed_password)
 
-    profile = tls_profile or resolve_configured_tls_profile("gramps")
+    profile = tls_profile or resolve_tls_profile("gramps")
 
-    if delegated:
-        return _build_delegated_client(base_url, config, profile)
+    if settings.enabled:
+        return _build_delegated_client(base_url, settings, profile)
 
     client = _build_fixed_client(
         base_url, fixed_token, fixed_username, fixed_password, profile

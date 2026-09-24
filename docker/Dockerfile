@@ -1,19 +1,11 @@
 # syntax=docker/dockerfile:1
-# Two right-sized images from ONE Dockerfile, selected by build --target. Both are
-# slim multi-stage (build in a builder, ship only /usr/local — no dev-tools/source):
+# One slim multi-stage image (build in a builder, ship only /usr/local -- no
+# dev-tools/source): the MCP server. The agent-runtime (A2A) build target was
+# retired with gramps_mcp/agent_server.py (EH-481 policy: agent_server.py + its
+# console script are retired fleet-wide) -- this connector now ships only the
+# MCP server.
 #
-#   --target agent  (DEFAULT)  installs gramps-mcp[agent] = the current runtime
-#                              (agent-utilities[agent-runtime]: full engine + pydantic-ai +
-#                              skills). Because the closure also includes MCP, this image
-#                              can run EITHER the agent OR the mcp server. Push as the
-#                              default tags: latest / main / <version>.
-#
-#   --target mcp               installs gramps-mcp[mcp] = MCP-server tooling without
-#                              the agent UI/runtime. The mandatory epistemic-graph[full]
-#                              base dependency remains present.
-#
-#   docker build --target agent -t gramps-mcp:agent-local .
-#   docker build --target mcp   -t gramps-mcp:mcp    .
+#   docker build --target mcp -t gramps-mcp:mcp .
 FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS builder-base
 COPY --from=ghcr.io/astral-sh/uv:0.11.7@sha256:240fb85ab0f263ef12f492d8476aa3a2e4e1e333f7d67fbdd923d00a506a516a /uv /uvx /bin/
 WORKDIR /src
@@ -30,11 +22,6 @@ COPY . /src
 FROM builder-base AS builder-mcp
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --system --upgrade --break-system-packages ".[mcp]"
-
-# Full agent runtime dependency closure.
-FROM builder-base AS builder-agent
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv pip install --system --upgrade --break-system-packages ".[agent]"
 
 FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS runtime-base
 ARG HOST=0.0.0.0
@@ -65,12 +52,7 @@ RUN groupadd --system --gid 10001 gramps \
         /tmp/gramps-runtime
 USER gramps
 
-# Slim image: MCP server only.
+# MCP server image (the only image this connector ships).
 FROM runtime-base AS mcp
 COPY --from=builder-mcp /usr/local /usr/local
 CMD ["gramps-mcp"]
-
-# Full image (DEFAULT target): agent runtime; can also run the mcp server.
-FROM runtime-base AS agent
-COPY --from=builder-agent /usr/local /usr/local
-CMD ["gramps-agent"]

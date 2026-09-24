@@ -11,18 +11,16 @@ from typing import Any, TypeVar
 from urllib.parse import quote, urlsplit
 
 import requests
-from agent_utilities.base_utilities import get_logger
-from agent_utilities.core.exceptions import (
+from agent_connector_sdk.exceptions import (
     ApiError,
     AuthError,
     MissingParameterError,
     ParameterError,
     UnauthorizedError,
 )
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
+from agent_connector_sdk.utilities import get_logger
 from pydantic import ValidationError
 
 from gramps_mcp.gramps_models import Response
@@ -153,7 +151,7 @@ class GrampsApiBase:
         self.url = host
         self.debug = debug
         self.max_retries = max_retries
-        self.tls_profile = tls_profile or resolve_configured_tls_profile("gramps")
+        self.tls_profile = tls_profile or resolve_tls_profile("gramps")
         self._session = self.tls_profile.configure_requests_session(requests.Session())
         self._token_lock = threading.Lock()
         self._token = (
