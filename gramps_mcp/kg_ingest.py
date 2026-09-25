@@ -22,7 +22,11 @@ from typing import Any
 
 from agent_utilities.knowledge_graph.memory.native_ingest import (
     NativeIngestError,
+)
+from agent_utilities.knowledge_graph.memory.native_ingest import (
     ingest_documents as _native_ingest_documents,
+)
+from agent_utilities.knowledge_graph.memory.native_ingest import (
     ingest_entities as _native_ingest_entities,
 )
 
