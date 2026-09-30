@@ -280,9 +280,11 @@ class GrampsApiBase:
     def _ensure_token(self) -> str:
         """Return a fixed or current short-lived bearer token."""
         if self._token_is_valid():
+            assert self._token is not None
             return self._token
         with self._token_lock:
             if self._token_is_valid():
+                assert self._token is not None
                 return self._token
             return self._refresh_or_reauthenticate()
 

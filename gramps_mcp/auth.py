@@ -65,9 +65,7 @@ def _build_delegated_client(
         return Api(url=base_url, token=delegated_token, tls_profile=profile)
     except Exception as exc:
         profile.cleanup()
-        logger.error(
-            "OIDC delegation failed", extra={"error_type": type(exc).__name__}
-        )
+        logger.error("OIDC delegation failed", extra={"error_type": type(exc).__name__})
         raise RuntimeError("Token exchange failed") from None
 
 
