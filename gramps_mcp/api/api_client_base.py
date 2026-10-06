@@ -7,6 +7,7 @@ import logging
 import threading
 import time
 from dataclasses import dataclass, field
+from importlib.metadata import version
 from typing import Any, TypeVar
 from urllib.parse import quote, urlsplit
 
@@ -155,6 +156,7 @@ class GrampsApiBase:
         self.max_retries = max_retries
         self.tls_profile = tls_profile or resolve_configured_tls_profile("gramps")
         self._session = self.tls_profile.configure_requests_session(requests.Session())
+        self._session.headers["User-Agent"] = f"gramps-mcp/{version('gramps-mcp')}"
         self._token_lock = threading.Lock()
         self._token = (
             _validated_secret(
@@ -280,9 +282,11 @@ class GrampsApiBase:
     def _ensure_token(self) -> str:
         """Return a fixed or current short-lived bearer token."""
         if self._token_is_valid():
+            assert self._token is not None
             return self._token
         with self._token_lock:
             if self._token_is_valid():
+                assert self._token is not None
                 return self._token
             return self._refresh_or_reauthenticate()
 
