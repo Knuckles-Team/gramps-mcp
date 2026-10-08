@@ -11,7 +11,7 @@
 `gramps-mcp` exposes the public Gramps Web API as a typed Python client, a compact
 action-routed MCP server, and an optional A2A agent. All instance endpoints,
 credentials, identity-provider settings, TLS trust, tenant policy, and observability
-destinations are supplied at runtime.
+destinations are provided at runtime.
 
 ## Key capabilities
 
@@ -23,7 +23,7 @@ destinations are supplied at runtime.
   Agent Utilities dispatcher.
 - HTTPS peer and hostname verification are mandatory and configured through an
   AgentConfig-backed TLS profile; this package has no boolean verification bypass.
-- One comprehensive skill applies research evidence, living-person privacy, and
+- One complete skill applies research evidence, living-person privacy, and
   read-before-write safety across the complete surface.
 - Neutral ontology and source-preset inputs can be compiled centrally into a signed
   GraphOS capability. The provider exposes no direct graph-write tool.
@@ -291,7 +291,7 @@ mechanism. Never replace references with a credential or endpoint in a committed
 | `GRAMPS_URL` | Absolute HTTPS origin of the selected Gramps Web API |
 | `GRAMPS_TOKEN` | Fixed bearer credential when delegation is inactive |
 | `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` | Optional login pair when a fixed token is not used |
-| `TLS_PROFILE` / `TLS_PROFILES_REF` | Verified system/private trust and optional mTLS |
+| `TLS_PROFILE` / `TLS_PROFILES_REF` | Checked system/private trust and optional mTLS |
 | `MCP_TOOL_MODE` | `condensed`, `verbose`, `both`, or `intent` |
 
 The endpoint must not contain credentials, a query, or a fragment. The retired boolean
