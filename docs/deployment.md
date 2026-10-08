@@ -27,7 +27,7 @@ identity provider, graph database, or observability backend.
 
 When using streamable HTTP or SSE:
 
-1. Terminate TLS at an approved ingress or configure the server transport directly.
+1. Stop TLS at an approved ingress or configure the server transport directly.
 2. Require MCP client authentication and authorization.
 3. Limit the listener and ingress to intended callers.
 4. Apply request, response, and rate limits appropriate for genealogy exports and media.
