@@ -11,15 +11,11 @@ wrapper (mirroring the fleet convention used by ``gitlab-api`` /
 the original ``requests.Response`` metadata (status code, headers).
 """
 
-from typing import Generic, TypeVar
-
 import requests
 from pydantic import BaseModel, ConfigDict, Field
 
-T = TypeVar("T")
 
-
-class Response(BaseModel, Generic[T]):
+class Response[T](BaseModel):
     """Wrapper holding the parsed JSON payload plus the original HTTP response.
 
     Provides access to response metadata (``status_code``, ``headers``) while
