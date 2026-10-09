@@ -1,36 +1,53 @@
 """Native epistemic-graph media-blob ingestion — Wire-First coverage.
 
-Exercises the real ``ingest_media_blob`` seam with a fake ``MediaStore`` (no engine
-required), asserting the store_media call and the Gramps-media -> :MediaAsset mapping.
-CONCEPT:AU-KG.ingest.list-durable-media.
+Exercises the real ``ingest_media_blob`` seam against a fake SDK transport (no engine
+required), asserting the ``store_blob``/``submit`` calls and the Gramps-media ->
+:MediaAsset mapping. CONCEPT:AU-KG.ingest.list-durable-media.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import hashlib
+from types import SimpleNamespace
+from typing import Any
+
+import pytest
+from agent_connector_sdk.ingest import KnowledgeIngest
 
 from gramps_mcp.kg_media import ingest_media_blob
 
 
-@dataclass
-class _Stored:
-    asset_id: str
-    digest: str
+class _FakeTransport:
+    def __init__(self) -> None:
+        self.requests: list[Any] = []
+        self.stored: list[bytes] = []
+
+    async def source_status(self, connector: str, stream: str) -> Any:
+        return SimpleNamespace(accepted_checkpoint=None)
+
+    async def submit(self, request: Any) -> Any:
+        self.requests.append(request)
+        return SimpleNamespace(
+            affected_count=len(request.records),
+            relationship_count=len(request.relationships),
+        )
+
+    async def store_blob(self, data: bytes) -> str:
+        self.stored.append(data)
+        return hashlib.sha256(data).hexdigest()
 
 
-class _FakeMediaStore:
-    def __init__(self):
-        self.calls = []
-
-    def store_media(self, data, **kw):
-        self.calls.append((data, kw))
-        return _Stored(asset_id="gramps:media:deadbeef", digest="deadbeef")
+@pytest.fixture
+def ingest():
+    transport = _FakeTransport()
+    return KnowledgeIngest(transport, loop=None), transport
 
 
-def test_ingest_media_blob_stores_bytes_and_metadata():
-    store = _FakeMediaStore()
-    res = ingest_media_blob(
-        b"\xff\xd8jpeg-bytes",
+async def test_ingest_media_blob_stores_bytes_and_metadata(ingest):
+    service, transport = ingest
+    data = b"\xff\xd8jpeg-bytes"
+    res = await ingest_media_blob(
+        data,
         media={
             "handle": "M1",
             "gramps_id": "O0003",
@@ -39,40 +56,39 @@ def test_ingest_media_blob_stores_bytes_and_metadata():
             "desc": "Grandpa 1920",
             "checksum": "abc",
         },
-        store=store,
+        ingest=service,
     )
+    digest = hashlib.sha256(data).hexdigest()
     assert res is not None
-    assert res["asset_id"] == "gramps:media:deadbeef"
-    assert res["digest"] == "deadbeef"
+    assert res["asset_id"] == f"blob:{digest}"
+    assert res["digest"] == digest
     assert res["media_type"] == "image"
-    assert res["size_bytes"] == len(b"\xff\xd8jpeg-bytes")
+    assert res["size_bytes"] == len(data)
 
-    assert len(store.calls) == 1
-    data, kw = store.calls[0]
-    assert data == b"\xff\xd8jpeg-bytes"
-    assert kw["source"] == "gramps-mcp"
-    assert kw["mime_type"] == "image/jpeg"
-    assert kw["media_type"] == "image"
-    assert kw["name"] == "Grandpa 1920"
-    assert kw["extra"]["handle"] == "M1"
-    assert kw["extra"]["gramps_id"] == "O0003"
+    assert transport.stored == [data]
+    record = transport.requests[0].records[0]
+    assert record.payload["mime_type"] == "image/jpeg"
+    assert record.payload["name"] == "Grandpa 1920"
+    assert record.payload["handle"] == "M1"
+    assert record.payload["gramps_id"] == "O0003"
 
 
-def test_ingest_media_blob_defaults_mime_and_name():
-    store = _FakeMediaStore()
-    res = ingest_media_blob(b"x", media={"gramps_id": "O0009"}, store=store)
+async def test_ingest_media_blob_defaults_mime_and_name(ingest):
+    service, transport = ingest
+    res = await ingest_media_blob(b"x", media={"gramps_id": "O0009"}, ingest=service)
     assert res is not None
     assert res["media_type"] == "file"
-    _, kw = store.calls[0]
-    assert kw["mime_type"] == "application/octet-stream"
-    assert kw["name"] == "O0009"
+    record = transport.requests[0].records[0]
+    assert record.payload["mime_type"] == "application/octet-stream"
+    assert record.payload["name"] == "O0009"
 
 
-def test_ingest_media_blob_noops_without_engine():
-    # No injected store + no reachable engine -> clean no-op.
-    assert ingest_media_blob(b"x") is None
+async def test_ingest_media_blob_noops_without_engine():
+    # No injected ingest + no reachable engine -> clean no-op.
+    assert await ingest_media_blob(b"x") is None
 
 
-def test_ingest_media_blob_noops_on_empty_bytes():
-    assert ingest_media_blob(b"", store=_FakeMediaStore()) is None
-    assert ingest_media_blob(None, store=_FakeMediaStore()) is None
+async def test_ingest_media_blob_noops_on_empty_bytes(ingest):
+    service, _transport = ingest
+    assert await ingest_media_blob(b"", ingest=service) is None
+    assert await ingest_media_blob(None, ingest=service) is None

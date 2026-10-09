@@ -1,28 +1,23 @@
 """Native epistemic-graph typed-node ingestion — Wire-First coverage.
 
 Exercises the real ``ingest_entities`` / ``ingest_people`` / ``ingest_families`` /
-``ingest_events`` seam with a fake ChangeEnvelope-capable engine client (no engine
-required), asserting the committed nodes/edges and the Gramps record -> typed-node
-mapping. CONCEPT:AU-KG.ingest.enterprise-source-extractor.
+``ingest_events`` seam against a fake SDK transport (no engine required), asserting
+the submitted records/relationships and the Gramps record -> typed-node mapping.
+CONCEPT:AU-KG.ingest.enterprise-source-extractor.
 
-The fake client mirrors agent-utilities' own sanctioned test double
-(``agent-utilities/tests/knowledge_graph/test_native_ingest.py``) — the ``txn``-only
-fake is retired; ``native_ingest`` now hard-requires an injected client exposing
-``.changes``/``.nodes``/``.rdf``/``.supports()``. Unlike most fleet connectors,
-``gramps_mcp.kg_ingest`` is a **best-effort** surface (its MCP tools must never raise
-when the KG stack is down), so it converts ``NativeIngestError`` into ``None`` rather
-than propagating it — those semantics are exercised explicitly below.
+Unlike most fleet connectors, ``gramps_mcp.kg_ingest`` is a **best-effort** surface
+(its MCP tools must never raise when the KG stack is down), so it converts
+``IngestError``/``IngestUnavailableError`` into ``None`` rather than propagating it —
+those semantics are exercised explicitly below.
 """
 
 from __future__ import annotations
 
+from types import SimpleNamespace
 from typing import Any
 
-import msgpack
 import pytest
-from agent_utilities.knowledge_graph.core.session import GraphSession, use_session
-from agent_utilities.security.actor_identity import ActorType
-from agent_utilities.security.brain_context import ActorContext, use_actor
+from agent_connector_sdk.ingest import KnowledgeIngest
 
 from gramps_mcp.kg_ingest import (
     ingest_entities,
@@ -32,115 +27,51 @@ from gramps_mcp.kg_ingest import (
 )
 
 
-@pytest.fixture(autouse=True)
-def _governed_session():
-    actor = ActorContext(
-        actor_id="subject:opaque:synthetic",
-        actor_type=ActorType.AUTOMATED_SERVICE,
-        roles=(),
-        tenant_id="tenant:opaque:synthetic",
-        authenticated=True,
-    )
-    session = GraphSession(
-        actor=actor,
-        tenant=actor.tenant_id,
-        scopes=frozenset({"kg:write"}),
-        graph="graph:opaque:synthetic",
-        policy_version="policy:opaque:synthetic",
-        audience="epistemic-graph",
-    )
-    with use_actor(actor), use_session(session):
-        yield
-
-
-class _FakeNodes:
+class _FakeTransport:
     def __init__(self) -> None:
-        self.values: dict[str, dict[str, Any]] = {}
+        self.requests: list[Any] = []
 
-    def properties(self, node_id: str) -> dict[str, Any] | None:
-        return self.values.get(node_id)
+    async def source_status(self, connector: str, stream: str) -> Any:
+        return SimpleNamespace(accepted_checkpoint=None)
 
-    def list(self) -> list[tuple[str, dict[str, Any]]]:
-        return list(self.values.items())
+    async def submit(self, request: Any) -> Any:
+        self.requests.append(request)
+        return SimpleNamespace(
+            affected_count=len(request.records),
+            relationship_count=len(request.relationships),
+        )
 
-
-class _FakeChanges:
-    def __init__(self, nodes: _FakeNodes) -> None:
-        self.nodes = nodes
-        self.edges: list[tuple[str, str, dict[str, Any]]] = []
-        self.applied: list[dict[str, Any]] = []
-        self.records: dict[str, dict[str, Any]] = {}
-        self.versions: dict[str, dict[str, Any]] = {}
-
-    def get(self, envelope_id: str) -> dict[str, Any] | None:
-        return self.records.get(envelope_id)
-
-    def content_version(self, object_id: str) -> dict[str, Any] | None:
-        return self.versions.get(object_id)
-
-    def cursor(self, _source: str, _partition: str = "") -> None:
-        return None
-
-    def apply(self, envelope: dict[str, Any]) -> dict[str, Any]:
-        self.applied.append(envelope)
-        mutation = envelope["mutation"]
-        for operation in mutation["operations"]:
-            method = operation["method"]
-            params = method["params"]
-            properties = msgpack.unpackb(params["properties_msgpack"], raw=False)
-            if method["method"] == "AddNode":
-                self.nodes.values[params["node_id"]] = properties
-            elif method["method"] == "AddEdge":
-                self.edges.append(
-                    (params["source_id"], params["target_id"], properties)
-                )
-        version = envelope["content_version"]
-        self.versions[version["object_id"]] = version
-        self.records[envelope["envelope_id"]] = envelope
-        return {
-            "batch_id": mutation["batch_id"],
-            "replayed": False,
-            "projection_pending": False,
-        }
+    async def store_blob(self, data: Any) -> Any:
+        raise AssertionError("this connector's ingestion carries no media")
 
 
-class _FakeRdf:
-    def validate_shacl(self, _shapes: str, _data_graph: str) -> dict[str, Any]:
-        return {"conforms": True, "results": []}
+@pytest.fixture
+def ingest():
+    transport = _FakeTransport()
+    return KnowledgeIngest(transport, loop=None), transport
 
 
-class _FakeClient:
-    def __init__(self) -> None:
-        self.nodes = _FakeNodes()
-        self.changes = _FakeChanges(self.nodes)
-        self.rdf = _FakeRdf()
-
-    @staticmethod
-    def supports(operation: str) -> bool:
-        return operation == "ApplyChangeEnvelope"
-
-
-def test_ingest_entities_writes_nodes_and_edges():
-    c = _FakeClient()
-    res = ingest_entities(
+async def test_ingest_entities_writes_nodes_and_edges(ingest):
+    service, transport = ingest
+    res = await ingest_entities(
         [
             {"id": "a", "node_type": "Person", "name": "p"},
             {"id": "b", "node_type": "Family"},
         ],
         [{"source": "a", "target": "b", "relationship": "spouseInFamily"}],
-        client=c,
+        ingest=service,
     )
     assert res == {"nodes": 2, "edges": 1}
-    assert set(c.nodes.values) == {"a", "b"}
-    # provenance is stamped
-    assert c.nodes.values["a"]["source"] == "gramps-mcp"
-    assert c.nodes.values["a"]["domain"] == "gramps"
-    assert c.changes.edges == [("a", "b", {"relationship": "spouseInFamily"})]
+    record_ids = {r.record_id for r in transport.requests[0].records}
+    assert record_ids == {"a", "b"}
+    rel = transport.requests[0].relationships[0]
+    assert rel.source.record_id == "a"
+    assert rel.target.record_id == "b"
 
 
-def test_ingest_people_maps_person_and_links():
-    c = _FakeClient()
-    res = ingest_people(
+async def test_ingest_people_maps_person_and_links(ingest):
+    service, transport = ingest
+    res = await ingest_people(
         [
             {
                 "handle": "H1",
@@ -156,32 +87,33 @@ def test_ingest_people_maps_person_and_links():
                 "media_list": [{"ref": "M1"}],
             }
         ],
-        client=c,
+        ingest=service,
     )
     assert res == {"nodes": 1, "edges": 4}
-    node = c.nodes.values["gramps:Person:H1"]
-    assert node["node_type"] == "Person"
-    assert node["name"] == "John Doe"
-    assert node["gender"] == "male"
-    assert node["grampsId"] == "I0042"
-    assert node["externalToolId"] == "H1"
-    edge_types = {e[2]["relationship"] for e in c.changes.edges}
-    assert edge_types == {
-        "spouseInFamily",
-        "childInFamily",
-        "participatedInEvent",
-        "hasMedia",
-    }
-    assert (
-        "gramps:Person:H1",
+    node = transport.requests[0].records[0]
+    assert node.record_id == "gramps:Person:H1"
+    assert node.payload["name"] == "John Doe"
+    assert node.payload["gender"] == "male"
+    assert node.payload["grampsId"] == "I0042"
+    assert node.payload["externalToolId"] == "H1"
+    edge_targets = {r.target.record_id for r in transport.requests[0].relationships}
+    assert edge_targets == {
         "gramps:Family:F1",
-        {"relationship": "spouseInFamily"},
-    ) in c.changes.edges
+        "gramps:Family:F0",
+        "gramps:Event:E1",
+        "gramps:MediaAsset:M1",
+    }
+    spouse_edge = next(
+        r
+        for r in transport.requests[0].relationships
+        if r.target.record_id == "gramps:Family:F1"
+    )
+    assert spouse_edge.source.record_id == "gramps:Person:H1"
 
 
-def test_ingest_families_maps_parents_and_children():
-    c = _FakeClient()
-    res = ingest_families(
+async def test_ingest_families_maps_parents_and_children(ingest):
+    service, transport = ingest
+    res = await ingest_families(
         [
             {
                 "handle": "F1",
@@ -192,29 +124,28 @@ def test_ingest_families_maps_parents_and_children():
                 "child_ref_list": [{"ref": "HC1"}, {"ref": "HC2"}],
             }
         ],
-        client=c,
+        ingest=service,
     )
     assert res == {"nodes": 1, "edges": 4}
-    node = c.nodes.values["gramps:Family:F1"]
-    assert node["node_type"] == "Family"
-    assert node["familyRelType"] == "Married"
-    assert (
-        "gramps:Family:F1",
-        "gramps:Person:HF",
-        {"relationship": "hasFather"},
-    ) in c.changes.edges
-    assert (
-        "gramps:Family:F1",
-        "gramps:Person:HM",
-        {"relationship": "hasMother"},
-    ) in c.changes.edges
-    children = [e for e in c.changes.edges if e[2]["relationship"] == "hasChild"]
+    node = transport.requests[0].records[0]
+    assert node.record_id == "gramps:Family:F1"
+    assert node.payload["familyRelType"] == "Married"
+    rels = transport.requests[0].relationships
+    father_edge = next(r for r in rels if r.target.record_id == "gramps:Person:HF")
+    assert father_edge.source.record_id == "gramps:Family:F1"
+    mother_edge = next(r for r in rels if r.target.record_id == "gramps:Person:HM")
+    assert mother_edge.source.record_id == "gramps:Family:F1"
+    children = [
+        r
+        for r in rels
+        if r.target.record_id in ("gramps:Person:HC1", "gramps:Person:HC2")
+    ]
     assert len(children) == 2
 
 
-def test_ingest_events_maps_type_date_and_place():
-    c = _FakeClient()
-    res = ingest_events(
+async def test_ingest_events_maps_type_date_and_place(ingest):
+    service, transport = ingest
+    res = await ingest_events(
         [
             {
                 "handle": "E1",
@@ -225,34 +156,35 @@ def test_ingest_events_maps_type_date_and_place():
                 "place": "PL1",
             }
         ],
-        client=c,
+        ingest=service,
     )
     assert res == {"nodes": 1, "edges": 1}
-    node = c.nodes.values["gramps:Event:E1"]
-    assert node["node_type"] == "Event"
-    assert node["eventType"] == "Birth"
-    assert node["eventDate"] == "1900-01-01"
-    assert c.changes.edges == [
-        ("gramps:Event:E1", "gramps:Place:PL1", {"relationship": "occurredAtPlace"})
-    ]
+    node = transport.requests[0].records[0]
+    assert node.record_id == "gramps:Event:E1"
+    assert node.payload["eventType"] == "Birth"
+    assert node.payload["eventDate"] == "1900-01-01"
+    rel = transport.requests[0].relationships[0]
+    assert rel.source.record_id == "gramps:Event:E1"
+    assert rel.target.record_id == "gramps:Place:PL1"
 
 
-def test_ingest_noops_without_engine():
-    # No injected client + no reachable engine -> clean no-op (best-effort surface).
-    assert ingest_entities([{"id": "a", "node_type": "Person"}]) is None
+async def test_ingest_noops_without_engine():
+    # No injected ingest + no reachable engine -> clean no-op (best-effort surface).
+    assert await ingest_entities([{"id": "a", "node_type": "Person"}]) is None
 
 
-def test_ingest_rejects_retired_structural_alias_as_noop():
+async def test_ingest_rejects_retired_structural_alias_as_noop(ingest):
     # gramps_mcp's tool surface is best-effort (never raises): a malformed record
     # (the retired ``type`` alias instead of canonical ``node_type``) is reported
-    # back as a clean no-op rather than propagating NativeIngestError.
-    c = _FakeClient()
-    assert ingest_entities([{"id": "a", "type": "Person"}], client=c) is None
-    assert c.changes.applied == []
+    # back as a clean no-op rather than propagating IngestError.
+    service, transport = ingest
+    assert await ingest_entities([{"id": "a", "type": "Person"}], ingest=service) is None
+    assert transport.requests == []
 
 
-def test_ingest_empty_is_noop():
-    assert ingest_entities([], client=_FakeClient()) is None
-    assert ingest_people([], client=_FakeClient()) is None
-    assert ingest_families([], client=_FakeClient()) is None
-    assert ingest_events([], client=_FakeClient()) is None
+async def test_ingest_empty_is_noop(ingest):
+    service, _transport = ingest
+    assert await ingest_entities([], ingest=service) is None
+    assert await ingest_people([], ingest=service) is None
+    assert await ingest_families([], ingest=service) is None
+    assert await ingest_events([], ingest=service) is None
