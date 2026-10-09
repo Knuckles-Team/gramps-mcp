@@ -4,53 +4,38 @@ CONCEPT:AU-KG.ingest.list-durable-media. A Gramps media object references a real
 (a photo, a scanned certificate, a document image). When a live epistemic-graph engine
 is reachable, that file's raw bytes are stored as a content-addressed **blob** with a
 ``:MediaAsset`` graph node (carrying its Gramps metadata) in ONE cross-modal ACID commit
-via the agent-utilities ``MediaStore`` — making the image itself, not just a path,
-durable, deduped and queryable inside the knowledge graph.
+via the ``agent_connector_sdk.ingest`` facade — making the image itself, not just a
+path, durable, deduped and queryable inside the knowledge graph.
 
-The ``MediaStore`` is obtained through the shared fleet primitive
-``agent_utilities.knowledge_graph.memory.native_ingest.media_store`` when available, else
-a guarded local fallback. Everything is dependency-/engine-guarded: with no KG stack or no
-reachable engine every entry point **no-ops** (returns ``None``), so the connector runs
-with zero KG infrastructure.
+The knowledge-ingest service is obtained through ``agent_connector_sdk.ingest
+.current_ingest()`` (process-installed, or connected from settings on first use).
+Everything is dependency-/engine-guarded: with no KG stack or no reachable engine every
+entry point **no-ops** (returns ``None``), so the connector runs with zero KG
+infrastructure.
 """
 
 from __future__ import annotations
 
+import hashlib
 import logging
 from typing import Any
 
+from agent_connector_sdk.ingest import (
+    ChangeSet,
+    IngestBinding,
+    IngestError,
+    IngestUnavailableError,
+    KnowledgeIngest,
+    MediaAsset,
+    current_ingest,
+)
+
 logger = logging.getLogger("gramps_mcp.kg_media")
 
-_SOURCE = "gramps-mcp"
+_BINDING = IngestBinding(connector="gramps-mcp", stream="gramps-media")
 
 # Gramps media-object keys worth carrying onto the :MediaAsset node.
 _MEDIA_FIELDS = ("handle", "gramps_id", "path", "mime", "desc", "checksum", "date")
-
-
-def media_store() -> Any | None:
-    """Return a ``MediaStore`` over a live engine, or ``None`` when unavailable."""
-    try:
-        from agent_utilities.knowledge_graph.memory import native_ingest
-
-        return native_ingest.media_store()
-    except Exception as e:  # noqa: BLE001 — primitive not installed yet
-        logger.debug("KG media: shared primitive unavailable: %s", e)
-    try:
-        from agent_utilities.knowledge_graph.core.graph_compute import (
-            GraphComputeEngine,
-        )
-        from agent_utilities.knowledge_graph.memory.media_store import MediaStore
-    except Exception as e:  # noqa: BLE001 — KG stack absent
-        logger.debug("KG media ingest unavailable (import): %s", e)
-        return None
-    try:
-        engine = GraphComputeEngine()
-        if getattr(engine, "_client", None) is None:
-            return None
-        return MediaStore(engine)
-    except Exception as e:  # noqa: BLE001 — no reachable engine
-        logger.debug("KG media ingest: engine unreachable: %s", e)
-        return None
 
 
 def _media_type_for(mime: str) -> str:
@@ -71,48 +56,25 @@ def _media_display_name(media: dict[str, Any]) -> str:
     return media.get("desc") or media.get("path") or media.get("gramps_id") or "media"
 
 
-def _store_media(
-    store: Any,
-    data: bytes,
-    media_type: str,
-    mime: str,
-    source: str,
-    name: str,
-    extra: dict[str, Any],
-) -> Any | None:
-    try:
-        return store.store_media(
-            data,
-            media_type=media_type,
-            mime_type=mime,
-            source=source,
-            name=name,
-            extra=extra,
-        )
-    except Exception as e:  # noqa: BLE001 — engine/store failure is non-fatal
-        logger.warning("KG media ingest: store_media failed: %s", e)
-        return None
-
-
-def ingest_media_blob(
+async def ingest_media_blob(
     data: bytes | None,
     *,
     media: dict[str, Any] | None = None,
     mime_type: str | None = None,
-    source: str = _SOURCE,
-    store: Any | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, Any] | None:
     """Store a Gramps media file's raw bytes as a blob + ``:MediaAsset``. Never raises.
 
     ``data``: the raw file bytes (from ``get_media_file``). ``media``: the Gramps media
     object dict (handle/gramps_id/path/mime/desc/checksum). Returns
     ``{asset_id, digest, size_bytes, media_type}`` on success, or ``None`` when there is
-    no engine, no bytes, or the store failed. ``store`` may be injected (tests).
+    no engine, no bytes, or the store failed. ``ingest`` may be injected (tests).
+
+    ``digest`` is computed client-side (SHA-256 of ``data``) for the caller's immediate
+    use; it is the same content-addressing the engine's blob store uses, so it matches
+    the asset id the engine derives when no explicit id is set.
     """
     if not data:
-        return None
-    st = store if store is not None else media_store()
-    if st is None:
         return None
 
     media = media or {}
@@ -120,20 +82,21 @@ def ingest_media_blob(
     media_type = _media_type_for(mime)
     extra = _media_extra_fields(media)
     name = _media_display_name(media)
+    digest = hashlib.sha256(data).hexdigest()
 
-    stored = _store_media(st, data, media_type, mime, source, name, extra)
-    if stored is None:
+    asset = MediaAsset(data=data, mime_type=mime, name=name, properties=extra)
+    change_set = ChangeSet(media=(asset,))
+    try:
+        service = ingest if ingest is not None else current_ingest()
+        await service.submit(_BINDING, change_set)
+    except (IngestError, IngestUnavailableError) as exc:
+        logger.debug("KG media ingest unavailable/failed: %s", exc)
         return None
 
-    logger.info(
-        "KG media ingest: stored %s (%s bytes) as asset %s",
-        name,
-        len(data),
-        getattr(stored, "asset_id", "?"),
-    )
+    logger.info("KG media ingest: stored %s (%s bytes) digest=%s", name, len(data), digest)
     return {
-        "asset_id": getattr(stored, "asset_id", None),
-        "digest": getattr(stored, "digest", None),
+        "asset_id": f"blob:{digest}",
+        "digest": digest,
         "size_bytes": len(data),
         "media_type": media_type,
     }

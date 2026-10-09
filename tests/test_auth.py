@@ -9,7 +9,7 @@ from gramps_mcp.auth import get_client
 @pytest.mark.concept("GM-OS.identity.grmp")
 def test_get_client_auth_error_is_sanitized():
     """Client construction failure omits credential and provider details."""
-    from agent_utilities.core.exceptions import AuthError
+    from agent_connector_sdk.exceptions import AuthError
 
     auth_module._client = None
     profile = MagicMock()

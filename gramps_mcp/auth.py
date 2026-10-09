@@ -2,19 +2,17 @@
 
 """Runtime-only authentication for a configured Gramps Web API authority."""
 
+import logging
 from typing import Any
 
-from agent_utilities.base_utilities import get_logger
-from agent_utilities.core.config import setting
-from agent_utilities.core.exceptions import AuthError, UnauthorizedError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.exceptions import AuthError, UnauthorizedError
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 from .api import Api
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 _client: Api | None = None
 
 
@@ -129,7 +127,7 @@ def get_client(
     if not delegated:
         _validate_fixed_credential_mode(fixed_token, fixed_username, fixed_password)
 
-    profile = tls_profile or resolve_configured_tls_profile("gramps")
+    profile = tls_profile or resolve_tls_profile("gramps")
 
     if delegated:
         return _build_delegated_client(base_url, config, profile)
