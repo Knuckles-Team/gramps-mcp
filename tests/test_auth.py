@@ -14,7 +14,7 @@ def test_get_client_auth_error_is_sanitized():
     auth_module._client = None
     profile = MagicMock()
     with patch(
-        "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
+        "gramps_mcp.auth.is_delegation_enabled",
         return_value=False,
     ):
         with patch("gramps_mcp.auth.Api", side_effect=AuthError("provider detail")):
@@ -35,7 +35,7 @@ def test_get_client_builds_current_api_client():
     sentinel = object()
     profile = MagicMock()
     with patch(
-        "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
+        "gramps_mcp.auth.is_delegation_enabled",
         return_value=False,
     ):
         with patch("gramps_mcp.auth.Api", return_value=sentinel) as api_class:
@@ -58,7 +58,7 @@ def test_get_client_builds_current_api_client():
 def test_get_client_rejects_ambiguous_fixed_credentials():
     """A deployment cannot combine bearer and password authentication."""
     with patch(
-        "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
+        "gramps_mcp.auth.is_delegation_enabled",
         return_value=False,
     ):
         with pytest.raises(RuntimeError, match="either GRAMPS_TOKEN"):

@@ -48,17 +48,54 @@ def _validate_fixed_credential_mode(
         )
 
 
+def is_delegation_enabled(config: dict[str, Any] | None = None) -> bool:
+    """Whether OIDC token delegation is active.
+
+    An explicit ``config`` dict (test injection only) wins outright; otherwise
+    reads the real ``ENABLE_DELEGATION`` setting through
+    ``agent_connector_sdk.auth.delegation.DelegationSettings``.
+    """
+    if config is not None:
+        return bool(config.get("enable_delegation", False))
+    from agent_connector_sdk.auth.delegation import DelegationSettings
+
+    return DelegationSettings.from_settings().enabled
+
+
+def get_delegated_token(config: dict[str, Any] | None = None) -> str:
+    """Exchange the verified caller token for a downstream Gramps token (RFC 8693).
+
+    Reads delegation settings (``OIDC_TOKEN_URL``/``OIDC_CLIENT_ID``/
+    ``OIDC_CLIENT_SECRET_REF``/``AUDIENCE``/``DELEGATED_SCOPES``) from the process
+    settings via ``agent_connector_sdk.auth.delegation.DelegationSettings``; unlike the
+    old ``agent_utilities`` helper, there is no per-call ``config`` override for those
+    fields, only for whether delegation is attempted at all (see
+    :func:`is_delegation_enabled`).
+    """
+    import httpx
+    from agent_connector_sdk.auth.delegation import (
+        DelegationSettings,
+        current_user_token,
+        exchange_token,
+    )
+    from agent_connector_sdk.exceptions import LoginRequiredError
+
+    settings = DelegationSettings.from_settings()
+    subject_token = current_user_token()
+    if not subject_token:
+        raise LoginRequiredError("no verified caller token to delegate")
+    with httpx.Client(timeout=30) as http_client:
+        access_token = exchange_token(
+            settings, subject_token=subject_token, http_client=http_client
+        )
+    return access_token.value
+
+
 def _build_delegated_client(
     base_url: str, config: dict[str, Any] | None, profile: ResolvedTLSProfile
 ) -> Api:
-    from agent_utilities.mcp.delegated_auth import get_delegated_token
-
     try:
-        delegated_token = get_delegated_token(
-            config=config,
-            audience=(config or {}).get("audience", base_url),
-            scopes=(config or {}).get("delegated_scopes", "api"),
-        )
+        delegated_token = get_delegated_token(config=config)
         logger.info("Using OIDC delegated credentials")
         return Api(url=base_url, token=delegated_token, tls_profile=profile)
     except Exception as exc:
@@ -111,8 +148,6 @@ def get_client(
     dependency path reuses one fixed-credential client for the process lifetime.
     """
     global _client
-
-    from agent_utilities.mcp.delegated_auth import is_delegation_enabled
 
     delegated = is_delegation_enabled(config)
     explicit = any(
