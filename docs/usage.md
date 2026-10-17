@@ -46,6 +46,6 @@ evidence needed to answer the question.
 
 ## Source synchronization
 
-Do not call a provider graph-write tool; none is registered. Request the central GraphOS
+Do not call a provider graph-write tool; none is registered. Request the central Arbora
 source-sync capability only after its signed bundle, exact schema pins, and genealogy
 data policy have been approved.

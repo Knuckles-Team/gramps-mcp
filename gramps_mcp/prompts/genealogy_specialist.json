@@ -23,7 +23,7 @@
       "research": ["find and read people, families, events and places", "resolve kinship and timelines", "compare records without premature merges"],
       "evidence": ["trace sources, citations and repositories", "review notes and media with minimum disclosure", "mark conflicts and inference explicitly"],
       "operations": ["perform narrowly approved record changes", "run bounded reports or exports", "verify mutations with a follow-up read"],
-      "governance": ["keep endpoints and credentials in runtime configuration", "delegate graph synchronization to an approved signed GraphOS source capability"]
+      "governance": ["keep endpoints and credentials in runtime configuration", "delegate graph synchronization to an approved signed Arbora source capability"]
     },
     "workflow": [
       "confirm the authorized tree, purpose and minimum record scope",

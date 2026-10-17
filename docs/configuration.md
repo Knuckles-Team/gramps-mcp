@@ -19,7 +19,7 @@ dotenv files are not a configuration source.
 | `MCP_TOOL_MODE` | Condensed, verbose, both, or intent surface | Non-secret deployment choice |
 
 The checked-in `mcp_config.json` uses `env://GRAMPS_URL` and
-`env://GRAMPS_TOKEN`. GraphOS can map the aliases through
+`env://GRAMPS_TOKEN`. Arbora can map the aliases through
 `MCP_FLEET_SECRET_REFS` to an approved `env://`, `vault://`, or `secret://` source.
 A launcher without reference resolution must inject the values itself.
 
@@ -58,7 +58,7 @@ than prompts, responses, tool payloads, records, endpoints, credentials, or path
 ## Governed synchronization
 
 Provider ontology and source presets are unsigned human-authored inputs. They contain no
-live records or instance mapping and cannot write to a graph. GraphOS must compile and
+live records or instance mapping and cannot write to a graph. Arbora must compile and
 sign the exact live capability, then enforce tenant, ACL, consent, classification,
 retention, provenance, redaction, and deletion policy before source synchronization.
 

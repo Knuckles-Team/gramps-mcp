@@ -1,7 +1,7 @@
 ---
 name: gramps-genealogy-operations
 skill_type: skill
-description: Research and administer an authorized Gramps family-history system through gramps-mcp, including people, families, events, places, relationships, sources, citations, notes, media, DNA, timelines, imports, exports, trees, users, and supporting configuration. Use for evidence-based genealogy lookup, kinship resolution, media or record management, carefully approved mutations, or requesting centrally governed GraphOS synchronization of Gramps records.
+description: Research and administer an authorized Gramps family-history system through gramps-mcp, including people, families, events, places, relationships, sources, citations, notes, media, DNA, timelines, imports, exports, trees, users, and supporting configuration. Use for evidence-based genealogy lookup, kinship resolution, media or record management, carefully approved mutations, or requesting centrally governed Arbora synchronization of Gramps records.
 ---
 
 # Gramps Genealogy Operations
@@ -63,7 +63,7 @@ Common domains:
 ## Use governed graph synchronization
 
 This provider has no direct graph-write or raw-media-ingestion tool. If Gramps records
-must enter epistemic-graph, request GraphOS source synchronization using a centrally
+must enter epistemic-graph, request Arbora source synchronization using a centrally
 compiled and operator-approved signed capability bundle. Require exact live tool-schema
 pins plus tenant, ACL, classification, consent, retention, provenance, redaction, and
 deletion policy. A missing or stale certification must fail closed.

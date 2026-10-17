@@ -26,7 +26,7 @@ destinations are provided at runtime.
 - One complete skill applies research evidence, living-person privacy, and
   read-before-write safety across the complete surface.
 - Neutral ontology and source-preset inputs can be compiled centrally into a signed
-  GraphOS capability. The provider exposes no direct graph-write tool.
+  Arbora capability. The provider exposes no direct graph-write tool.
 
 ## Available MCP tools
 
@@ -282,7 +282,7 @@ The checked-in MCP configuration is reference-only:
 }
 ```
 
-An alias-aware GraphOS launcher resolves the two references before creating the child
+An alias-aware Arbora launcher resolves the two references before creating the child
 process. Other launchers must inject the values through their own runtime secret
 mechanism. Never replace references with a credential or endpoint in a committed file.
 
@@ -370,7 +370,7 @@ closed.
 Runtime endpoints, credentials, TLS trust, identity, tree/tenant policy, retention, and
 observability destinations are deployment inputs and never packaged values. Read
 [Configuration, trust, and privacy](docs/configuration.md) before enabling a network
-transport, GraphOS delegation, source synchronization, or trace export.
+transport, Arbora delegation, source synchronization, or trace export.
 <!-- GOVERNED-CAPABILITY:END -->
 
 ## Privacy and observability

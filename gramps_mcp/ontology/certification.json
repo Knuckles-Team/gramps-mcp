@@ -1,5 +1,5 @@
 {
-  "api_version": "graphos.io/v1",
+  "api_version": "arbora.io/v1",
   "artifacts": {
     "connector_manifest.yml": "c24d8948f729b83adc8fb121abd45f13d54e8afa0841a76b34bd0cbf5be275b6",
     "gramps_mcp/connectors/mcp_source_presets.json": "7e345fd4ff6234e92b61ea1a858cef1a6f1a1a061b1b5f5d96ad91bf647d606b",
