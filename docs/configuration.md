@@ -65,5 +65,5 @@ retention, provenance, redaction, and deletion policy before source synchronizat
 Validate the boundary without printing resolved values:
 
 ```bash
-agent-utilities-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
+agent-connector-sdk-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
 ```

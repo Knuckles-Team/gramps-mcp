@@ -68,7 +68,7 @@ def get_delegated_token(config: dict[str, Any] | None = None) -> str:
     Reads delegation settings (``OIDC_TOKEN_URL``/``OIDC_CLIENT_ID``/
     ``OIDC_CLIENT_SECRET_REF``/``AUDIENCE``/``DELEGATED_SCOPES``) from the process
     settings via ``agent_connector_sdk.auth.delegation.DelegationSettings``; unlike the
-    old ``agent_utilities`` helper, there is no per-call ``config`` override for those
+    old ``agent_connector_sdk`` helper, there is no per-call ``config`` override for those
     fields, only for whether delegation is attempted at all (see
     :func:`is_delegation_enabled`).
     """

@@ -140,5 +140,5 @@
     rdfs:comment """Gramps genealogy model — individuals (shared :Person), family units,
     life events, places, sources, citations and repositories, with their kinship,
     participation and provenance relationships, plus photos/scans as shared
-    :MediaAsset blobs — federated into the agent-utilities knowledge-graph hub.""" ;
+    :MediaAsset blobs — federated into the agent-connector-sdk knowledge-graph hub.""" ;
     owl:imports <http://knuckles.team/kg> .
