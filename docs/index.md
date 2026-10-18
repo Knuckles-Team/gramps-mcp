@@ -13,5 +13,5 @@ Start with:
 - [Deployment](deployment.md) for stdio, containers, and network exposure.
 - [Backing platform](platform.md) for the Gramps instance boundary.
 
-The provider ships neutral capability inputs but no direct graph-write tool. GraphOS
+The provider ships neutral capability inputs but no direct graph-write tool. Arbora
 source synchronization requires a centrally compiled and approved signed bundle.

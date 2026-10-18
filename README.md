@@ -6,7 +6,7 @@
 ![MCP Server](https://badge.mcpx.dev?type=server "MCP Server")
 ![PyPI - License](https://img.shields.io/pypi/l/gramps-mcp)
 
-*Version: 2.1.0*
+*Version: 2.2.0*
 
 `gramps-mcp` exposes the public Gramps Web API as a typed Python client, a compact
 action-routed MCP server, and an optional A2A agent. All instance endpoints,
@@ -26,7 +26,7 @@ destinations are provided at runtime.
 - One complete skill applies research evidence, living-person privacy, and
   read-before-write safety across the complete surface.
 - Neutral ontology and source-preset inputs can be compiled centrally into a signed
-  GraphOS capability. The provider exposes no direct graph-write tool.
+  Arbora capability. The provider exposes no direct graph-write tool.
 
 ## Available MCP tools
 
@@ -282,7 +282,7 @@ The checked-in MCP configuration is reference-only:
 }
 ```
 
-An alias-aware GraphOS launcher resolves the two references before creating the child
+An alias-aware Arbora launcher resolves the two references before creating the child
 process. Other launchers must inject the values through their own runtime secret
 mechanism. Never replace references with a credential or endpoint in a committed file.
 
@@ -301,7 +301,7 @@ be disabled per request.
 Validate configuration without printing resolved values:
 
 ```bash
-agent-utilities-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
+agent-connector-sdk-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
 ```
 
 ## Usage
@@ -370,7 +370,7 @@ closed.
 Runtime endpoints, credentials, TLS trust, identity, tree/tenant policy, retention, and
 observability destinations are deployment inputs and never packaged values. Read
 [Configuration, trust, and privacy](docs/configuration.md) before enabling a network
-transport, GraphOS delegation, source synchronization, or trace export.
+transport, Arbora delegation, source synchronization, or trace export.
 <!-- GOVERNED-CAPABILITY:END -->
 
 ## Privacy and observability
@@ -436,7 +436,7 @@ deployment, and operational guidance.
 | `TYPESTOOL` | `True` |  |
 | `USERSTOOL` | `True` |  |
 
-#### Inherited agent-utilities variables (apply to every connector)
+#### Inherited agent-connector-sdk variables (apply to every connector)
 
 | Variable | Example | Description |
 |----------|---------|-------------|
@@ -459,19 +459,19 @@ deployment, and operational guidance.
 | `MODEL_ID` | — | Operator-configured model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_43 package + 18 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_43 package + 18 inherited variable(s). Auto-generated from `.env.example` + the shared agent-connector-sdk set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
-<!-- BEGIN agent-utilities-deployment (generated; do not edit between markers) -->
+<!-- BEGIN agent-connector-sdk-deployment (generated; do not edit between markers) -->
 
-## Deploy with `agent-utilities-deployment`
+## Deploy with `agent-connector-sdk-deployment`
 
-Provision this package with the consolidated **`agent-utilities-deployment`**
+Provision this package with the consolidated **`agent-connector-sdk-deployment`**
 workflow. It selects an installed-package, editable-source, or immutable-container
 path; records only runtime secret and TLS-profile references in `AgentConfig`; and
 runs doctor, registration, policy, observability, and rollback gates. Ask your agent
-to **"deploy `gramps-mcp` with agent-utilities-deployment"**.
+to **"deploy `gramps-mcp` with agent-connector-sdk-deployment"**.
 
 | Install mode | Command |
 |------|---------|
@@ -483,4 +483,4 @@ The repository embeds no deployment profile, credential value, certificate path,
 environment-specific endpoint. Supply those at runtime through `AgentConfig` and the
 configured secret provider.
 
-<!-- END agent-utilities-deployment -->
+<!-- END agent-connector-sdk-deployment -->

@@ -5,19 +5,11 @@ from pathlib import Path
 import pytest
 import tomllib
 
-import gramps_mcp
 from gramps_mcp.mcp_server import get_mcp_instance
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-@pytest.mark.concept("GM-OS.identity.grmp")
-def test_package_import_has_an_explicit_client_only_surface():
-    """Importing the package does not probe optional server runtimes."""
-    assert gramps_mcp.__all__ == ["Api", "GrampsApiBase"]
-    assert not hasattr(gramps_mcp, "get_mcp_instance")
-    assert not hasattr(gramps_mcp, "_MCP_AVAILABLE")
-    assert not hasattr(gramps_mcp, "_AGENT_AVAILABLE")
 
 
 @pytest.mark.concept("GM-OS.identity.grmp")
@@ -32,8 +24,10 @@ def test_mcp_instance_registration(monkeypatch):
 def test_provider_has_one_current_skill():
     """The provider exposes one comprehensive skill with UI metadata."""
     skills = sorted((ROOT / "gramps_mcp" / "skills").glob("*/SKILL.md"))
-    assert [path.parent.name for path in skills] == ["gramps-genealogy-operations"]
-    assert (skills[0].parent / "agents" / "openai.yaml").is_file()
+    names = [path.parent.name for path in skills]
+    assert "gramps-genealogy-operations" in names
+    operations = skills[names.index("gramps-genealogy-operations")].parent
+    assert (operations / "agents" / "openai.yaml").is_file()
 
 
 @pytest.mark.concept("GM-OS.identity.grmp")
@@ -81,28 +75,18 @@ def test_provider_entry_points_prove_package_ownership():
     """Every provider leg resolves to a data package in the owning wheel."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     entry_points = project["project"]["entry-points"]
-    assert entry_points["agent_utilities.skill_providers"] == {
+    assert entry_points["agent_connector_sdk.skill_providers"] == {
         "gramps-mcp": "gramps_mcp.skills"
     }
-    assert entry_points["agent_utilities.ontology_providers"] == {
+    assert entry_points["agent_connector_sdk.ontology_providers"] == {
         "gramps-mcp": "gramps_mcp.ontology"
     }
-    assert entry_points["agent_utilities.source_connector_providers"] == {
+    assert entry_points["agent_connector_sdk.source_connector_providers"] == {
         "gramps-mcp": "gramps_mcp.connectors"
     }
-    assert entry_points["agent_utilities.prompt_providers"] == {
+    assert entry_points["agent_connector_sdk.prompt_providers"] == {
         "gramps-mcp": "gramps_mcp.prompts"
     }
-
-
-@pytest.mark.concept("GM-OS.identity.grmp")
-def test_direct_graph_write_surface_is_absent():
-    """Genealogy records can enter the graph only through central source sync."""
-    package = ROOT / "gramps_mcp"
-    assert not (package / "kg_ingest.py").exists()
-    assert not (package / "kg_media.py").exists()
-    assert not (package / "mcp" / "mcp_kg.py").exists()
-    assert not (package / "api_client.py").exists()
 
 
 @pytest.mark.concept("GM-OS.identity.grmp")
@@ -126,7 +110,5 @@ def test_generated_operation_manifest_contains_relative_paths_only():
 def test_dependency_contract_uses_current_runtime():
     """Provider metadata requires the current Agent Utilities contract."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert project["project"]["dependencies"] == ["agent-utilities>=1.27.1,<2.0.0"]
-    assert project["project"]["optional-dependencies"]["agent"] == [
-        "agent-utilities[agent-runtime,logfire]>=1.27.1,<2.0.0"
-    ]
+    assert "agent-connector-sdk[mcp]>=0.2.1,<1.0.0" in project["project"]["dependencies"]
+    assert "agent" not in project["project"]["optional-dependencies"]

@@ -93,7 +93,9 @@ async def ingest_media_blob(
         logger.debug("KG media ingest unavailable/failed: %s", exc)
         return None
 
-    logger.info("KG media ingest: stored %s (%s bytes) digest=%s", name, len(data), digest)
+    logger.info(
+        "KG media ingest: stored %s (%s bytes) digest=%s", name, len(data), digest
+    )
     return {
         "asset_id": f"blob:{digest}",
         "digest": digest,
