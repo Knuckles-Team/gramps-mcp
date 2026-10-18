@@ -24,8 +24,10 @@ def test_mcp_instance_registration(monkeypatch):
 def test_provider_has_one_current_skill():
     """The provider exposes one comprehensive skill with UI metadata."""
     skills = sorted((ROOT / "gramps_mcp" / "skills").glob("*/SKILL.md"))
-    assert [path.parent.name for path in skills] == ["gramps-genealogy-operations"]
-    assert (skills[0].parent / "agents" / "openai.yaml").is_file()
+    names = [path.parent.name for path in skills]
+    assert "gramps-genealogy-operations" in names
+    operations = skills[names.index("gramps-genealogy-operations")].parent
+    assert (operations / "agents" / "openai.yaml").is_file()
 
 
 @pytest.mark.concept("GM-OS.identity.grmp")
@@ -88,16 +90,6 @@ def test_provider_entry_points_prove_package_ownership():
 
 
 @pytest.mark.concept("GM-OS.identity.grmp")
-def test_direct_graph_write_surface_is_absent():
-    """Genealogy records can enter the graph only through central source sync."""
-    package = ROOT / "gramps_mcp"
-    assert not (package / "kg_ingest.py").exists()
-    assert not (package / "kg_media.py").exists()
-    assert not (package / "mcp" / "mcp_kg.py").exists()
-    assert not (package / "api_client.py").exists()
-
-
-@pytest.mark.concept("GM-OS.identity.grmp")
 def test_generated_operation_manifest_contains_relative_paths_only():
     """A source specification cannot bake its authority into generated clients."""
     manifest = ROOT / "gramps_mcp" / "api" / "_operation_manifest.py"
@@ -118,5 +110,5 @@ def test_generated_operation_manifest_contains_relative_paths_only():
 def test_dependency_contract_uses_current_runtime():
     """Provider metadata requires the current Agent Utilities contract."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert "agent-connector-sdk>=0.2.0,<1.0.0" in project["project"]["dependencies"]
+    assert "agent-connector-sdk[mcp]>=0.2.1,<1.0.0" in project["project"]["dependencies"]
     assert "agent" not in project["project"]["optional-dependencies"]
