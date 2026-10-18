@@ -1,10 +1,10 @@
 {
-  "algorithm": "agent-connector-sdk:mcp-tool-schema-compat:v1",
+  "algorithm": "agent-connector-sdk:mcp-tool-contract-compat:v2",
   "connector": "gramps-mcp",
   "schema_version": "1",
   "tools": {
-    "gramps_events": "0bacef97a3338bc3e2f68f956bbc17df376baadd5f3f21688b24bb8b0ec48388",
-    "gramps_families": "523983a3055fa1b483fa9f91d2f54490826b4b4e37bcd34152c4d261a4d5646a",
-    "gramps_people": "bdde859672e50c0ea1a552f97f8a189fc97897a67af81d95f68b486fb6d69a52"
+    "gramps_get_events": "27e483a6663410f43b7416eb905c3b9a674d39a2fa21c608162565fe8e98415a",
+    "gramps_get_families": "a3e4d292bce0d6569b06bb04afb1af3927e2b36feeee26a8378c3f00b3720695",
+    "gramps_get_people": "e82880ed9f625c158616fdef55d4cebd7f5f3920a58e256b32e795663e8f56ef"
   }
 }

@@ -2,10 +2,8 @@
   "_comment": "Human-authored, instance-neutral source inputs owned by gramps-mcp. They remain inactive until the central capability compiler produces and an operator approves a signed schema-v2 manifest with exact live tool-schema pins and genealogy-data policy.",
   "gramps-people": {
     "server": "gramps-mcp",
-    "tool": "gramps_people",
-    "action": "get_people",
-    "params_style": "json",
-    "params": {"pagesize": 100},
+    "tool": "gramps_get_people",
+    "params_style": "args",
     "records_path": "data",
     "id_field": "handle",
     "title_field": "gramps_id",
@@ -17,14 +15,15 @@
     "page_size_param": "pagesize",
     "page_size": 100,
     "start_page": 1,
-    "doc_type": "person"
+    "doc_type": "person",
+    "arguments": {
+      "pagesize": 100
+    }
   },
   "gramps-families": {
     "server": "gramps-mcp",
-    "tool": "gramps_families",
-    "action": "get_families",
-    "params_style": "json",
-    "params": {"pagesize": 100},
+    "tool": "gramps_get_families",
+    "params_style": "args",
     "records_path": "data",
     "id_field": "handle",
     "title_field": "gramps_id",
@@ -36,14 +35,15 @@
     "page_size_param": "pagesize",
     "page_size": 100,
     "start_page": 1,
-    "doc_type": "family"
+    "doc_type": "family",
+    "arguments": {
+      "pagesize": 100
+    }
   },
   "gramps-events": {
     "server": "gramps-mcp",
-    "tool": "gramps_events",
-    "action": "get_events",
-    "params_style": "json",
-    "params": {"pagesize": 100},
+    "tool": "gramps_get_events",
+    "params_style": "args",
     "records_path": "data",
     "id_field": "handle",
     "title_field": "gramps_id",
@@ -55,6 +55,9 @@
     "page_size_param": "pagesize",
     "page_size": 100,
     "start_page": 1,
-    "doc_type": "event"
+    "doc_type": "event",
+    "arguments": {
+      "pagesize": 100
+    }
   }
 }

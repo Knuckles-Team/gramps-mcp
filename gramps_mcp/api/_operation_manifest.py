@@ -4,7 +4,7 @@ from typing import Any
 
 # Each entry: {operation_id, domain, method, action, http, path, paginate,
 #             summary, params:[{name,type,required,description}]}
-# `summary` + `params` drive the verbose 1:1 tool tier (register_verbose_tools).
+# `summary` + `parameters` (OpenAPI shape; `params` is the legacy flat view) drive the verbose 1:1 tool tier (register_verbose_tools).
 OPERATIONS: list[dict[str, Any]] = [
     {
         "operation_id": "get_bookmark",
@@ -18,6 +18,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "namespace", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_bookmarks",
@@ -29,6 +37,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /bookmarks/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "delete_bookmark_edit",
@@ -47,6 +56,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
             {"name": "handle", "type": "string", "required": True, "description": ""},
+        ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
         ],
     },
     {
@@ -67,6 +90,20 @@ OPERATIONS: list[dict[str, Any]] = [
             },
             {"name": "handle", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "post_chat",
@@ -78,6 +115,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /chat/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_citation",
@@ -91,6 +129,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_citations",
@@ -102,6 +148,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /citations/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_citation",
@@ -126,6 +173,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_configs",
@@ -137,6 +198,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /config/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "delete_config",
@@ -149,6 +211,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "DELETE /config/{key}/",
         "params": [
             {"name": "key", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "key",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -163,6 +233,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "key", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "key",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "put_config",
@@ -175,6 +253,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "PUT /config/{key}/",
         "params": [
             {"name": "key", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "key",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -189,6 +275,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_person_ydna",
@@ -202,6 +296,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_dna_match_parser",
@@ -213,6 +315,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /parsers/dna-match",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_event_span",
@@ -227,6 +330,20 @@ OPERATIONS: list[dict[str, Any]] = [
             {"name": "handle1", "type": "string", "required": True, "description": ""},
             {"name": "handle2", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "handle1",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "handle2",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_event",
@@ -240,6 +357,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_events",
@@ -251,6 +376,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /events/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_event",
@@ -275,6 +401,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_exporter_file",
@@ -288,6 +428,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "extension", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "extension",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_exporter_file",
@@ -300,6 +448,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /exporters/{extension}/file",
         "params": [
             {"name": "extension", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "extension",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -320,6 +476,20 @@ OPERATIONS: list[dict[str, Any]] = [
             },
             {"name": "filename", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "extension",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "filename",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_exporter",
@@ -333,6 +503,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "extension", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "extension",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_exporters",
@@ -344,6 +522,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /exporters/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_facts",
@@ -355,6 +534,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /facts/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_family",
@@ -368,6 +548,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_families",
@@ -379,6 +567,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /families/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_families",
@@ -390,6 +579,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /families/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_merge_family",
@@ -414,6 +604,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "delete_filter",
@@ -432,6 +636,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
             {"name": "name", "type": "string", "required": True, "description": ""},
+        ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
         ],
     },
     {
@@ -452,6 +670,20 @@ OPERATIONS: list[dict[str, Any]] = [
             },
             {"name": "name", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_filters_namespace",
@@ -464,6 +696,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /filters/{namespace}",
         "params": [
             {"name": "namespace", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -478,6 +718,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "namespace", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "put_filters_namespace",
@@ -491,6 +739,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "namespace", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "namespace",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_filters",
@@ -502,6 +758,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /filters/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_holiday",
@@ -518,6 +775,32 @@ OPERATIONS: list[dict[str, Any]] = [
             {"name": "month", "type": "string", "required": True, "description": ""},
             {"name": "day", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "country",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "year",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "month",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "day",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_holidays",
@@ -529,6 +812,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /holidays/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_importer_file",
@@ -541,6 +825,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /importers/{extension}/file",
         "params": [
             {"name": "extension", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "extension",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -555,6 +847,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "extension", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "extension",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_importers",
@@ -566,6 +866,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /importers/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_living_dates",
@@ -578,6 +879,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /living/{handle}/dates",
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -592,6 +901,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_media_object",
@@ -605,6 +922,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_media_objects",
@@ -616,6 +941,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /media/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_media_objects",
@@ -627,6 +953,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /media/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_media",
@@ -651,6 +978,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_media_file",
@@ -663,6 +1004,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /media/{handle}/file",
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -677,6 +1026,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_media_face_detection",
@@ -689,6 +1046,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /media/{handle}/face_detection",
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -703,6 +1068,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_media_archive",
@@ -714,6 +1087,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /media/archive/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_media_archive_filename",
@@ -727,6 +1101,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "filename", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "filename",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_media_archive_upload_zip",
@@ -738,6 +1120,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /media/archive/upload/zip",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_metadata",
@@ -749,6 +1132,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /metadata/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_metadata_researcher",
@@ -760,6 +1144,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /metadata/researcher/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "put_metadata_researcher",
@@ -771,6 +1156,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /metadata/researcher/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_name_formats",
@@ -782,6 +1168,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /name-formats/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_set_name_group",
@@ -795,6 +1182,20 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "surname", "type": "string", "required": True, "description": ""},
             {"name": "group", "type": "string", "required": True, "description": ""},
+        ],
+        "parameters": [
+            {
+                "name": "surname",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "group",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
         ],
     },
     {
@@ -810,6 +1211,20 @@ OPERATIONS: list[dict[str, Any]] = [
             {"name": "surname", "type": "string", "required": True, "description": ""},
             {"name": "group", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "surname",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "group",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_get_name_group",
@@ -822,6 +1237,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /name-groups/{surname}",
         "params": [
             {"name": "surname", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "surname",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -836,6 +1259,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "surname", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "surname",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_name_groups",
@@ -847,6 +1278,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /name-groups/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_name_groups",
@@ -858,6 +1290,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /name-groups/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_note",
@@ -871,6 +1304,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_notes",
@@ -882,6 +1323,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /notes/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_note",
@@ -906,6 +1348,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_oidcloginresource",
@@ -917,6 +1373,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /oidc/login/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_oidccallbackresource",
@@ -928,6 +1385,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /oidc/callback/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_oidccallbackresource_provider",
@@ -946,6 +1404,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             }
         ],
+        "parameters": [
+            {
+                "name": "provider_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_oidcconfigresource",
@@ -957,6 +1423,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /oidc/config/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_oidctokenexchangeresource",
@@ -968,6 +1435,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /oidc/tokens/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_oidclogoutresource",
@@ -979,6 +1447,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /oidc/logout/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_oidcbackchannellogoutresource",
@@ -990,6 +1459,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /oidc/backchannel-logout/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_person",
@@ -1003,6 +1473,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_people",
@@ -1014,6 +1492,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /people/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_merge_person",
@@ -1038,6 +1517,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_place",
@@ -1051,6 +1544,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_places",
@@ -1062,6 +1563,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /places/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_place",
@@ -1086,6 +1588,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_relation",
@@ -1099,6 +1615,20 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle1", "type": "string", "required": True, "description": ""},
             {"name": "handle2", "type": "string", "required": True, "description": ""},
+        ],
+        "parameters": [
+            {
+                "name": "handle1",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "handle2",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
         ],
     },
     {
@@ -1114,6 +1644,20 @@ OPERATIONS: list[dict[str, Any]] = [
             {"name": "handle1", "type": "string", "required": True, "description": ""},
             {"name": "handle2", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "handle1",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "handle2",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_report_file",
@@ -1126,6 +1670,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /reports/{report_id}/file",
         "params": [
             {"name": "report_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "report_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1140,6 +1692,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "report_id", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "report_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_report",
@@ -1153,6 +1713,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "report_id", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "report_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_reports",
@@ -1164,6 +1732,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /reports/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_report_file_result",
@@ -1183,6 +1752,20 @@ OPERATIONS: list[dict[str, Any]] = [
             },
             {"name": "filename", "type": "string", "required": True, "description": ""},
         ],
+        "parameters": [
+            {
+                "name": "report_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "filename",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_repository",
@@ -1196,6 +1779,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_repositories",
@@ -1207,6 +1798,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /repositories/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_repository",
@@ -1231,6 +1823,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_search",
@@ -1242,6 +1848,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /search/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_search_index",
@@ -1253,6 +1860,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /search/index/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_source",
@@ -1266,6 +1874,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_sources",
@@ -1277,6 +1893,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /sources/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_merge_source",
@@ -1301,6 +1918,20 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
         ],
+        "parameters": [
+            {
+                "name": "phoenix_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "titanic_handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+        ],
     },
     {
         "operation_id": "get_tag",
@@ -1314,6 +1945,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_tags",
@@ -1325,6 +1964,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /tags/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_tasks",
@@ -1336,6 +1976,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /tasks/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_task",
@@ -1348,6 +1989,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /tasks/{task_id}",
         "params": [
             {"name": "task_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "task_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1362,6 +2011,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_family_timeline",
@@ -1375,6 +2032,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_timeline_people",
@@ -1386,6 +2051,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /timelines/people/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_timeline_families",
@@ -1397,6 +2063,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /timelines/families/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_token",
@@ -1408,6 +2075,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /token/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_token_refresh",
@@ -1419,6 +2087,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /token/refresh/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_token_create_owner",
@@ -1430,6 +2099,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /token/create_owner/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_token_create_owner",
@@ -1441,6 +2111,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /token/create_owner/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_objects",
@@ -1452,6 +2123,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /objects/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_delete_objects",
@@ -1463,6 +2135,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /objects/delete/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_delete_objects_by_handle",
@@ -1474,6 +2147,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /objects/delete-by-handle/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_transactions",
@@ -1485,6 +2159,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /transactions/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_transactions_history",
@@ -1496,6 +2171,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /transactions/history/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_transaction_history",
@@ -1512,6 +2188,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "type": "string",
                 "required": True,
                 "description": "",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "transaction_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
             }
         ],
     },
@@ -1532,6 +2216,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             }
         ],
+        "parameters": [
+            {
+                "name": "transaction_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_transaction_undo",
@@ -1550,6 +2242,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             }
         ],
+        "parameters": [
+            {
+                "name": "transaction_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_translation",
@@ -1562,6 +2262,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /translations/{language}",
         "params": [
             {"name": "language", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "language",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1576,6 +2284,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "language", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "language",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_translations",
@@ -1587,6 +2303,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /translations/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_tree",
@@ -1599,6 +2316,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /trees/{tree_id}",
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1613,6 +2338,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_trees",
@@ -1624,6 +2357,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /trees/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_trees",
@@ -1635,6 +2369,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /trees/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_disable_tree",
@@ -1647,6 +2382,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /trees/{tree_id}/disable",
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1661,6 +2404,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_repair_tree",
@@ -1673,6 +2424,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /trees/{tree_id}/repair",
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1687,6 +2446,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_tree_config",
@@ -1699,6 +2466,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /trees/{tree_id}/config",
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1713,6 +2488,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_verify",
@@ -1725,6 +2508,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /trees/{tree_id}/verify",
         "params": [
             {"name": "tree_id", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "tree_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1739,6 +2530,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "datatype", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "datatype",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_custom_types",
@@ -1750,6 +2549,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /types/custom/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_default_type_map",
@@ -1762,6 +2562,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /types/default/{datatype}/map",
         "params": [
             {"name": "datatype", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "datatype",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1776,6 +2584,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "datatype", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "datatype",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_default_types",
@@ -1787,6 +2603,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /types/default/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_types",
@@ -1798,6 +2615,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /types/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "get_users",
@@ -1809,6 +2627,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /users/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_users",
@@ -1820,6 +2639,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "delete_user",
@@ -1832,6 +2652,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "DELETE /users/{user_name}/",
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1846,6 +2674,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_user",
@@ -1858,6 +2694,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /users/{user_name}/",
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1872,6 +2716,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "post_register",
@@ -1884,6 +2736,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /users/{user_name}/register/",
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
     {
@@ -1898,6 +2758,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_confirm_email",
@@ -1909,6 +2777,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /users/-/email/confirm/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_change_password",
@@ -1922,6 +2791,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
         ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
     },
     {
         "operation_id": "get_reset_password",
@@ -1933,6 +2810,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "GET /users/-/password/reset/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_reset_password",
@@ -1944,6 +2822,7 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/-/password/reset/",
         "params": [],
+        "parameters": [],
     },
     {
         "operation_id": "post_trigger_reset_password",
@@ -1956,6 +2835,14 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "POST /users/{user_name}/password/reset/trigger/",
         "params": [
             {"name": "user_name", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "user_name",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
         ],
     },
 ]

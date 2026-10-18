@@ -402,6 +402,17 @@ def emit_manifest(by_domain: dict[str, list[dict]]) -> None:
             "paginate": op["paginate"],
             "summary": op["summary"],
             "params": op["params"],
+            "parameters": [
+                {
+                    "name": p["name"],
+                    "in": "path" if "{" + p["name"] + "}" in op["url_template"] else "query",
+                    "required": bool(p.get("required"))
+                    or "{" + p["name"] + "}" in op["url_template"],
+                    "schema": {"type": p.get("type") or "string"},
+                    **({"description": p["description"]} if p.get("description") else {}),
+                }
+                for p in op["params"]
+            ],
         }
         for domain in sorted(by_domain)
         for op in by_domain[domain]

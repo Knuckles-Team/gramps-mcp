@@ -46,9 +46,9 @@ def test_provider_owns_complete_neutral_source_bundle():
         (connectors / "tool_schema_fingerprints.json").read_text(encoding="utf-8")
     )
     assert set(fingerprints["tools"]) == {
-        "gramps_events",
-        "gramps_families",
-        "gramps_people",
+        "gramps_get_events",
+        "gramps_get_families",
+        "gramps_get_people",
     }
 
     ontology = ROOT / "gramps_mcp" / "ontology"
@@ -110,5 +110,5 @@ def test_generated_operation_manifest_contains_relative_paths_only():
 def test_dependency_contract_uses_current_runtime():
     """Provider metadata requires the current Agent Utilities contract."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert "agent-connector-sdk[mcp]>=0.2.1,<1.0.0" in project["project"]["dependencies"]
+    assert "agent-connector-sdk[mcp]>=0.3.0,<1.0.0" in project["project"]["dependencies"]
     assert "agent" not in project["project"]["optional-dependencies"]
