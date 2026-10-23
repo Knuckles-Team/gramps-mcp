@@ -15,17 +15,14 @@
 
 # --- classes (owl:Class) — genealogy-specific; :Person + :MediaAsset are shared ---
 
-:Family a owl:Class ;
-    rdfs:label "Family" ;
-    rdfs:comment "A family unit linking two partners and their children (gramps_families)." .
+:Family a owl:Class .
 
-:Event a owl:Class ;
-    rdfs:label "Event" ;
-    rdfs:comment "A dated life event — birth, marriage, death, burial, census (gramps_events)." .
 
-:Place a owl:Class ;
-    rdfs:label "Place" ;
-    rdfs:comment "A geographic place where an event occurred (gramps_places)." .
+:Event a owl:Class .
+
+
+:Place a owl:Class .
+
 
 :Source a owl:Class ;
     rdfs:label "Source" ;
@@ -35,9 +32,8 @@
     rdfs:label "Citation" ;
     rdfs:comment "A specific reference into a Source that supports a fact (gramps_citations)." .
 
-:Repository a owl:Class ;
-    rdfs:label "Repository" ;
-    rdfs:comment "An archive or library that holds sources (gramps_repositories)." .
+:Repository a owl:Class .
+
 
 # --- links (owl:ObjectProperty) ---
 
@@ -140,5 +136,4 @@
     rdfs:comment """Gramps genealogy model — individuals (shared :Person), family units,
     life events, places, sources, citations and repositories, with their kinship,
     participation and provenance relationships, plus photos/scans as shared
-    :MediaAsset blobs — federated into the agent-connector-sdk knowledge-graph hub.""" ;
-    owl:imports <http://knuckles.team/kg> .
+    :MediaAsset blobs — federated into the agent-connector-sdk knowledge-graph hub.""" .
