@@ -31,7 +31,7 @@ class _FakeTransport:
     def __init__(self) -> None:
         self.requests: list[Any] = []
 
-    async def source_status(self, connector: str, stream: str) -> Any:
+    async def source_status(self, _connector: str, _stream: str) -> Any:
         return SimpleNamespace(accepted_checkpoint=None)
 
     async def submit(self, request: Any) -> Any:
