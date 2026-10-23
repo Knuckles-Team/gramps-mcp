@@ -41,6 +41,10 @@ gramps-mcp = "gramps_mcp.connectors"
 [project.entry-points."agent_connector_sdk.prompt_providers"]
 gramps-mcp = "gramps_mcp.prompts"
 
+# The one declared connector identity: the fleet name (SDK-CONNECTOR-CONTROL-R071).
+[project.entry-points."agent_connector_sdk.connector"]
+gramps-mcp = "gramps_mcp"
+
 [tool.uv.workspace]
 members = ["."]
 
