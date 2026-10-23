@@ -4,8 +4,6 @@
   "schema_version": "1.0",
   "prompt_version": "0.1.0",
   "source": "gramps-mcp",
-  "extends": "agent-connector-sdk:base",
-  "compose": "append",
   "description": "Gramps genealogy specialist: evidence-based research and carefully governed record operations through gramps-mcp.",
   "metadata": {
     "topic": "Gramps genealogy",
