@@ -6,8 +6,6 @@
 ![MCP Server](https://badge.mcpx.dev?type=server "MCP Server")
 ![PyPI - License](https://img.shields.io/pypi/l/gramps-mcp)
 
-*Version: 2.3.3*
-
 `gramps-mcp` exposes the public Gramps Web API as a typed Python client, a compact
 action-routed MCP server, and an optional A2A agent. All instance endpoints,
 credentials, identity-provider settings, TLS trust, tenant policy, and observability

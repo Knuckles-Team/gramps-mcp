@@ -4,43 +4,36 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gramps-mcp"
-version = "2.3.3"
+version = "2.3.4"
 description = "Gramps API + MCP Server + A2A Agent — genealogy (people/families/events/places/sources/media)"
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12"
-dependencies = [ "agent-connector-sdk[mcp]>=0.4.1,<1.0.0", "requests>=2.34.2",]
+dependencies = [ "agent-connector-sdk[mcp]>=0.5.4,<0.6.0", "requests>=2.34.2",]
 [[project.authors]]
-name = "Project Maintainers"
-email = "maintainers@users.noreply.github.com"
+name = "Repository Maintainers"
+email = "maintainers@knuckles.team"
 
 [project.license]
 text = "MIT"
 
 [project.optional-dependencies]
-mcp = [ "agent-connector-sdk[mcp]>=0.4.1,<1.0.0",]
-all = [ "agent-connector-sdk[mcp]>=0.4.1,<1.0.0",]
 test = [
     "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0",]
 
 [project.scripts]
-gramps-mcp = "gramps_mcp.mcp_server:mcp_server"
+gramps-mcp = "agent_connector_sdk.cli:serve"
 
 # Fleet contribution (CONCEPT:OS-5.52): advertise this package's skills and
 # system-prompt blueprints so agent-connector-sdk' skill-installer and KG prompt
 # library discover them without importing this package's agent code.
-[project.entry-points."agent_connector_sdk.skill_providers"]
-gramps-mcp = "gramps_mcp.skills"
-
-[project.entry-points."agent_connector_sdk.ontology_providers"]
-gramps-mcp = "gramps_mcp.ontology"
 
 [project.entry-points."agent_connector_sdk.prompt_providers"]
 gramps-mcp = "gramps_mcp.prompts"
 
 # The one declared connector identity: the fleet name (SDK-CONNECTOR-CONTROL-R071).
 [project.entry-points."agent_connector_sdk.connector"]
-gramps-mcp = "gramps_mcp"
+gramps-mcp = "gramps_mcp:connector"
 
 [tool.uv.workspace]
 members = ["."]
@@ -54,6 +47,7 @@ override-dependencies = [
 ]
 
 [tool.ruff]
+extend-exclude = ["tests", "scripts"]
 line-length = 88
 target-version = "py312"
 
@@ -82,3 +76,8 @@ ignore_names = ["request", "config"]
 
 [tool.pipelines_hooks.ste]
 exempt = ["specs/*", "specs/**/*"]
+
+[tool.pipelines.container]
+host = "0.0.0.0"
+home = "/home/gramps"
+compose_env = ["GRAMPS_URL=${GRAMPS_URL:?supply GRAMPS_URL at runtime}", "GRAMPS_TOKEN=${GRAMPS_TOKEN:-}", "GRAMPS_USERNAME=${GRAMPS_USERNAME:-}", "GRAMPS_PASSWORD=${GRAMPS_PASSWORD:-}", "TLS_PROFILE=${TLS_PROFILE:-}", "TLS_PROFILES_REF=${TLS_PROFILES_REF:-}", "LANGFUSE_CAPTURE_CONTENT=${LANGFUSE_CAPTURE_CONTENT:-false}"]
