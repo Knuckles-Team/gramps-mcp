@@ -32,6 +32,8 @@ def _events(workflow: dict) -> dict:
 
 @pytest.mark.spec("PIPE-CONNSPEC-R126.3")
 def test_pages_caller_enables_dashboard_and_pages_permissions() -> None:
+    assert not (ROOT / ".github/workflows/docs.yml").exists()
+
     workflow = _workflow()
     events = _events(workflow)
     push = events["push"]
