@@ -1,9 +1,8 @@
 import ast
+import tomllib
 from pathlib import Path
 
 import pytest
-import tomllib
-
 from agent_connector_sdk.connector import build_server
 
 ROOT = Path(__file__).resolve().parents[1]
