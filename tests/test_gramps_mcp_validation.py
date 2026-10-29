@@ -1,9 +1,8 @@
 import ast
+import tomllib
 from pathlib import Path
 
 import pytest
-import tomllib
-
 from agent_connector_sdk.connector import build_server
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,5 +47,5 @@ def test_generated_operation_manifest_contains_relative_paths_only():
 def test_dependency_contract_uses_current_runtime():
     """Provider metadata requires the current Agent Utilities contract."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert "agent-connector-sdk[mcp]>=0.5.4,<0.6.0" in project["project"]["dependencies"]
+    assert "scion-sdk[mcp]>=0.5.9,<0.6.0" in project["project"]["dependencies"]
     assert "agent" not in project["project"]["optional-dependencies"]

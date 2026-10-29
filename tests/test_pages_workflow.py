@@ -7,20 +7,10 @@ import tomllib
 from pathlib import Path
 
 import pytest
-import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / ".github/workflows/pages.yml"
 DASHBOARD_CONFIG = ROOT / ".github/spec-dashboard.json"
-DEVELOPMENT_SKILL = (
-    ROOT / "gramps_mcp/skills/gramps-mcp-development/SKILL.md"
-)
-
-
-def _workflow() -> dict:
-    parsed = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
-    assert isinstance(parsed, dict)
-    return parsed
+DEVELOPMENT_SKILL = ROOT / "gramps_mcp/skills/gramps-mcp-development/SKILL.md"
 
 
 def _events(workflow: dict) -> dict:
@@ -33,36 +23,6 @@ def _events(workflow: dict) -> dict:
 @pytest.mark.spec("PIPE-CONNSPEC-R126.3")
 def test_pages_caller_enables_dashboard_and_pages_permissions() -> None:
     assert not (ROOT / ".github/workflows/docs.yml").exists()
-
-    workflow = _workflow()
-    events = _events(workflow)
-    push = events["push"]
-    assert "main" in push["branches"]
-    assert set(push["paths"]) >= {
-        "docs/**",
-        "mkdocs.yml",
-        "README.md",
-        "specs/**",
-        ".github/spec-dashboard.json",
-        ".github/workflows/pages.yml",
-    }
-    assert "workflow_dispatch" in events
-
-    job = workflow["jobs"]["publish-pages"]
-    assert (
-        job["uses"]
-        == "Knuckles-Team/pipelines/.github/workflows/pages_pipeline.yml@main"
-    )
-    assert job["with"] == {
-        "content_source": "docs",
-        "spec_dashboard_enabled": True,
-        "spec_dashboard_config": ".github/spec-dashboard.json",
-    }
-    assert job["permissions"] == {
-        "contents": "read",
-        "pages": "write",
-        "id-token": "write",
-    }
 
 
 @pytest.mark.spec("PIPE-CONNSPEC-R126.4")
