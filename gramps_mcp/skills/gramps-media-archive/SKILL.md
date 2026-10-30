@@ -12,7 +12,7 @@ description: >-
 license: MIT
 tags: [gramps, genealogy, media, blob, ocr, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Gramps Media Archive

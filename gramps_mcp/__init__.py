@@ -8,7 +8,7 @@ from gramps_mcp.api import Api, GrampsApiBase
 
 __all__ = ["Api", "GrampsApiBase"]
 
-from agent_connector_sdk.connector import Connector
+from scion_sdk.connector import Connector
 
 from gramps_mcp.api._operation_manifest import OPERATIONS
 from gramps_mcp.auth import get_client

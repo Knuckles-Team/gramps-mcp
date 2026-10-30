@@ -13,7 +13,7 @@ description: >-
 license: MIT
 tags: [gramps, genealogy, knowledge-graph, ingestion, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Gramps Tree Ingestion
@@ -78,5 +78,5 @@ best-effort and self-heal on re-ingest regardless of order).
 ## Related
 - **gramps-genealogy-research** — read the records these tools ingest.
 - **gramps-media-archive** — store the blob bytes behind the `:hasMedia` links.
-- The `agent-connector-sdk-source-integration` skill drives generic `source_sync` presets
+- The `scion-sdk-source-integration` skill drives generic `source_sync` presets
   (see `gramps_mcp/connectors/mcp_source_presets.json`).

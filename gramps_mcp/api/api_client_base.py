@@ -12,16 +12,16 @@ from typing import Any, TypeVar
 from urllib.parse import quote, urlsplit
 
 import requests
-from agent_connector_sdk.exceptions import (
+from pydantic import ValidationError
+from scion_sdk.exceptions import (
     ApiError,
     AuthError,
     MissingParameterError,
     ParameterError,
     UnauthorizedError,
 )
-from agent_connector_sdk.tls.profile import ResolvedTLSProfile
-from agent_connector_sdk.tls.resolve import resolve_tls_profile
-from pydantic import ValidationError
+from scion_sdk.tls.profile import ResolvedTLSProfile
+from scion_sdk.tls.resolve import resolve_tls_profile
 
 from gramps_mcp.gramps_models import Response
 
