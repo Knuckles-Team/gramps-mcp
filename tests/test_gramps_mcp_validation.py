@@ -47,5 +47,5 @@ def test_generated_operation_manifest_contains_relative_paths_only():
 def test_dependency_contract_uses_current_runtime():
     """Provider metadata requires the current Agent Utilities contract."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    assert "scion-sdk[mcp]>=0.6.2,<0.7.0" in project["project"]["dependencies"]
+    assert "scion-sdk[mcp]>=0.6.3,<0.7.0" in project["project"]["dependencies"]
     assert "agent" not in project["project"]["optional-dependencies"]
