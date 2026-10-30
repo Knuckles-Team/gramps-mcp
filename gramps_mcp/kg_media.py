@@ -4,10 +4,10 @@ CONCEPT:AU-KG.ingest.list-durable-media. A Gramps media object references a real
 (a photo, a scanned certificate, a document image). When a live epistemic-graph engine
 is reachable, that file's raw bytes are stored as a content-addressed **blob** with a
 ``:MediaAsset`` graph node (carrying its Gramps metadata) in ONE cross-modal ACID commit
-via the ``agent_connector_sdk.ingest`` facade — making the image itself, not just a
+via the ``scion_sdk.ingest`` facade — making the image itself, not just a
 path, durable, deduped and queryable inside the knowledge graph.
 
-The knowledge-ingest service is obtained through ``agent_connector_sdk.ingest
+The knowledge-ingest service is obtained through ``scion_sdk.ingest
 .current_ingest()`` (process-installed, or connected from settings on first use).
 Everything is dependency-/engine-guarded: with no KG stack or no reachable engine every
 entry point **no-ops** (returns ``None``), so the connector runs with zero KG
@@ -20,7 +20,7 @@ import hashlib
 import logging
 from typing import Any
 
-from agent_connector_sdk.ingest import (
+from scion_sdk.ingest import (
     ChangeSet,
     IngestBinding,
     IngestError,

@@ -12,7 +12,7 @@ description: >-
 license: MIT
 tags: [gramps, genealogy, people, families, events, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Gramps Genealogy Research

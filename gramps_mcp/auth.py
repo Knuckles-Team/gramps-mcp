@@ -5,10 +5,10 @@
 import logging
 from typing import Any
 
-from agent_connector_sdk.config import setting
-from agent_connector_sdk.exceptions import AuthError, UnauthorizedError
-from agent_connector_sdk.tls.profile import ResolvedTLSProfile
-from agent_connector_sdk.tls.resolve import resolve_tls_profile
+from scion_sdk.config import setting
+from scion_sdk.exceptions import AuthError, UnauthorizedError
+from scion_sdk.tls.profile import ResolvedTLSProfile
+from scion_sdk.tls.resolve import resolve_tls_profile
 
 from .api import Api
 
@@ -53,11 +53,11 @@ def is_delegation_enabled(config: dict[str, Any] | None = None) -> bool:
 
     An explicit ``config`` dict (test injection only) wins outright; otherwise
     reads the real ``ENABLE_DELEGATION`` setting through
-    ``agent_connector_sdk.auth.delegation.DelegationSettings``.
+    ``scion_sdk.auth.delegation.DelegationSettings``.
     """
     if config is not None:
         return bool(config.get("enable_delegation", False))
-    from agent_connector_sdk.auth.delegation import DelegationSettings
+    from scion_sdk.auth.delegation import DelegationSettings
 
     return DelegationSettings.from_settings().enabled
 
@@ -67,18 +67,18 @@ def get_delegated_token(config: dict[str, Any] | None = None) -> str:
 
     Reads delegation settings (``OIDC_TOKEN_URL``/``OIDC_CLIENT_ID``/
     ``OIDC_CLIENT_SECRET_REF``/``AUDIENCE``/``DELEGATED_SCOPES``) from the process
-    settings via ``agent_connector_sdk.auth.delegation.DelegationSettings``; unlike the
-    old ``agent_connector_sdk`` helper, there is no per-call ``config`` override for those
+    settings via ``scion_sdk.auth.delegation.DelegationSettings``; unlike the
+    old ``scion_sdk`` helper, there is no per-call ``config`` override for those
     fields, only for whether delegation is attempted at all (see
     :func:`is_delegation_enabled`).
     """
     import httpx
-    from agent_connector_sdk.auth.delegation import (
+    from scion_sdk.auth.delegation import (
         DelegationSettings,
         current_user_token,
         exchange_token,
     )
-    from agent_connector_sdk.exceptions import LoginRequiredError
+    from scion_sdk.exceptions import LoginRequiredError
 
     settings = DelegationSettings.from_settings()
     subject_token = current_user_token()

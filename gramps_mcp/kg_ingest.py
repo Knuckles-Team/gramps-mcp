@@ -4,7 +4,7 @@ CONCEPT:AU-KG.ingest.enterprise-source-extractor. This is the record-source twin
 the blob ingestion in :mod:`gramps_mcp.kg_media`: the connector natively pushes its
 genealogy data into the ONE epistemic-graph knowledge graph as **typed OWL nodes**
 (``:Person``, ``:Family``, ``:Event``, ``:Place``, …) plus kinship/participation links,
-through the ``agent_connector_sdk.ingest`` facade — the one connector write path;
+through the ``scion_sdk.ingest`` facade — the one connector write path;
 there is no self-contained fallback transaction here.
 
 The MCP tool surface exposes these as best-effort tools that must never raise on an
@@ -20,7 +20,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_connector_sdk.ingest import (
+from scion_sdk.ingest import (
     ChangeSet,
     Entity,
     IngestBinding,
