@@ -41,3 +41,39 @@ class GrampsCitations(GrampsApiBase):
             paginate="none",
             kwargs=kwargs,
         )
+
+    def delete_citation(self, **kwargs) -> Response:
+        """DELETE /citations/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/citations/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_citations(self, **kwargs) -> Response:
+        """POST /citations/"""
+        return self._call(
+            http="POST",
+            url_template="/api/citations/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_citation(self, **kwargs) -> Response:
+        """PUT /citations/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/citations/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )

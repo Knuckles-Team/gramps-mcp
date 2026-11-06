@@ -41,3 +41,39 @@ class GrampsSources(GrampsApiBase):
             paginate="none",
             kwargs=kwargs,
         )
+
+    def delete_source(self, **kwargs) -> Response:
+        """DELETE /sources/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/sources/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_sources(self, **kwargs) -> Response:
+        """POST /sources/"""
+        return self._call(
+            http="POST",
+            url_template="/api/sources/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_source(self, **kwargs) -> Response:
+        """PUT /sources/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/sources/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )

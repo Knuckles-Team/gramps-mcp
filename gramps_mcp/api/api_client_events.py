@@ -53,3 +53,39 @@ class GrampsEvents(GrampsApiBase):
             paginate="none",
             kwargs=kwargs,
         )
+
+    def delete_event(self, **kwargs) -> Response:
+        """DELETE /events/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/events/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_events(self, **kwargs) -> Response:
+        """POST /events/"""
+        return self._call(
+            http="POST",
+            url_template="/api/events/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_event(self, **kwargs) -> Response:
+        """PUT /events/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/events/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )

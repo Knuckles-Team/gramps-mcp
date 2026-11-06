@@ -25,7 +25,7 @@ class GrampsTranslations(GrampsApiBase):
             url_template="/api/translations/{language}",
             path_params=["language"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

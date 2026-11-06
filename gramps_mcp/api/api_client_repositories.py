@@ -41,3 +41,39 @@ class GrampsRepositories(GrampsApiBase):
             paginate="none",
             kwargs=kwargs,
         )
+
+    def delete_repository(self, **kwargs) -> Response:
+        """DELETE /repositories/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/repositories/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_repositories(self, **kwargs) -> Response:
+        """POST /repositories/"""
+        return self._call(
+            http="POST",
+            url_template="/api/repositories/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_repository(self, **kwargs) -> Response:
+        """PUT /repositories/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/repositories/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )

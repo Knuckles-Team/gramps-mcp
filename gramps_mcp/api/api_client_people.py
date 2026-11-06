@@ -37,7 +37,43 @@ class GrampsPeople(GrampsApiBase):
             url_template="/api/people/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def delete_person(self, **kwargs) -> Response:
+        """DELETE /people/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/people/{handle}",
+            path_params=["handle"],
+            query_params=[],
             has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_people(self, **kwargs) -> Response:
+        """POST /people/"""
+        return self._call(
+            http="POST",
+            url_template="/api/people/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_person(self, **kwargs) -> Response:
+        """PUT /people/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/people/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

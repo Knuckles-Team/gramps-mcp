@@ -37,7 +37,7 @@ class GrampsDna(GrampsApiBase):
             url_template="/api/parsers/dna-match",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

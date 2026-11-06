@@ -37,7 +37,7 @@ class GrampsMetadata(GrampsApiBase):
             url_template="/api/metadata/researcher/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

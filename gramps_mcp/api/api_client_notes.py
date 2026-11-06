@@ -41,3 +41,39 @@ class GrampsNotes(GrampsApiBase):
             paginate="none",
             kwargs=kwargs,
         )
+
+    def delete_note(self, **kwargs) -> Response:
+        """DELETE /notes/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/notes/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_notes(self, **kwargs) -> Response:
+        """POST /notes/"""
+        return self._call(
+            http="POST",
+            url_template="/api/notes/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_note(self, **kwargs) -> Response:
+        """PUT /notes/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/notes/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )

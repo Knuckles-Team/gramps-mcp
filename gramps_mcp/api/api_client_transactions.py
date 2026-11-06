@@ -13,7 +13,7 @@ class GrampsTransactions(GrampsApiBase):
             url_template="/api/objects/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -25,7 +25,7 @@ class GrampsTransactions(GrampsApiBase):
             url_template="/api/objects/delete/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -37,7 +37,7 @@ class GrampsTransactions(GrampsApiBase):
             url_template="/api/objects/delete-by-handle/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -49,7 +49,7 @@ class GrampsTransactions(GrampsApiBase):
             url_template="/api/transactions/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -97,7 +97,7 @@ class GrampsTransactions(GrampsApiBase):
             url_template="/api/transactions/history/{transaction_id}/undo",
             path_params=["transaction_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

@@ -16,7 +16,7 @@ def register_repositories_tools(mcp: FastMCP):
     @mcp.tool(tags={"repositories"})
     async def gramps_repositories(
         action: str = Field(
-            description="Action to perform. One of: 'get_repository', 'get_repositories', 'get_merge_repository'"
+            description="Action to perform. One of: 'get_repository', 'get_repositories', 'get_merge_repository', 'delete_repository', 'post_repositories', 'put_repository'"
         ),
         params_json: str = Field(
             default="{}",
@@ -46,6 +46,9 @@ def register_repositories_tools(mcp: FastMCP):
                 "get_repository",
                 "get_repositories",
                 "get_merge_repository",
+                "delete_repository",
+                "post_repositories",
+                "put_repository",
             },
             service="gramps",
         )

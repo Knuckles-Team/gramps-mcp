@@ -25,7 +25,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -61,7 +61,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/{user_name}/",
             path_params=["user_name"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -73,7 +73,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/{user_name}/",
             path_params=["user_name"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -85,7 +85,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/{user_name}/register/",
             path_params=["user_name"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -97,7 +97,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/{user_name}/create_owner/",
             path_params=["user_name"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -121,7 +121,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/{user_name}/password/change",
             path_params=["user_name"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -145,7 +145,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/-/password/reset/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -157,7 +157,7 @@ class GrampsUsers(GrampsApiBase):
             url_template="/api/users/{user_name}/password/reset/trigger/",
             path_params=["user_name"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

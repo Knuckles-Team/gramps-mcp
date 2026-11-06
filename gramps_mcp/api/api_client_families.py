@@ -25,7 +25,7 @@ class GrampsFamilies(GrampsApiBase):
             url_template="/api/families/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -49,7 +49,31 @@ class GrampsFamilies(GrampsApiBase):
             url_template="/api/families/{phoenix_handle}/merge/{titanic_handle}",
             path_params=["phoenix_handle", "titanic_handle"],
             query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def delete_family(self, **kwargs) -> Response:
+        """DELETE /families/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/families/{handle}",
+            path_params=["handle"],
+            query_params=[],
             has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_family(self, **kwargs) -> Response:
+        """PUT /families/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/families/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

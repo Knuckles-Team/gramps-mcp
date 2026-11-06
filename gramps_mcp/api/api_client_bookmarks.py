@@ -49,7 +49,7 @@ class GrampsBookmarks(GrampsApiBase):
             url_template="/api/bookmarks/{namespace}/{handle}",
             path_params=["namespace", "handle"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

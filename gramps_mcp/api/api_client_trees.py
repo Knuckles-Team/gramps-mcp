@@ -25,7 +25,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -49,7 +49,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -61,7 +61,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}/disable",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -73,7 +73,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}/enable",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -85,7 +85,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}/repair",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -97,7 +97,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}/migrate",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -121,7 +121,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}/config",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -133,7 +133,7 @@ class GrampsTrees(GrampsApiBase):
             url_template="/api/trees/{tree_id}/verify",
             path_params=["tree_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

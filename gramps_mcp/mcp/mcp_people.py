@@ -16,7 +16,7 @@ def register_people_tools(mcp: FastMCP):
     @mcp.tool(tags={"people"})
     async def gramps_people(
         action: str = Field(
-            description="Action to perform. One of: 'get_person', 'get_people', 'post_merge_person'"
+            description="Action to perform. One of: 'get_person', 'get_people', 'post_merge_person', 'delete_person', 'post_people', 'put_person'"
         ),
         params_json: str = Field(
             default="{}",
@@ -46,6 +46,9 @@ def register_people_tools(mcp: FastMCP):
                 "get_person",
                 "get_people",
                 "post_merge_person",
+                "delete_person",
+                "post_people",
+                "put_person",
             },
             service="gramps",
         )

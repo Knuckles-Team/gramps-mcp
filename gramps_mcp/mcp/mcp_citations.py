@@ -16,7 +16,7 @@ def register_citations_tools(mcp: FastMCP):
     @mcp.tool(tags={"citations"})
     async def gramps_citations(
         action: str = Field(
-            description="Action to perform. One of: 'get_citation', 'get_citations', 'get_merge_citation'"
+            description="Action to perform. One of: 'get_citation', 'get_citations', 'get_merge_citation', 'delete_citation', 'post_citations', 'put_citation'"
         ),
         params_json: str = Field(
             default="{}",
@@ -46,6 +46,9 @@ def register_citations_tools(mcp: FastMCP):
                 "get_citation",
                 "get_citations",
                 "get_merge_citation",
+                "delete_citation",
+                "post_citations",
+                "put_citation",
             },
             service="gramps",
         )

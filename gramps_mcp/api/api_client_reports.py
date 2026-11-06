@@ -25,7 +25,7 @@ class GrampsReports(GrampsApiBase):
             url_template="/api/reports/{report_id}/file",
             path_params=["report_id"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

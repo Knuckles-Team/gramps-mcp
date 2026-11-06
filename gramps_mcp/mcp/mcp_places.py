@@ -16,7 +16,7 @@ def register_places_tools(mcp: FastMCP):
     @mcp.tool(tags={"places"})
     async def gramps_places(
         action: str = Field(
-            description="Action to perform. One of: 'get_place', 'get_places', 'get_merge_place'"
+            description="Action to perform. One of: 'get_place', 'get_places', 'get_merge_place', 'delete_place', 'post_places', 'put_place'"
         ),
         params_json: str = Field(
             default="{}",
@@ -46,6 +46,9 @@ def register_places_tools(mcp: FastMCP):
                 "get_place",
                 "get_places",
                 "get_merge_place",
+                "delete_place",
+                "post_places",
+                "put_place",
             },
             service="gramps",
         )

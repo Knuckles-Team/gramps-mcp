@@ -16,7 +16,7 @@ def register_events_tools(mcp: FastMCP):
     @mcp.tool(tags={"events"})
     async def gramps_events(
         action: str = Field(
-            description="Action to perform. One of: 'get_event_span', 'get_event', 'get_events', 'get_merge_event'"
+            description="Action to perform. One of: 'get_event_span', 'get_event', 'get_events', 'get_merge_event', 'delete_event', 'post_events', 'put_event'"
         ),
         params_json: str = Field(
             default="{}",
@@ -47,6 +47,9 @@ def register_events_tools(mcp: FastMCP):
                 "get_event",
                 "get_events",
                 "get_merge_event",
+                "delete_event",
+                "post_events",
+                "put_event",
             },
             service="gramps",
         )

@@ -13,7 +13,7 @@ class GrampsToken(GrampsApiBase):
             url_template="/api/token/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -25,7 +25,7 @@ class GrampsToken(GrampsApiBase):
             url_template="/api/token/refresh/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -49,7 +49,7 @@ class GrampsToken(GrampsApiBase):
             url_template="/api/token/create_owner/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

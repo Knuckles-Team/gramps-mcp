@@ -16,7 +16,7 @@ def register_families_tools(mcp: FastMCP):
     @mcp.tool(tags={"families"})
     async def gramps_families(
         action: str = Field(
-            description="Action to perform. One of: 'get_family', 'post_families', 'get_families', 'post_merge_family'"
+            description="Action to perform. One of: 'get_family', 'post_families', 'get_families', 'post_merge_family', 'delete_family', 'put_family'"
         ),
         params_json: str = Field(
             default="{}",
@@ -47,6 +47,8 @@ def register_families_tools(mcp: FastMCP):
                 "post_families",
                 "get_families",
                 "post_merge_family",
+                "delete_family",
+                "put_family",
             },
             service="gramps",
         )
