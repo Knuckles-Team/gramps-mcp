@@ -12,11 +12,11 @@ living people, DNA, notes, media, contact details, user accounts, and authentica
 
 ## Invoke the tools
 
-Prefer the condensed tool for a domain. Pass its documented `action` and serialize
-parameters as a JSON object in `params_json`. Use exact actions exposed by the server;
-do not invent a raw HTTP call or infer a record from a display name.
+Call the typed tool for the operation (`gramps_get_person`, `gramps_post_tags`, ...); each
+Gramps Web API operation is its own tool and takes real arguments. Use exact tool names
+exposed by the server; do not invent a raw HTTP call or infer a record from a display name.
 
-Common domains:
+Common domains (tool-name stems):
 
 - Research: `gramps_people`, `gramps_families`, `gramps_events`, `gramps_places`,
   `gramps_relations`, `gramps_timeline`, `gramps_search`, `gramps_living`.
