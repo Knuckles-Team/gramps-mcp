@@ -4,7 +4,7 @@ from typing import Any
 
 # Each entry: {operation_id, domain, method, action, http, path, paginate,
 #             summary, params:[{name,type,required,description}]}
-# `summary` + `parameters` (OpenAPI shape; `params` is the legacy flat view) drive the verbose 1:1 tool tier (register_verbose_tools).
+# `summary` + `params` drive the verbose 1:1 tool tier (register_verbose_tools).
 OPERATIONS: list[dict[str, Any]] = [
     {
         "operation_id": "get_bookmark",
@@ -89,6 +89,12 @@ OPERATIONS: list[dict[str, Any]] = [
                 "description": "",
             },
             {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -103,6 +109,13 @@ OPERATIONS: list[dict[str, Any]] = [
                 "required": True,
                 "schema": {"type": "string"},
             },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -114,8 +127,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/chat/",
         "paginate": "none",
         "summary": "POST /chat/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_citation",
@@ -139,6 +167,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_citation",
+        "domain": "citations",
+        "method": "put_citation",
+        "action": "put_citation",
+        "http": "PUT",
+        "path": "/api/citations/{handle}",
+        "paginate": "none",
+        "summary": "PUT /citations/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_citation",
+        "domain": "citations",
+        "method": "delete_citation",
+        "action": "delete_citation",
+        "http": "DELETE",
+        "path": "/api/citations/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /citations/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_citations",
         "domain": "citations",
         "method": "get_citations",
@@ -149,6 +232,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /citations/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_citations",
+        "domain": "citations",
+        "method": "post_citations",
+        "action": "post_citations",
+        "http": "POST",
+        "path": "/api/citations/",
+        "paginate": "none",
+        "summary": "POST /citations/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_merge_citation",
@@ -252,7 +362,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /config/{key}/",
         "params": [
-            {"name": "key", "type": "string", "required": True, "description": ""}
+            {"name": "key", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -260,7 +376,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -314,8 +437,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/parsers/dna-match",
         "paginate": "none",
         "summary": "POST /parsers/dna-match",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_event_span",
@@ -367,6 +505,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_event",
+        "domain": "events",
+        "method": "put_event",
+        "action": "put_event",
+        "http": "PUT",
+        "path": "/api/events/{handle}",
+        "paginate": "none",
+        "summary": "PUT /events/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_event",
+        "domain": "events",
+        "method": "delete_event",
+        "action": "delete_event",
+        "http": "DELETE",
+        "path": "/api/events/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /events/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_events",
         "domain": "events",
         "method": "get_events",
@@ -377,6 +570,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /events/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_events",
+        "domain": "events",
+        "method": "post_events",
+        "action": "post_events",
+        "http": "POST",
+        "path": "/api/events/",
+        "paginate": "none",
+        "summary": "POST /events/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_merge_event",
@@ -447,7 +667,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /exporters/{extension}/file",
         "params": [
-            {"name": "extension", "type": "string", "required": True, "description": ""}
+            {
+                "name": "extension",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -455,7 +686,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -558,6 +796,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_family",
+        "domain": "families",
+        "method": "put_family",
+        "action": "put_family",
+        "http": "PUT",
+        "path": "/api/families/{handle}",
+        "paginate": "none",
+        "summary": "PUT /families/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_family",
+        "domain": "families",
+        "method": "delete_family",
+        "action": "delete_family",
+        "http": "DELETE",
+        "path": "/api/families/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /families/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "post_families",
         "domain": "families",
         "method": "post_families",
@@ -566,8 +859,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/families/",
         "paginate": "none",
         "summary": "POST /families/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_families",
@@ -603,6 +911,12 @@ OPERATIONS: list[dict[str, Any]] = [
                 "required": True,
                 "description": "",
             },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -616,6 +930,13 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
             },
         ],
     },
@@ -716,7 +1037,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /filters/{namespace}",
         "params": [
-            {"name": "namespace", "type": "string", "required": True, "description": ""}
+            {
+                "name": "namespace",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -724,7 +1056,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -737,7 +1076,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /filters/{namespace}",
         "params": [
-            {"name": "namespace", "type": "string", "required": True, "description": ""}
+            {
+                "name": "namespace",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -745,7 +1095,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -824,7 +1181,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /importers/{extension}/file",
         "params": [
-            {"name": "extension", "type": "string", "required": True, "description": ""}
+            {
+                "name": "extension",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -832,7 +1200,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -932,6 +1307,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_media_object",
+        "domain": "media",
+        "method": "put_media_object",
+        "action": "put_media_object",
+        "http": "PUT",
+        "path": "/api/media/{handle}",
+        "paginate": "none",
+        "summary": "PUT /media/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_media_object",
+        "domain": "media",
+        "method": "delete_media_object",
+        "action": "delete_media_object",
+        "http": "DELETE",
+        "path": "/api/media/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /media/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "post_media_objects",
         "domain": "media",
         "method": "post_media_objects",
@@ -940,8 +1370,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/media/",
         "paginate": "none",
         "summary": "POST /media/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_media_objects",
@@ -1024,7 +1469,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /media/{handle}/file",
         "params": [
-            {"name": "handle", "type": "string", "required": True, "description": ""}
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -1032,7 +1483,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -1066,7 +1524,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /media/{handle}/ocr",
         "params": [
-            {"name": "handle", "type": "string", "required": True, "description": ""}
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -1074,7 +1538,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -1086,8 +1557,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/media/archive/",
         "paginate": "none",
         "summary": "POST /media/archive/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_media_archive_filename",
@@ -1119,8 +1605,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/media/archive/upload/zip",
         "paginate": "none",
         "summary": "POST /media/archive/upload/zip",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_metadata",
@@ -1155,8 +1656,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/metadata/researcher/",
         "paginate": "none",
         "summary": "PUT /metadata/researcher/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_name_formats",
@@ -1210,6 +1726,12 @@ OPERATIONS: list[dict[str, Any]] = [
         "params": [
             {"name": "surname", "type": "string", "required": True, "description": ""},
             {"name": "group", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -1223,6 +1745,13 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
             },
         ],
     },
@@ -1257,7 +1786,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /name-groups/{surname}",
         "params": [
-            {"name": "surname", "type": "string", "required": True, "description": ""}
+            {"name": "surname", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -1265,7 +1800,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -1289,8 +1831,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/name-groups/",
         "paginate": "none",
         "summary": "POST /name-groups/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_note",
@@ -1314,6 +1871,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_note",
+        "domain": "notes",
+        "method": "put_note",
+        "action": "put_note",
+        "http": "PUT",
+        "path": "/api/notes/{handle}",
+        "paginate": "none",
+        "summary": "PUT /notes/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_note",
+        "domain": "notes",
+        "method": "delete_note",
+        "action": "delete_note",
+        "http": "DELETE",
+        "path": "/api/notes/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /notes/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_notes",
         "domain": "notes",
         "method": "get_notes",
@@ -1324,6 +1936,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /notes/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_notes",
+        "domain": "notes",
+        "method": "post_notes",
+        "action": "post_notes",
+        "http": "POST",
+        "path": "/api/notes/",
+        "paginate": "none",
+        "summary": "POST /notes/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_merge_note",
@@ -1458,8 +2097,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/oidc/backchannel-logout/",
         "paginate": "none",
         "summary": "POST /oidc/backchannel-logout/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_person",
@@ -1470,6 +2124,61 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/people/{handle}",
         "paginate": "none",
         "summary": "GET /people/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
+        "operation_id": "put_person",
+        "domain": "people",
+        "method": "put_person",
+        "action": "put_person",
+        "http": "PUT",
+        "path": "/api/people/{handle}",
+        "paginate": "none",
+        "summary": "PUT /people/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_person",
+        "domain": "people",
+        "method": "delete_person",
+        "action": "delete_person",
+        "http": "DELETE",
+        "path": "/api/people/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /people/{handle}",
         "params": [
             {"name": "handle", "type": "string", "required": True, "description": ""}
         ],
@@ -1495,6 +2204,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "parameters": [],
     },
     {
+        "operation_id": "post_people",
+        "domain": "people",
+        "method": "post_people",
+        "action": "post_people",
+        "http": "POST",
+        "path": "/api/people/",
+        "paginate": "none",
+        "summary": "POST /people/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
+    },
+    {
         "operation_id": "post_merge_person",
         "domain": "people",
         "method": "post_merge_person",
@@ -1516,6 +2252,12 @@ OPERATIONS: list[dict[str, Any]] = [
                 "required": True,
                 "description": "",
             },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -1529,6 +2271,13 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
             },
         ],
     },
@@ -1554,6 +2303,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_place",
+        "domain": "places",
+        "method": "put_place",
+        "action": "put_place",
+        "http": "PUT",
+        "path": "/api/places/{handle}",
+        "paginate": "none",
+        "summary": "PUT /places/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_place",
+        "domain": "places",
+        "method": "delete_place",
+        "action": "delete_place",
+        "http": "DELETE",
+        "path": "/api/places/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /places/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_places",
         "domain": "places",
         "method": "get_places",
@@ -1564,6 +2368,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /places/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_places",
+        "domain": "places",
+        "method": "post_places",
+        "action": "post_places",
+        "http": "POST",
+        "path": "/api/places/",
+        "paginate": "none",
+        "summary": "POST /places/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_merge_place",
@@ -1690,7 +2521,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /reports/{report_id}/file",
         "params": [
-            {"name": "report_id", "type": "string", "required": True, "description": ""}
+            {
+                "name": "report_id",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -1698,7 +2540,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -1789,6 +2638,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_repository",
+        "domain": "repositories",
+        "method": "put_repository",
+        "action": "put_repository",
+        "http": "PUT",
+        "path": "/api/repositories/{handle}",
+        "paginate": "none",
+        "summary": "PUT /repositories/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_repository",
+        "domain": "repositories",
+        "method": "delete_repository",
+        "action": "delete_repository",
+        "http": "DELETE",
+        "path": "/api/repositories/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /repositories/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_repositories",
         "domain": "repositories",
         "method": "get_repositories",
@@ -1799,6 +2703,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /repositories/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_repositories",
+        "domain": "repositories",
+        "method": "post_repositories",
+        "action": "post_repositories",
+        "http": "POST",
+        "path": "/api/repositories/",
+        "paginate": "none",
+        "summary": "POST /repositories/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_merge_repository",
@@ -1859,8 +2790,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/search/index/",
         "paginate": "none",
         "summary": "POST /search/index/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_source",
@@ -1884,6 +2830,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_source",
+        "domain": "sources",
+        "method": "put_source",
+        "action": "put_source",
+        "http": "PUT",
+        "path": "/api/sources/{handle}",
+        "paginate": "none",
+        "summary": "PUT /sources/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_source",
+        "domain": "sources",
+        "method": "delete_source",
+        "action": "delete_source",
+        "http": "DELETE",
+        "path": "/api/sources/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /sources/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_sources",
         "domain": "sources",
         "method": "get_sources",
@@ -1894,6 +2895,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /sources/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_sources",
+        "domain": "sources",
+        "method": "post_sources",
+        "action": "post_sources",
+        "http": "POST",
+        "path": "/api/sources/",
+        "paginate": "none",
+        "summary": "POST /sources/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_merge_source",
@@ -1955,6 +2983,61 @@ OPERATIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "operation_id": "put_tag",
+        "domain": "tags",
+        "method": "put_tag",
+        "action": "put_tag",
+        "http": "PUT",
+        "path": "/api/tags/{handle}",
+        "paginate": "none",
+        "summary": "PUT /tags/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
+        ],
+    },
+    {
+        "operation_id": "delete_tag",
+        "domain": "tags",
+        "method": "delete_tag",
+        "action": "delete_tag",
+        "http": "DELETE",
+        "path": "/api/tags/{handle}",
+        "paginate": "none",
+        "summary": "DELETE /tags/{handle}",
+        "params": [
+            {"name": "handle", "type": "string", "required": True, "description": ""}
+        ],
+        "parameters": [
+            {
+                "name": "handle",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        ],
+    },
+    {
         "operation_id": "get_tags",
         "domain": "tags",
         "method": "get_tags",
@@ -1965,6 +3048,33 @@ OPERATIONS: list[dict[str, Any]] = [
         "summary": "GET /tags/",
         "params": [],
         "parameters": [],
+    },
+    {
+        "operation_id": "post_tags",
+        "domain": "tags",
+        "method": "post_tags",
+        "action": "post_tags",
+        "http": "POST",
+        "path": "/api/tags/",
+        "paginate": "none",
+        "summary": "POST /tags/",
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_tasks",
@@ -2074,8 +3184,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/token/",
         "paginate": "none",
         "summary": "POST /token/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_token_refresh",
@@ -2086,8 +3211,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/token/refresh/",
         "paginate": "none",
         "summary": "POST /token/refresh/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_token_create_owner",
@@ -2110,8 +3250,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/token/create_owner/",
         "paginate": "none",
         "summary": "POST /token/create_owner/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_objects",
@@ -2122,8 +3277,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/objects/",
         "paginate": "none",
         "summary": "POST /objects/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_delete_objects",
@@ -2134,8 +3304,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/objects/delete/",
         "paginate": "none",
         "summary": "POST /objects/delete/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_delete_objects_by_handle",
@@ -2146,8 +3331,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/objects/delete-by-handle/",
         "paginate": "none",
         "summary": "POST /objects/delete-by-handle/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_transactions",
@@ -2158,8 +3358,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/transactions/",
         "paginate": "none",
         "summary": "POST /transactions/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "get_transactions_history",
@@ -2240,7 +3455,13 @@ OPERATIONS: list[dict[str, Any]] = [
                 "type": "string",
                 "required": True,
                 "description": "",
-            }
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2248,7 +3469,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2282,7 +3510,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /translations/{language}",
         "params": [
-            {"name": "language", "type": "string", "required": True, "description": ""}
+            {"name": "language", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2290,7 +3524,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2336,7 +3577,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /trees/{tree_id}",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2344,7 +3591,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2368,8 +3622,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/trees/",
         "paginate": "none",
         "summary": "POST /trees/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_disable_tree",
@@ -2381,7 +3650,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /trees/{tree_id}/disable",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2389,7 +3664,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2402,7 +3684,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /trees/{tree_id}/enable",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2410,7 +3698,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2423,7 +3718,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /trees/{tree_id}/repair",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2431,7 +3732,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2444,7 +3752,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /trees/{tree_id}/migrate",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2452,7 +3766,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2486,7 +3807,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /trees/{tree_id}/config",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2494,7 +3821,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2507,7 +3841,13 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /trees/{tree_id}/verify",
         "params": [
-            {"name": "tree_id", "type": "string", "required": True, "description": ""}
+            {"name": "tree_id", "type": "string", "required": True, "description": ""},
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2515,7 +3855,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2638,8 +3985,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/users/",
         "paginate": "none",
         "summary": "POST /users/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "delete_user",
@@ -2693,7 +4055,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/{user_name}/",
         "params": [
-            {"name": "user_name", "type": "string", "required": True, "description": ""}
+            {
+                "name": "user_name",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2701,7 +4074,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2714,7 +4094,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "PUT /users/{user_name}/",
         "params": [
-            {"name": "user_name", "type": "string", "required": True, "description": ""}
+            {
+                "name": "user_name",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2722,7 +4113,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2735,7 +4133,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/{user_name}/register/",
         "params": [
-            {"name": "user_name", "type": "string", "required": True, "description": ""}
+            {
+                "name": "user_name",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2743,7 +4152,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2756,7 +4172,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/{user_name}/create_owner/",
         "params": [
-            {"name": "user_name", "type": "string", "required": True, "description": ""}
+            {
+                "name": "user_name",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2764,7 +4191,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2789,7 +4223,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/{user_name}/password/change",
         "params": [
-            {"name": "user_name", "type": "string", "required": True, "description": ""}
+            {
+                "name": "user_name",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2797,7 +4242,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
     {
@@ -2821,8 +4273,23 @@ OPERATIONS: list[dict[str, Any]] = [
         "path": "/api/users/-/password/reset/",
         "paginate": "none",
         "summary": "POST /users/-/password/reset/",
-        "params": [],
-        "parameters": [],
+        "params": [
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            }
+        ],
+        "parameters": [
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            }
+        ],
     },
     {
         "operation_id": "post_trigger_reset_password",
@@ -2834,7 +4301,18 @@ OPERATIONS: list[dict[str, Any]] = [
         "paginate": "none",
         "summary": "POST /users/{user_name}/password/reset/trigger/",
         "params": [
-            {"name": "user_name", "type": "string", "required": True, "description": ""}
+            {
+                "name": "user_name",
+                "type": "string",
+                "required": True,
+                "description": "",
+            },
+            {
+                "name": "body",
+                "type": "object",
+                "required": True,
+                "description": "Request body (JSON object).",
+            },
         ],
         "parameters": [
             {
@@ -2842,7 +4320,14 @@ OPERATIONS: list[dict[str, Any]] = [
                 "in": "path",
                 "required": True,
                 "schema": {"type": "string"},
-            }
+            },
+            {
+                "name": "body",
+                "in": "query",
+                "required": True,
+                "schema": {"type": "object"},
+                "description": "Request body (JSON object).",
+            },
         ],
     },
 ]

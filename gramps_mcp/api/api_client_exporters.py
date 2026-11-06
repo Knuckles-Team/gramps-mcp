@@ -25,7 +25,7 @@ class GrampsExporters(GrampsApiBase):
             url_template="/api/exporters/{extension}/file",
             path_params=["extension"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

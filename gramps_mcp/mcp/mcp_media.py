@@ -16,7 +16,7 @@ def register_media_tools(mcp: FastMCP):
     @mcp.tool(tags={"media"})
     async def gramps_media(
         action: str = Field(
-            description="Action to perform. One of: 'get_media_object', 'post_media_objects', 'get_media_objects', 'get_merge_media', 'get_media_file', 'put_media_file', 'get_media_face_detection', 'post_media_ocr', 'post_media_archive', 'get_media_archive_filename', 'post_media_archive_upload_zip'"
+            description="Action to perform. One of: 'get_media_object', 'post_media_objects', 'get_media_objects', 'get_merge_media', 'get_media_file', 'put_media_file', 'get_media_face_detection', 'post_media_ocr', 'post_media_archive', 'get_media_archive_filename', 'post_media_archive_upload_zip', 'delete_media_object', 'put_media_object'"
         ),
         params_json: str = Field(
             default="{}",
@@ -54,6 +54,8 @@ def register_media_tools(mcp: FastMCP):
                 "post_media_archive",
                 "get_media_archive_filename",
                 "post_media_archive_upload_zip",
+                "delete_media_object",
+                "put_media_object",
             },
             service="gramps",
         )

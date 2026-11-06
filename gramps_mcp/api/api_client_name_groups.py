@@ -25,7 +25,7 @@ class GrampsNameGroups(GrampsApiBase):
             url_template="/api/name-groups/{surname}/{group}",
             path_params=["surname", "group"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -49,7 +49,7 @@ class GrampsNameGroups(GrampsApiBase):
             url_template="/api/name-groups/{surname}",
             path_params=["surname"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -73,7 +73,7 @@ class GrampsNameGroups(GrampsApiBase):
             url_template="/api/name-groups/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

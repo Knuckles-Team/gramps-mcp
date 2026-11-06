@@ -49,7 +49,7 @@ class GrampsConfig(GrampsApiBase):
             url_template="/api/config/{key}/",
             path_params=["key"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

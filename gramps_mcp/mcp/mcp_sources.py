@@ -16,7 +16,7 @@ def register_sources_tools(mcp: FastMCP):
     @mcp.tool(tags={"sources"})
     async def gramps_sources(
         action: str = Field(
-            description="Action to perform. One of: 'get_source', 'get_sources', 'get_merge_source'"
+            description="Action to perform. One of: 'get_source', 'get_sources', 'get_merge_source', 'delete_source', 'post_sources', 'put_source'"
         ),
         params_json: str = Field(
             default="{}",
@@ -46,6 +46,9 @@ def register_sources_tools(mcp: FastMCP):
                 "get_source",
                 "get_sources",
                 "get_merge_source",
+                "delete_source",
+                "post_sources",
+                "put_source",
             },
             service="gramps",
         )

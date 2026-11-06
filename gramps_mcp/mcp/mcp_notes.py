@@ -16,7 +16,7 @@ def register_notes_tools(mcp: FastMCP):
     @mcp.tool(tags={"notes"})
     async def gramps_notes(
         action: str = Field(
-            description="Action to perform. One of: 'get_note', 'get_notes', 'get_merge_note'"
+            description="Action to perform. One of: 'get_note', 'get_notes', 'get_merge_note', 'delete_note', 'post_notes', 'put_note'"
         ),
         params_json: str = Field(
             default="{}",
@@ -46,6 +46,9 @@ def register_notes_tools(mcp: FastMCP):
                 "get_note",
                 "get_notes",
                 "get_merge_note",
+                "delete_note",
+                "post_notes",
+                "put_note",
             },
             service="gramps",
         )

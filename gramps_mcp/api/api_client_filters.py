@@ -49,7 +49,7 @@ class GrampsFilters(GrampsApiBase):
             url_template="/api/filters/{namespace}",
             path_params=["namespace"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -61,7 +61,7 @@ class GrampsFilters(GrampsApiBase):
             url_template="/api/filters/{namespace}",
             path_params=["namespace"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

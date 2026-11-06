@@ -13,7 +13,7 @@ class GrampsImporters(GrampsApiBase):
             url_template="/api/importers/{extension}/file",
             path_params=["extension"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

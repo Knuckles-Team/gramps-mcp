@@ -25,7 +25,7 @@ class GrampsMedia(GrampsApiBase):
             url_template="/api/media/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -73,7 +73,7 @@ class GrampsMedia(GrampsApiBase):
             url_template="/api/media/{handle}/file",
             path_params=["handle"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -97,7 +97,7 @@ class GrampsMedia(GrampsApiBase):
             url_template="/api/media/{handle}/ocr",
             path_params=["handle"],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -109,7 +109,7 @@ class GrampsMedia(GrampsApiBase):
             url_template="/api/media/archive/",
             path_params=[],
             query_params=[],
-            has_body=False,
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )
@@ -133,7 +133,31 @@ class GrampsMedia(GrampsApiBase):
             url_template="/api/media/archive/upload/zip",
             path_params=[],
             query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def delete_media_object(self, **kwargs) -> Response:
+        """DELETE /media/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/media/{handle}",
+            path_params=["handle"],
+            query_params=[],
             has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_media_object(self, **kwargs) -> Response:
+        """PUT /media/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/media/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
             paginate="none",
             kwargs=kwargs,
         )

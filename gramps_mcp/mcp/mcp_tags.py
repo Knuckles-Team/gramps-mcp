@@ -16,7 +16,7 @@ def register_tags_tools(mcp: FastMCP):
     @mcp.tool(tags={"tags"})
     async def gramps_tags(
         action: str = Field(
-            description="Action to perform. One of: 'get_tag', 'get_tags'"
+            description="Action to perform. One of: 'get_tag', 'get_tags', 'delete_tag', 'post_tags', 'put_tag'"
         ),
         params_json: str = Field(
             default="{}",
@@ -45,6 +45,9 @@ def register_tags_tools(mcp: FastMCP):
             {
                 "get_tag",
                 "get_tags",
+                "delete_tag",
+                "post_tags",
+                "put_tag",
             },
             service="gramps",
         )

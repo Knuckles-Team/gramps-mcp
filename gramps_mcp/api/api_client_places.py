@@ -41,3 +41,39 @@ class GrampsPlaces(GrampsApiBase):
             paginate="none",
             kwargs=kwargs,
         )
+
+    def delete_place(self, **kwargs) -> Response:
+        """DELETE /places/{handle}"""
+        return self._call(
+            http="DELETE",
+            url_template="/api/places/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=False,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def post_places(self, **kwargs) -> Response:
+        """POST /places/"""
+        return self._call(
+            http="POST",
+            url_template="/api/places/",
+            path_params=[],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
+
+    def put_place(self, **kwargs) -> Response:
+        """PUT /places/{handle}"""
+        return self._call(
+            http="PUT",
+            url_template="/api/places/{handle}",
+            path_params=["handle"],
+            query_params=[],
+            has_body=True,
+            paginate="none",
+            kwargs=kwargs,
+        )
