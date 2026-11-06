@@ -35,35 +35,30 @@ queryable.
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`gramps-mcp`** MCP server (same
 `GRAMPS_URL` + token/login auth). Blob ingestion additionally needs a reachable
-epistemic-graph engine; without one `gramps_ingest_media` no-ops (`{"ingested": null}`).
+epistemic-graph engine; without one the media sync is a no-op.
 
-## Tools & actions
+## Tools
 | Tool | Purpose |
 |------|---------|
-| `gramps_media` (condensed) | `get_media_objects`, `get_media_object`, `get_media_file`, `get_media_face_detection`, `post_media_ocr`, archive ops |
-| `gramps_ingest_media` | fetch one media file's bytes + metadata and store it as a `:MediaAsset` blob (arg: `handle`) |
+| `gramps_get_media_objects`, `gramps_get_media_object` | list / read media objects |
+| `gramps_get_media_file`, `gramps_get_media_face_detection` | file bytes, face detection |
+| `gramps_post_media_ocr`, `gramps_post_media_archive` | OCR, archive |
+
+Storing a photo's bytes into the knowledge graph is done by arbora's governed media sync, which reads
+through `gramps_get_media_file`.
 
 ### Key parameters
-- `handle` — the media object's stable key (required to read the object, its file,
-  face detection, OCR, or to ingest its bytes).
+- `handle` - the media object's stable key (required to read the object, its file,
+  face detection or OCR).
 
 ## Recipes
-List media objects (`gramps_media`, action `get_media_objects`, `params_json`):
-```json
-{"pagesize":25}
-```
-OCR a scanned certificate (`gramps_media`, action `post_media_ocr`):
-```json
-{"handle":"<media_handle>"}
-```
-Archive a photo's bytes into the KG (`gramps_ingest_media`):
-```json
-{"handle":"<media_handle>"}
-```
+List media objects: `gramps_get_media_objects` with `pagesize=25`.
+
+OCR a scanned certificate: `gramps_post_media_ocr` with `handle=<media_handle>`.
 
 ## Gotchas
-- `gramps_media get_media_file` returns the **raw file bytes** on the underlying HTTP
-  response (`response.content`), not JSON — `gramps_ingest_media` reads them from there.
+- `gramps_get_media_file` returns the **raw file bytes** on the underlying HTTP
+  response (`response.content`), not JSON; the media sync reads them from there.
 - `media_type` is inferred from the object's `mime` (`image/*`→image, else file);
   most genealogy media are `image/jpeg` scans/photos.
 - The blob is content-addressed (deduped by digest) — re-ingesting the same file

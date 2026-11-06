@@ -43,28 +43,18 @@ research skill). A reachable epistemic-graph engine is required for a non-null
 Node ids are deterministic — `gramps:<Class>:<handle>` — so re-ingesting the same
 records MERGEs (upserts) rather than duplicating.
 
-## Tools & actions
-These are direct KG tools (no `action` router); each lists via the Gramps API and
-pushes into the graph.
+## Tools
+Ingestion is arbora's governed sync of the connector's declared data sources, reading through
+typed tools. Request it from arbora (`source_sync`); do not push records by hand.
 
-| Tool | Ingests | Argument |
-|------|---------|----------|
-| `gramps_ingest_people` | `:Person` (+ `:spouseInFamily`/`:childInFamily`/`:participatedInEvent`/`:hasMedia`) | `params_json` = get_people filters |
-| `gramps_ingest_families` | `:Family` (+ `:hasFather`/`:hasMother`/`:hasChild`) | `params_json` = get_families filters |
-| `gramps_ingest_events` | `:Event` (+ `:occurredAtPlace`) | `params_json` = get_events filters |
+| Source tool | Ingests |
+|-------------|---------|
+| `gramps_get_people` | `:Person` (+ `:spouseInFamily`/`:childInFamily`/`:participatedInEvent`/`:hasMedia`) |
+| `gramps_get_families` | `:Family` (+ `:hasFather`/`:hasMother`/`:hasChild`) |
+| `gramps_get_events` | `:Event` (+ `:occurredAtPlace`) |
 
-## Recipes
-Ingest all people (default filters):
-```json
-{}
-```
-Ingest a paged slice of families (`gramps_ingest_families`, `params_json`):
-```json
-{"page":1,"pagesize":200}
-```
-Full refresh order: ingest **people**, then **families**, then **events** — so the
-kinship edges from families/people resolve onto already-present nodes (edges are
-best-effort and self-heal on re-ingest regardless of order).
+Page with `page` and `pagesize`. Full refresh order: people, then families, then events, so the
+kinship edges resolve onto already-present nodes (edges self-heal on re-ingest regardless of order).
 
 ## Gotchas
 - Ingestion is **best-effort**: `{"ingested": null}` means no engine was reachable,

@@ -45,43 +45,37 @@ Connect via the `mcp-client` skill against the **`gramps-mcp`** MCP server.
 | `GRAMPS_USERNAME` / `GRAMPS_PASSWORD` | one-of | Login exchanged at `/api/token/` |
 | `GRAMPS_SSL_VERIFY` | optional | TLS verification toggle (default true) |
 
-`MCP_TOOL_MODE` (`condensed`|`verbose`|`both`) selects the condensed action-routed
-surface (used below) vs. the one-to-one verbose tools.
+## Tools
+One typed tool per Gramps Web API operation, named `gramps_<operation>`; pass real arguments.
 
-## Tools & actions
-Prefer the **condensed** tools; each takes `action` + a `params_json` **JSON string**
-whose keys are passed straight to the client method.
+| Task | Tools |
+|------|-------|
+| People | `gramps_get_people`, `gramps_get_person`, `gramps_post_merge_person` |
+| Families | `gramps_get_families`, `gramps_get_family`, `gramps_post_merge_family` |
+| Events | `gramps_get_events`, `gramps_get_event`, `gramps_get_event_span` |
+| Relationships | `gramps_get_relation`, `gramps_get_relations` |
+| Timeline | `gramps_get_person_timeline`, `gramps_get_family_timeline` |
+| Search | `gramps_get_search` |
 
-| Condensed tool | Actions |
-|----------------|---------|
-| `gramps_people` | `get_people`, `get_person`, `post_merge_person` |
-| `gramps_families` | `get_families`, `get_family`, `post_families`, `post_merge_family` |
-| `gramps_events` | `get_events`, `get_event`, `get_event_span` |
-| `gramps_relations` | relationship / kinship lookups between two people |
-| `gramps_timeline` | per-person chronological timeline |
-| `gramps_search` | full-text search across the tree |
+Records are changed with `gramps_post_people`, `gramps_put_person`, `gramps_delete_person` (and the
+same triple for families, events, places, citations, sources, repositories, media objects, notes
+and tags). Writes need an editor-role account and approval; reads work with a guest account.
 
 ### Key parameters
-- `handle` — the stable primary key for reading one person/family/event.
+- `handle` - the stable primary key for reading one person/family/event.
 - Gramps list endpoints accept query params like `gramps_id`, `rules` (filter
   JSON), `page`, `pagesize`, and `keys`/`profile` to control returned fields.
 
-## Recipes (`params_json`)
-Find a person by their Gramps id (`gramps_people`, action `get_people`):
-```json
-{"gramps_id":"I0042","profile":"all"}
-```
-Read one family and expand member profiles (`gramps_families`, `get_family`):
-```json
-{"handle":"<family_handle>","profile":"all","extend":"child_ref_list,father_handle,mother_handle"}
-```
-List birth/death events (`gramps_events`, `get_events`):
-```json
-{"rules":"{\"rules\":[{\"name\":\"HasType\",\"values\":[\"Birth\"]}]}","pagesize":25}
-```
+## Recipes
+Find a person by their Gramps id: `gramps_get_people` with `gramps_id=I0042`, `profile=all`.
+
+Read one family and expand member profiles: `gramps_get_family` with `handle=<family_handle>`,
+`profile=all`, `extend=child_ref_list,father_handle,mother_handle`.
+
+List birth events: `gramps_get_events` with `rules={"rules":[{"name":"HasType","values":["Birth"]}]}`
+(a JSON string) and `pagesize=25`.
 
 ## Gotchas
-- `params_json` is a **string** of JSON, not an object — serialize it.
 - Records are keyed by `handle` (opaque, stable); `gramps_id` (e.g. `I0042`) is the
   human-facing id and is what people usually quote.
 - Relationships between objects are handles inside ref-lists
