@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.8] - 2026-11-06
+
+### Fixed
+- Serve create, update and delete for the ten object types and send the JSON body on every write operation.
+
 ## [2.3.7] - 2026-10-30
 
 ### Changed
