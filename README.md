@@ -18,7 +18,7 @@ destinations are provided at runtime.
   supporting Gramps operations.
 - The verbose surface is generated from the vendored OpenAPI operation manifest.
 - Blocking HTTP calls are moved off the async MCP event loop through the shared current
-  Agent Utilities dispatcher.
+  Meristem dispatcher.
 - HTTPS peer and hostname verification are mandatory and configured through an
   AgentConfig-backed TLS profile; this package has no boolean verification bypass.
 - One complete skill applies research evidence, living-person privacy, and
@@ -238,7 +238,7 @@ _35 action-routed tool(s) · 147 verbose 1:1 tool(s). Each is enabled unless its
 
 | Extra | Installs | Intended use |
 | --- | --- | --- |
-| `gramps-mcp[mcp]` | Agent Utilities MCP runtime and the mandatory full epistemic-graph base dependency | MCP tool hosting |
+| `gramps-mcp[mcp]` | Meristem MCP runtime and the mandatory full medulla base dependency | MCP tool hosting |
 | `gramps-mcp[agent]` | Current `agent-runtime` plus Logfire | Integrated A2A agent |
 | `gramps-mcp[all]` | MCP and agent runtime | Both entry points |
 
@@ -256,7 +256,7 @@ uv pip install "gramps-mcp[mcp]"
 uv pip install "gramps-mcp[agent]"
 ```
 
-Every install receives `epistemic-graph[full]` through Agent Utilities. The connector
+Every install receives `medulla[full]` through Meristem. The connector
 does not start an insecure engine listener or select a machine-specific graph database.
 AgentConfig owns engine topology and identity.
 

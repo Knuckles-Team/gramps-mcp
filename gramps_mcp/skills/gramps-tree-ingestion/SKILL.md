@@ -2,7 +2,7 @@
 name: gramps-tree-ingestion
 skill_type: skill
 description: >-
-  Ingest a Gramps family tree natively into the epistemic-graph knowledge graph
+  Ingest a Gramps family tree natively into the medulla knowledge graph
   via the gramps-mcp MCP server — people become typed :Person nodes, families
   :Family nodes, and life events :Event nodes, wired by kinship
   (:hasFather/:hasMother/:hasChild) and participation (:participatedInEvent)
@@ -18,7 +18,7 @@ metadata:
 ---
 # Gramps Tree Ingestion
 
-Native "maximum ingestion" of a Gramps tree into the ONE epistemic-graph engine.
+Native "maximum ingestion" of a Gramps tree into the ONE medulla engine.
 The gramps-mcp server lists records and pushes them as **typed OWL nodes** matching
 `gramps.ttl` (`:Person`, `:Family`, `:Event`) with their kinship and participation
 links, via the fast engine client. Best-effort: with no reachable engine each tool
@@ -32,12 +32,12 @@ returns `{"ingested": null}` and nothing breaks.
 ## When NOT to use
 - One-off lookups / reading a single record → `gramps-genealogy-research`.
 - Storing the raw bytes of a photo or scanned certificate → `gramps-media-archive`.
-- You have no running epistemic-graph engine — ingestion no-ops by design.
+- You have no running medulla engine — ingestion no-ops by design.
 
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`gramps-mcp`** MCP server (same
 `GRAMPS_URL` + `GRAMPS_TOKEN` / `GRAMPS_USERNAME`+`GRAMPS_PASSWORD` auth as the
-research skill). A reachable epistemic-graph engine is required for a non-null
+research skill). A reachable medulla engine is required for a non-null
 `ingested` result; without one the tools still return the `listed` count.
 
 Node ids are deterministic — `gramps:<Class>:<handle>` — so re-ingesting the same

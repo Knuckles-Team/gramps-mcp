@@ -4,16 +4,16 @@
 
 1. Generated domain clients call the configured Gramps Web API through one hardened
    HTTPS base client.
-2. Condensed MCP tools route validated actions through the current Agent Utilities
+2. Condensed MCP tools route validated actions through the current Meristem
    dispatcher and move blocking HTTP work off the async event loop.
-3. The optional A2A server uses the current Agent Utilities agent runtime and the single
+3. The optional A2A server uses the current Meristem agent runtime and the single
    `gramps-genealogy-operations` skill.
 
 ## Current runtime contracts
 
-- Agent Utilities 1.27.1 or newer supplies AgentConfig, MCP registration, delegated
+- Meristem 1.27.1 or newer supplies AgentConfig, MCP registration, delegated
   authentication, transport-security profiles, and the mandatory
-  `epistemic-graph[full]` base dependency.
+  `medulla[full]` base dependency.
 - The vendored OpenAPI specification generates 147 operations across 35 domains. The
   generated paths are relative and cannot retain a source-spec authority.
 - The configured Gramps origin must be HTTPS. Redirects are not followed, path values
