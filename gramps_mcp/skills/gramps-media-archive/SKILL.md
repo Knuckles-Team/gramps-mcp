@@ -19,7 +19,7 @@ metadata:
 
 Domain-typed access to **Gramps media objects** and their files through the
 gramps-mcp MCP server, plus native blob ingestion: a media file's raw bytes are
-stored as a content-addressed `:MediaAsset` blob in the epistemic-graph engine in
+stored as a content-addressed `:MediaAsset` blob in the medulla engine in
 one cross-modal commit — the image itself, not just a path, becomes durable and
 queryable.
 
@@ -35,7 +35,7 @@ queryable.
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`gramps-mcp`** MCP server (same
 `GRAMPS_URL` + token/login auth). Blob ingestion additionally needs a reachable
-epistemic-graph engine; without one the media sync is a no-op.
+medulla engine; without one the media sync is a no-op.
 
 ## Tools
 | Tool | Purpose |

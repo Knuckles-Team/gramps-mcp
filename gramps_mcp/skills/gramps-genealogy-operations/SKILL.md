@@ -63,7 +63,7 @@ Common domains (tool-name stems):
 ## Use governed graph synchronization
 
 This provider has no direct graph-write or raw-media-ingestion tool. If Gramps records
-must enter epistemic-graph, request Arbora source synchronization using a centrally
+must enter medulla, request Arbora source synchronization using a centrally
 compiled and operator-approved signed capability bundle. Require exact live tool-schema
 pins plus tenant, ACL, classification, consent, retention, provenance, redaction, and
 deletion policy. A missing or stale certification must fail closed.

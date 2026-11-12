@@ -1,8 +1,8 @@
-"""Native epistemic-graph ingestion for Gramps genealogy records (typed graph nodes).
+"""Native medulla ingestion for Gramps genealogy records (typed graph nodes).
 
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. This is the record-source twin of
 the blob ingestion in :mod:`gramps_mcp.kg_media`: the connector natively pushes its
-genealogy data into the ONE epistemic-graph knowledge graph as **typed OWL nodes**
+genealogy data into the ONE medulla knowledge graph as **typed OWL nodes**
 (``:Person``, ``:Family``, ``:Event``, ``:Place``, …) plus kinship/participation links,
 through the ``scion_sdk.ingest`` facade — the one connector write path;
 there is no self-contained fallback transaction here.
@@ -65,7 +65,7 @@ async def ingest_entities(
     *,
     ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int] | None:
-    """Write typed OWL nodes (+ edges) into epistemic-graph. Best-effort, never raises.
+    """Write typed OWL nodes (+ edges) into medulla. Best-effort, never raises.
 
     ``entities``: ``[{"id":..., "node_type":<owl:Class>, ...props}]``.
     ``relationships``: ``[{"source":id, "target":id, "relationship":<link>}]``.

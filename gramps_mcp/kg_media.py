@@ -1,7 +1,7 @@
-"""Native epistemic-graph blob ingestion for Gramps media (photos/scans).
+"""Native medulla blob ingestion for Gramps media (photos/scans).
 
 CONCEPT:AU-KG.ingest.list-durable-media. A Gramps media object references a real file
-(a photo, a scanned certificate, a document image). When a live epistemic-graph engine
+(a photo, a scanned certificate, a document image). When a live medulla engine
 is reachable, that file's raw bytes are stored as a content-addressed **blob** with a
 ``:MediaAsset`` graph node (carrying its Gramps metadata) in ONE cross-modal ACID commit
 via the ``scion_sdk.ingest`` facade — making the image itself, not just a

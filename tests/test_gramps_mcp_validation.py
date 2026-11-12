@@ -45,7 +45,7 @@ def test_generated_operation_manifest_contains_relative_paths_only():
 
 @pytest.mark.concept("GM-OS.identity.grmp")
 def test_dependency_contract_uses_current_runtime():
-    """Provider metadata requires the current Agent Utilities contract."""
+    """Provider metadata requires the current Meristem contract."""
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     from packaging.requirements import Requirement
     from packaging.version import Version
