@@ -15,25 +15,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_bookmark",
-                params=(
-                    "namespace",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("namespace",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_bookmarks",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -44,12 +42,14 @@ CONTRACTS = (
                     "handle",
                     "namespace",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -59,13 +59,18 @@ CONTRACTS = (
                     "handle",
                     "namespace",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -75,48 +80,50 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_user",
-                params=(
-                    "user_name",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("user_name",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_users",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_confirm_email",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_get_reset_password",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -125,12 +132,14 @@ CONTRACTS = (
                     "body",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -139,25 +148,27 @@ CONTRACTS = (
                     "body",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_reset_password",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -166,12 +177,14 @@ CONTRACTS = (
                     "body",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -180,12 +193,14 @@ CONTRACTS = (
                     "body",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -194,25 +209,27 @@ CONTRACTS = (
                     "body",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_users",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -221,12 +238,14 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -235,12 +254,14 @@ CONTRACTS = (
                     "body",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -249,13 +270,18 @@ CONTRACTS = (
                     "confirm",
                     "user_name",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -266,71 +292,69 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_oidccallbackresource",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_oidccallbackresource_provider",
-                params=(
-                    "provider_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("provider_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_oidcconfigresource",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_oidcloginresource",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_oidclogoutresource",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_oidcbackchannellogoutresource",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -341,62 +365,64 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_oidctokenexchangeresource",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_token_create_owner",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_token",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_token_create_owner",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_token_refresh",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -406,38 +432,34 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_config",
-                params=(
-                    "key",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("key",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_configs",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_tree_config",
-                params=(
-                    "tree_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("tree_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -447,12 +469,14 @@ CONTRACTS = (
                     "body",
                     "key",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -461,12 +485,14 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -475,13 +501,18 @@ CONTRACTS = (
                     "confirm",
                     "key",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -491,73 +522,67 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_custom_type",
-                params=(
-                    "datatype",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("datatype",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_custom_types",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_default_type",
-                params=(
-                    "datatype",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("datatype",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_default_type_map",
-                params=(
-                    "datatype",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("datatype",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_default_types",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_types",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -568,36 +593,34 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_get_name_group",
-                params=(
-                    "surname",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("surname",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_name_formats",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_name_groups",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -607,11 +630,11 @@ CONTRACTS = (
                     "group",
                     "surname",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -621,25 +644,25 @@ CONTRACTS = (
                     "body",
                     "surname",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_name_groups",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -649,12 +672,14 @@ CONTRACTS = (
                     "group",
                     "surname",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -668,13 +693,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -683,13 +713,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -698,13 +733,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -713,13 +753,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -728,13 +773,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -743,13 +793,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -758,13 +813,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -774,13 +834,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -790,13 +855,18 @@ CONTRACTS = (
                     "phoenix_handle",
                     "titanic_handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -807,36 +877,36 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_metadata",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_metadata_researcher",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_put_metadata_researcher",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -846,25 +916,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_task",
-                params=(
-                    "task_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("task_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_tasks",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -875,53 +943,54 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_transaction_history",
-                params=(
-                    "transaction_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("transaction_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_transactions_history",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_transactions",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_get_transaction_undo",
-                params=(
-                    "transaction_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("transaction_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -930,13 +999,18 @@ CONTRACTS = (
                     "body",
                     "transaction_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -946,25 +1020,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_translation",
-                params=(
-                    "language",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("language",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_translations",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -974,12 +1046,14 @@ CONTRACTS = (
                     "body",
                     "language",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -989,25 +1063,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_tree",
-                params=(
-                    "tree_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("tree_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_trees",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1017,25 +1089,27 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_trees",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1044,12 +1118,14 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1058,13 +1134,18 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -1073,13 +1154,18 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -1088,13 +1174,18 @@ CONTRACTS = (
                     "body",
                     "tree_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -1104,15 +1195,15 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_post_objects",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1121,13 +1212,18 @@ CONTRACTS = (
                     "body",
                     "confirm",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
             ToolStep(
@@ -1136,13 +1232,18 @@ CONTRACTS = (
                     "body",
                     "confirm",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -1152,15 +1253,15 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_post_search_index",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -1170,39 +1271,37 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_media_object",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_media_objects",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_media_objects",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1211,12 +1310,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1225,13 +1326,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -1241,54 +1347,50 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_media_archive_filename",
-                params=(
-                    "filename",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("filename",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_media_file",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_media_archive",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
                 "gramps_post_media_archive_upload_zip",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1297,12 +1399,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -1312,14 +1416,12 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_media_face_detection",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1329,12 +1431,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -1344,27 +1448,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_exporter",
-                params=(
-                    "extension",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("extension",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_exporter_file",
-                params=(
-                    "extension",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("extension",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1374,22 +1474,22 @@ CONTRACTS = (
                     "extension",
                     "filename",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_exporters",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1399,12 +1499,14 @@ CONTRACTS = (
                     "body",
                     "extension",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -1414,25 +1516,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_importer",
-                params=(
-                    "extension",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("extension",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_importers",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1442,13 +1542,18 @@ CONTRACTS = (
                     "body",
                     "extension",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -1458,27 +1563,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_report",
-                params=(
-                    "report_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("report_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_report_file",
-                params=(
-                    "report_id",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("report_id",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1488,22 +1589,22 @@ CONTRACTS = (
                     "filename",
                     "report_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_reports",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1513,12 +1614,14 @@ CONTRACTS = (
                     "body",
                     "report_id",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
         ),
@@ -1532,35 +1635,33 @@ CONTRACTS = (
                     "name",
                     "namespace",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_filters",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_filters_namespace",
-                params=(
-                    "namespace",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("namespace",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1570,11 +1671,11 @@ CONTRACTS = (
                     "body",
                     "namespace",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1584,12 +1685,14 @@ CONTRACTS = (
                     "body",
                     "namespace",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1599,13 +1702,18 @@ CONTRACTS = (
                     "name",
                     "namespace",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -1616,11 +1724,11 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_facts",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1631,49 +1739,45 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_family_timeline",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_person_timeline",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_timeline_families",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_timeline_people",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1690,22 +1794,22 @@ CONTRACTS = (
                     "month",
                     "year",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_holidays",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1716,27 +1820,23 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_living",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_living_dates",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1747,40 +1847,34 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_person_dna_matches",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_person_ydna",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_dna_match_parser",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1795,11 +1889,11 @@ CONTRACTS = (
                     "handle1",
                     "handle2",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1809,11 +1903,11 @@ CONTRACTS = (
                     "handle1",
                     "handle2",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1825,11 +1919,11 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_search",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1840,14 +1934,12 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_post_chat",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -1858,39 +1950,37 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_citation",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_citations",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_citations",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1899,12 +1989,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1913,13 +2005,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -1929,39 +2026,37 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_note",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_notes",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_notes",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1970,12 +2065,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -1984,13 +2081,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2001,38 +2103,36 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_repositories",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_repository",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_repositories",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2041,12 +2141,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2055,13 +2157,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2071,39 +2178,37 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_source",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_sources",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_sources",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2112,12 +2217,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2126,13 +2233,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2142,39 +2254,37 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_tag",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_tags",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_tags",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2183,12 +2293,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2197,13 +2309,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2213,14 +2330,12 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_event",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
@@ -2230,36 +2345,36 @@ CONTRACTS = (
                     "handle1",
                     "handle2",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_events",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_events",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2268,12 +2383,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2282,13 +2399,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2299,38 +2421,36 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_families",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_family",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_families",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2339,12 +2459,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2353,13 +2475,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2370,38 +2497,36 @@ CONTRACTS = (
             ToolStep(
                 "gramps_get_people",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_person",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_people",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2410,12 +2535,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2424,13 +2551,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2440,39 +2572,37 @@ CONTRACTS = (
         (
             ToolStep(
                 "gramps_get_place",
-                params=(
-                    "handle",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("handle",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_get_places",
                 params=(),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
                     Refusal("NOT_FOUND", "the requested record does not exist"),
                 ),
             ),
             ToolStep(
                 "gramps_post_places",
-                params=(
-                    "body",
-                ),
-                result=(
-                    "result",
-                ),
+                params=("body",),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2481,12 +2611,14 @@ CONTRACTS = (
                     "body",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
                 ),
             ),
             ToolStep(
@@ -2495,13 +2627,18 @@ CONTRACTS = (
                     "confirm",
                     "handle",
                 ),
-                result=(
-                    "result",
-                ),
+                result=("result",),
                 refusals=(
-                    Refusal("ACCESS_DENIED", "the credential lacks access to the operation"),
-                    Refusal("INVALID_ARGUMENT", "the upstream system rejects the input"),
-                    Refusal("CONFIRMATION_REQUIRED", "the caller has not confirmed the destructive call"),
+                    Refusal(
+                        "ACCESS_DENIED", "the credential lacks access to the operation"
+                    ),
+                    Refusal(
+                        "INVALID_ARGUMENT", "the upstream system rejects the input"
+                    ),
+                    Refusal(
+                        "CONFIRMATION_REQUIRED",
+                        "the caller has not confirmed the destructive call",
+                    ),
                 ),
             ),
         ),
@@ -2521,9 +2658,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-account-manager",
         ),
-        skills=(
-            "gramps-accounts",
-        ),
+        skills=("gramps-accounts",),
     ),
     SurfaceLink(
         "gramps-manage-user",
@@ -2547,9 +2682,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-account-manager",
         ),
-        skills=(
-            "gramps-accounts",
-        ),
+        skills=("gramps-accounts",),
     ),
     SurfaceLink(
         "gramps-manage-oidc",
@@ -2565,9 +2698,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-account-manager",
         ),
-        skills=(
-            "gramps-accounts",
-        ),
+        skills=("gramps-accounts",),
     ),
     SurfaceLink(
         "gramps-manage-token",
@@ -2582,9 +2713,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-account-manager",
         ),
-        skills=(
-            "gramps-accounts",
-        ),
+        skills=("gramps-accounts",),
     ),
     SurfaceLink(
         "gramps-manage-config",
@@ -2600,9 +2729,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-inspect-type",
@@ -2618,9 +2745,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-name-format",
@@ -2637,9 +2762,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-merge",
@@ -2658,9 +2781,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-metadata",
@@ -2673,9 +2794,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-inspect-task",
@@ -2687,9 +2806,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-transaction",
@@ -2704,9 +2821,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-translation",
@@ -2719,9 +2834,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-tree",
@@ -2739,9 +2852,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-bulk",
@@ -2754,22 +2865,16 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-index",
-        tools=(
-            "gramps_post_search_index",
-        ),
+        tools=("gramps_post_search_index",),
         prompts=(
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-tree-administration",
-        ),
+        skills=("gramps-tree-administration",),
     ),
     SurfaceLink(
         "gramps-manage-object",
@@ -2784,9 +2889,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-media-archivist",
         ),
-        skills=(
-            "gramps-media-management",
-        ),
+        skills=("gramps-media-management",),
     ),
     SurfaceLink(
         "gramps-manage-file",
@@ -2801,9 +2904,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-media-archivist",
         ),
-        skills=(
-            "gramps-media-management",
-        ),
+        skills=("gramps-media-management",),
     ),
     SurfaceLink(
         "gramps-manage-analysis",
@@ -2815,9 +2916,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-media-archivist",
         ),
-        skills=(
-            "gramps-media-management",
-        ),
+        skills=("gramps-media-management",),
     ),
     SurfaceLink(
         "gramps-manage-export",
@@ -2832,9 +2931,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-import-export-reports",
-        ),
+        skills=("gramps-import-export-reports",),
     ),
     SurfaceLink(
         "gramps-manage-import",
@@ -2847,9 +2944,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-import-export-reports",
-        ),
+        skills=("gramps-import-export-reports",),
     ),
     SurfaceLink(
         "gramps-manage-report",
@@ -2864,9 +2959,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-tree-administrator",
         ),
-        skills=(
-            "gramps-import-export-reports",
-        ),
+        skills=("gramps-import-export-reports",),
     ),
     SurfaceLink(
         "gramps-manage-filter",
@@ -2882,22 +2975,16 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-fact",
-        tools=(
-            "gramps_get_facts",
-        ),
+        tools=("gramps_get_facts",),
         prompts=(
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-timeline",
@@ -2911,9 +2998,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-holiday",
@@ -2925,9 +3010,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-living",
@@ -2939,9 +3022,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-dna",
@@ -2954,9 +3035,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-relation",
@@ -2968,35 +3047,25 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-search",
-        tools=(
-            "gramps_get_search",
-        ),
+        tools=("gramps_get_search",),
         prompts=(
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-inspect-chat",
-        tools=(
-            "gramps_post_chat",
-        ),
+        tools=("gramps_post_chat",),
         prompts=(
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-search-and-analysis",
-        ),
+        skills=("gramps-search-and-analysis",),
     ),
     SurfaceLink(
         "gramps-manage-citation",
@@ -3011,9 +3080,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-source-records",
-        ),
+        skills=("gramps-source-records",),
     ),
     SurfaceLink(
         "gramps-manage-note",
@@ -3028,9 +3095,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-source-records",
-        ),
+        skills=("gramps-source-records",),
     ),
     SurfaceLink(
         "gramps-manage-repository",
@@ -3045,9 +3110,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-source-records",
-        ),
+        skills=("gramps-source-records",),
     ),
     SurfaceLink(
         "gramps-manage-source",
@@ -3062,9 +3125,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-source-records",
-        ),
+        skills=("gramps-source-records",),
     ),
     SurfaceLink(
         "gramps-manage-tag",
@@ -3079,9 +3140,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-source-records",
-        ),
+        skills=("gramps-source-records",),
     ),
     SurfaceLink(
         "gramps-manage-event",
@@ -3097,9 +3156,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-family-records",
-        ),
+        skills=("gramps-family-records",),
     ),
     SurfaceLink(
         "gramps-manage-family",
@@ -3114,9 +3171,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-family-records",
-        ),
+        skills=("gramps-family-records",),
     ),
     SurfaceLink(
         "gramps-manage-person",
@@ -3131,9 +3186,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-family-records",
-        ),
+        skills=("gramps-family-records",),
     ),
     SurfaceLink(
         "gramps-manage-place",
@@ -3148,9 +3201,7 @@ LINKS = (
             "genealogy_specialist",
             "gramps-genealogist",
         ),
-        skills=(
-            "gramps-family-records",
-        ),
+        skills=("gramps-family-records",),
     ),
     SurfaceLink(
         "gramps-genealogy-operations",
@@ -3158,12 +3209,8 @@ LINKS = (
             "gramps_get_person",
             "gramps_post_tags",
         ),
-        prompts=(
-            "genealogy_specialist",
-        ),
-        skills=(
-            "gramps-genealogy-operations",
-        ),
+        prompts=("genealogy_specialist",),
+        skills=("gramps-genealogy-operations",),
     ),
     SurfaceLink(
         "gramps-genealogy-research",
@@ -3186,12 +3233,8 @@ LINKS = (
             "gramps_post_people",
             "gramps_put_person",
         ),
-        prompts=(
-            "genealogy_specialist",
-        ),
-        skills=(
-            "gramps-genealogy-research",
-        ),
+        prompts=("genealogy_specialist",),
+        skills=("gramps-genealogy-research",),
     ),
     SurfaceLink(
         "gramps-media-archive",
@@ -3203,12 +3246,8 @@ LINKS = (
             "gramps_post_media_archive",
             "gramps_post_media_ocr",
         ),
-        prompts=(
-            "genealogy_specialist",
-        ),
-        skills=(
-            "gramps-media-archive",
-        ),
+        prompts=("genealogy_specialist",),
+        skills=("gramps-media-archive",),
     ),
     SurfaceLink(
         "gramps-tree-ingestion",
@@ -3217,61 +3256,45 @@ LINKS = (
             "gramps_get_families",
             "gramps_get_people",
         ),
-        prompts=(
-            "genealogy_specialist",
-        ),
-        skills=(
-            "gramps-tree-ingestion",
-        ),
+        prompts=("genealogy_specialist",),
+        skills=("gramps-tree-ingestion",),
     ),
 )
 
 LOCATIONS = (
     DataLocation(
         "gramps-people",
-        (
-            "Person",
-        ),
+        ("Person",),
         "GRAMPS_URL",
         "gramps_get_people",
     ),
     DataLocation(
         "gramps-families",
-        (
-            "Family",
-        ),
+        ("Family",),
         "GRAMPS_URL",
         "gramps_get_families",
     ),
     DataLocation(
         "gramps-events",
-        (
-            "Event",
-        ),
+        ("Event",),
         "GRAMPS_URL",
         "gramps_get_events",
     ),
     DataLocation(
         "gramps-places",
-        (
-            "Place",
-        ),
+        ("Place",),
         "GRAMPS_URL",
         "gramps_get_places",
     ),
     DataLocation(
         "gramps-sources",
-        (
-            "Source",
-        ),
+        ("Source",),
         "GRAMPS_URL",
         "gramps_get_sources",
     ),
     DataLocation(
         "gramps-media",
-        (
-            "MediaAsset",
-        ),
+        ("MediaAsset",),
         "GRAMPS_URL",
         "gramps_get_media_objects",
     ),
