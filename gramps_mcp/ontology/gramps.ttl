@@ -1,7 +1,8 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dc: <http://purl.org/dc/terms/> .
-@prefix : <http://knuckles.team/kg#> .
+@prefix : <https://knuckles-team.github.io/ontology/connector/gramps#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -15,13 +16,16 @@
 
 # --- classes (owl:Class) — genealogy-specific; :Person + :MediaAsset are shared ---
 
-:Family a owl:Class .
+:Family a owl:Class ;
+    rdfs:subClassOf core:Family .
 
 
-:Event a owl:Class .
+:Event a owl:Class ;
+    rdfs:subClassOf core:Event .
 
 
-:Place a owl:Class .
+:Place a owl:Class ;
+    rdfs:subClassOf core:Place .
 
 
 :Source a owl:Class ;
@@ -29,10 +33,12 @@
     rdfs:comment "A source of genealogical evidence — a book, record, or archive (gramps_sources)." .
 
 :Citation a owl:Class ;
+    rdfs:subClassOf core:Citation ;
     rdfs:label "Citation" ;
     rdfs:comment "A specific reference into a Source that supports a fact (gramps_citations)." .
 
-:Repository a owl:Class .
+:Repository a owl:Class ;
+    rdfs:subClassOf core:Repository .
 
 
 # --- links (owl:ObjectProperty) ---
@@ -41,30 +47,30 @@
     rdfs:label "has father" ;
     rdfs:comment "Links a Family to the Person recorded as father." ;
     rdfs:domain :Family ;
-    rdfs:range :Person .
+    rdfs:range core:Person .
 
 :hasMother a owl:ObjectProperty ;
     rdfs:label "has mother" ;
     rdfs:comment "Links a Family to the Person recorded as mother." ;
     rdfs:domain :Family ;
-    rdfs:range :Person .
+    rdfs:range core:Person .
 
 :hasChild a owl:ObjectProperty ;
     rdfs:label "has child" ;
     rdfs:comment "Links a Family to a Person who is a child in it." ;
     rdfs:domain :Family ;
-    rdfs:range :Person .
+    rdfs:range core:Person .
 
 :spouseInFamily a owl:ObjectProperty ;
     rdfs:label "spouse in family" ;
     rdfs:comment "Links a Person to a Family in which they are a partner." ;
-    rdfs:domain :Person ;
+    rdfs:domain core:Person ;
     rdfs:range :Family .
 
 :childInFamily a owl:ObjectProperty ;
     rdfs:label "child in family" ;
     rdfs:comment "Links a Person to a Family in which they are a child." ;
-    rdfs:domain :Person ;
+    rdfs:domain core:Person ;
     rdfs:range :Family .
 
 :participatedInEvent a owl:ObjectProperty ;
@@ -81,7 +87,7 @@
 :hasMedia a owl:ObjectProperty ;
     rdfs:label "has media" ;
     rdfs:comment "Links a Person, Family, Event or Place to an attached MediaAsset (photo/scan)." ;
-    rdfs:range :MediaAsset .
+    rdfs:range core:MediaFile .
 
 :citesSource a owl:ObjectProperty ;
     rdfs:label "cites source" ;
@@ -110,7 +116,7 @@
 :gender a owl:DatatypeProperty ;
     rdfs:label "gender" ;
     rdfs:comment "Recorded gender of a Person (female, male, unknown)." ;
-    rdfs:domain :Person ;
+    rdfs:domain core:Person ;
     rdfs:range xsd:string .
 
 :eventType a owl:DatatypeProperty ;
@@ -131,11 +137,11 @@
     rdfs:domain :Family ;
     rdfs:range xsd:string .
 
-<http://knuckles.team/kg/gramps> a owl:Ontology ;
+<https://knuckles-team.github.io/ontology/connector/gramps> a owl:Ontology ;
     rdfs:label "Gramps Genealogy Ontology" ;
     rdfs:comment """Gramps genealogy model — individuals (shared :Person), family units,
     life events, places, sources, citations and repositories, with their kinship,
     participation and provenance relationships, plus photos/scans as shared
     :MediaAsset blobs — federated into the scion-sdk knowledge-graph hub.""" .
 
-<http://knuckles.team/kg#Source> rdfs:subClassOf <http://knuckles.team/kg#Document> .
+<https://knuckles-team.github.io/ontology/connector/gramps#Source> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#Document> .
