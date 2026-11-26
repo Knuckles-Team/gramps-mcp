@@ -15,6 +15,27 @@ metadata:
 
 Use the typed tools of the `gramps-mcp` connector: one tool per upstream API operation, named `gramps_<operation>`. Each tool takes typed parameters; there is no `action` or `params_json` routing.
 
+## Steps
+
+1. Identify the account or token task and call `gramps_get_users` (no parameters).
+   Verify the target `user_name` appears in the list.
+2. Read one account with `gramps_get_user` (`user_name`).
+   Verify the role and the account match the request, without echoing email or secrets.
+3. For sign-in diagnosis call `gramps_get_oidcconfigresource` (no parameters).
+   Verify the provider configuration is returned.
+4. For a change, state it to the operator and get approval, and call `gramps_put_user` (`body`, `user_name`) or `gramps_post_user` (`body`, `user_name`).
+   Verify by re-reading with `gramps_get_user`.
+5. For removal, call `gramps_delete_user` (`confirm`, `user_name`) only with approval and `confirm=true`.
+   Verify `gramps_get_users` no longer lists it.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| User not found | Wrong `user_name` or different tree | List with `gramps_get_users` and copy the exact `user_name` |
+| Delete refused | `confirm=true` missing | Ask the operator for approval and pass `confirm=true` |
+
 ## Where the data lives
 
 - **gramps-people** (`GRAMPS_URL`): holds Person; read with `gramps_get_people`.

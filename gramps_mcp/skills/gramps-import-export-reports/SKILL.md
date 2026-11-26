@@ -15,6 +15,27 @@ metadata:
 
 Use the typed tools of the `gramps-mcp` connector: one tool per upstream API operation, named `gramps_<operation>`. Each tool takes typed parameters; there is no `action` or `params_json` routing.
 
+## Steps
+
+1. List the available formats with `gramps_get_exporters` or `gramps_get_importers` (no parameters).
+   Verify the wanted `extension` is listed.
+2. For an export, call `gramps_post_exporter_file` (`body`, `extension`).
+   Verify the response names a result `filename`.
+3. Download with `gramps_get_exporter_file_result` (`extension`, `filename`).
+   Verify the file is non-empty and keep it out of prompts and logs.
+4. For a report, list with `gramps_get_reports` and run `gramps_post_report_file` (`body`, `report_id`).
+   Verify with `gramps_get_report_file_result` (`filename`, `report_id`).
+5. For an import, get operator approval first, and call `gramps_post_importer_file` (`body`, `extension`).
+   Verify the new records with `gramps_get_people` afterwards.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| Extension not supported | Wrong `extension` or `report_id` | Re-list with `gramps_get_exporters` or `gramps_get_reports` and copy the exact value |
+| Result file missing | Export still running or `filename` mistyped | Poll `gramps_get_exporter_file_result` with the `filename` from the post response; check `gramps_get_tasks` for status |
+
 ## Where the data lives
 
 - **gramps-people** (`GRAMPS_URL`): holds Person; read with `gramps_get_people`.

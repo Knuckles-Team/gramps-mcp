@@ -2,14 +2,7 @@
 name: gramps-tree-ingestion
 skill_type: skill
 description: >-
-  Ingest a Gramps family tree natively into the medulla knowledge graph
-  via the gramps-mcp MCP server — people become typed :Person nodes, families
-  :Family nodes, and life events :Event nodes, wired by kinship
-  (:hasFather/:hasMother/:hasChild) and participation (:participatedInEvent)
-  links. Use when the agent must mirror or refresh a genealogy database into the
-  KG for cross-source querying. Do NOT use for plain read/lookup (use
-  gramps-genealogy-research) or for storing photo/scan bytes (use
-  gramps-media-archive).
+  Ingest a Gramps tree into the medulla knowledge graph via gramps-mcp: people, families and events become typed :Person, :Family and :Event nodes with kinship links. Use to mirror or refresh a genealogy database in the KG. Do NOT use for plain lookups (gramps-genealogy-research) or photo bytes (gramps-media-archive).
 license: MIT
 tags: [gramps, genealogy, knowledge-graph, ingestion, mcp]
 metadata:
@@ -18,11 +11,34 @@ metadata:
 ---
 # Gramps Tree Ingestion
 
+Scope: Ingest a Gramps family tree natively into the medulla knowledge graph via the gramps-mcp MCP server — people become typed :Person nodes, families :Family nodes, and life events :Event nodes, wired by kinship (:hasFather/:hasMother/:hasChild) and participation (:participatedInEvent) links. Use when the agent must mirror or refresh a genealogy database into the KG for cross-source querying. Do NOT use for plain read/lookup (use gramps-genealogy-research) or for storing photo/scan bytes (use gramps-media-archive).
+
 Native "maximum ingestion" of a Gramps tree into the ONE medulla engine.
 The gramps-mcp server lists records and pushes them as **typed OWL nodes** matching
 `gramps.ttl` (`:Person`, `:Family`, `:Event`) with their kinship and participation
 links, via the fast engine client. Best-effort: with no reachable engine each tool
 returns `{"ingested": null}` and nothing breaks.
+
+## Steps
+
+1. Confirm the tree is reachable with `gramps_get_people` and `pagesize=1`.
+   Verify one record returns with a `handle`.
+2. Request arbora `source_sync` for the connector sources rather than pushing records by hand.
+   Verify the request is accepted and returns a run reference.
+3. Order a full refresh as `gramps_get_people`, followed by `gramps_get_families` and finally `gramps_get_events`, paging with `page` and `pagesize`.
+   Verify the `listed` counts are non-zero for each.
+4. Check the result field `ingested` for each source.
+   Verify it is a number, and treat `null` as no reachable engine.
+5. Spot-check one node with the id pattern `gramps:Person:<handle>`.
+   Verify it exists once, so re-ingesting merged rather than duplicated.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| `ingested` is null | No reachable medulla engine, listing still worked | Ask the operator to restore the engine through arbora and repeat the `source_sync` request, then check `ingested` is a number |
+| Kinship edges missing | Families or events ingested before people | Request `source_sync` again in the order people, families, events; edges self-heal on re-ingest |
 
 ## When to use
 - Mirror or refresh an entire Gramps tree into the knowledge graph.

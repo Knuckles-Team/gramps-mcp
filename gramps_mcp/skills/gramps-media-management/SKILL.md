@@ -15,6 +15,27 @@ metadata:
 
 Use the typed tools of the `gramps-mcp` connector: one tool per upstream API operation, named `gramps_<operation>`. Each tool takes typed parameters; there is no `action` or `params_json` routing.
 
+## Steps
+
+1. Locate the media with `gramps_get_media_objects` using a narrow filter.
+   Verify one candidate `handle` is identified.
+2. Read it with `gramps_get_media_object` (`handle`).
+   Verify `mime`, `path` and `checksum` match the intended file.
+3. To add metadata, call `gramps_post_media_objects` (`body`).
+   Verify the new `handle` reads back with `gramps_get_media_object`.
+4. To replace file content, get approval and call `gramps_put_media_file` (`body`, `handle`).
+   Verify `gramps_get_media_file` returns the new bytes and a changed `checksum`.
+5. To delete, get approval and call `gramps_delete_media_object` (`confirm`, `handle`) with `confirm=true`.
+   Verify the read now returns not-found.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| Not-found error for a handle | A `gramps_id` such as `I0042` was passed where the opaque `handle` is required, or the handle is from another tree | Resolve the record with the list tool and its `gramps_id` filter, then pass the `handle` it returns |
+| Delete refused | `confirm=true` missing | Obtain operator approval and pass `confirm=true` |
+
 ## Where the data lives
 
 - **gramps-people** (`GRAMPS_URL`): holds Person; read with `gramps_get_people`.

@@ -16,6 +16,27 @@ metadata:
 
 Use the typed tools of the `gramps-mcp` connector: one tool per upstream API operation, named `gramps_<operation>`. Each tool takes typed parameters; there is no `action` or `params_json` routing.
 
+## Steps
+
+1. Choose the question type and run a bounded search with `gramps_get_search` or a saved filter from `gramps_get_filters`.
+   Verify the hit count is manageable.
+2. Resolve the people involved with `gramps_get_people`.
+   Verify each `handle` belongs to the intended person.
+3. Check `gramps_get_living` (`handle`) before reporting personal details.
+   Verify living persons are withheld unless the operator approved.
+4. Compute the answer with `gramps_get_relation` (`handle1`, `handle2`), `gramps_get_person_timeline` (`handle`) or `gramps_get_person_dna_matches` (`handle`).
+   Verify the output names both people or the subject.
+5. Report results with counts and identifiers only, taken from the `gramps_get_search` output.
+   Verify no unrelated private fields, DNA details beyond the minimum, or tokens are included.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| Not-found error for a handle | A `gramps_id` such as `I0042` was passed where the opaque `handle` is required, or the handle is from another tree | Resolve the record with the list tool and its `gramps_id` filter, then pass the `handle` it returns |
+| Empty search result | Query too narrow or index stale | Loosen the filter, and if the index is stale ask the operator to approve `gramps_post_search_index` (`body`) |
+
 ## Where the data lives
 
 - **gramps-people** (`GRAMPS_URL`): holds Person; read with `gramps_get_people`.

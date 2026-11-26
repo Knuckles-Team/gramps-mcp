@@ -15,6 +15,27 @@ metadata:
 
 Use the typed tools of the `gramps-mcp` connector: one tool per upstream API operation, named `gramps_<operation>`. Each tool takes typed parameters; there is no `action` or `params_json` routing.
 
+## Steps
+
+1. Locate the person with `gramps_get_people` using a narrow filter and a small `pagesize`.
+   Verify the result count is small enough to identify exactly one record.
+2. Read the full record with `gramps_get_person` (`handle`).
+   Verify the returned `handle` and `gramps_id` match the intended person.
+3. For a new record, check for an existing duplicate with `gramps_get_people` before calling `gramps_post_people` (`body`).
+   Verify no matching record already exists.
+4. To change a record, state the exact fields to the operator, and call `gramps_put_person` (`body`, `handle`).
+   Verify by re-reading with `gramps_get_person` that only those fields differ.
+5. To remove a record, get explicit operator approval and call `gramps_delete_person` (`confirm`, `handle`) with `confirm=true`.
+   Verify `gramps_get_person` for that `handle` now returns not-found.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| Not-found error for a handle | A `gramps_id` such as `I0042` was passed where the opaque `handle` is required, or the handle is from another tree | Resolve the record with the list tool and its `gramps_id` filter, then pass the `handle` it returns |
+| Delete refused | `confirm=true` was not passed to `gramps_delete_person`, or the record is still referenced | Ask the operator for approval, pass `confirm=true`, and detach references from the referring records first |
+
 ## Where the data lives
 
 - **gramps-people** (`GRAMPS_URL`): holds Person; read with `gramps_get_people`.
