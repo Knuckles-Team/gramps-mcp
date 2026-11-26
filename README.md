@@ -1,17 +1,41 @@
 # Gramps MCP
-
-## API client | MCP server | A2A agent
+## API | MCP | Agent
 
 ![PyPI - Version](https://img.shields.io/pypi/v/gramps-mcp)
-![MCP Server](https://badge.mcpx.dev?type=server "MCP Server")
+![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
+![PyPI - Downloads](https://img.shields.io/pypi/dd/gramps-mcp)
+![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/gramps-mcp)
+![GitHub forks](https://img.shields.io/github/forks/Knuckles-Team/gramps-mcp)
+![GitHub contributors](https://img.shields.io/github/contributors/Knuckles-Team/gramps-mcp)
 ![PyPI - License](https://img.shields.io/pypi/l/gramps-mcp)
+![GitHub](https://img.shields.io/github/license/Knuckles-Team/gramps-mcp)
+![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/gramps-mcp)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Knuckles-Team/gramps-mcp)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Knuckles-Team/gramps-mcp)
+![GitHub issues](https://img.shields.io/github/issues/Knuckles-Team/gramps-mcp)
+![GitHub top language](https://img.shields.io/github/languages/top/Knuckles-Team/gramps-mcp)
+![GitHub language count](https://img.shields.io/github/languages/count/Knuckles-Team/gramps-mcp)
+![GitHub repo size](https://img.shields.io/github/repo-size/Knuckles-Team/gramps-mcp)
+![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/Knuckles-Team/gramps-mcp)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/gramps-mcp)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/gramps-mcp)
+
+> **Documentation** — Installation, deployment, and usage across the API, CLI, MCP,
+> and A2A agent interfaces are maintained in the
+> [official documentation](https://knuckles-team.github.io/gramps-mcp/).
+
+---
+
+## Overview
 
 `gramps-mcp` exposes the public Gramps Web API as a typed Python client, a compact
 action-routed MCP server, and an optional A2A agent. All instance endpoints,
 credentials, identity-provider settings, TLS trust, tenant policy, and observability
 destinations are provided at runtime.
 
-## Key capabilities
+---
+
+## Key Features
 
 - Thirty-five condensed MCP domains cover people, families, events, places,
   relationships, sources, citations, media, DNA, imports, exports, trees, users, and
@@ -26,7 +50,11 @@ destinations are provided at runtime.
 - Neutral ontology and source-preset inputs can be compiled centrally into a signed
   Arbora capability. The provider exposes no direct graph-write tool.
 
-## Available MCP tools
+---
+
+## MCP
+
+### Available MCP tools
 
 Each condensed tool accepts an `action` plus a JSON string in `params_json`. Domain
 toggles are enabled unless a deployment disables them. This table is generated from the
@@ -234,153 +262,7 @@ registered server surface.
 _35 action-routed tool(s) · 147 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (**`intent` default** — the six verb-tools, granular set loaded on demand · `condensed` action-routed · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
-## Installation
-
-| Extra | Installs | Intended use |
-| --- | --- | --- |
-| `gramps-mcp[mcp]` | Meristem MCP runtime and the mandatory full medulla base dependency | MCP tool hosting |
-| `gramps-mcp[agent]` | Current `agent-runtime` plus Logfire | Integrated A2A agent |
-| `gramps-mcp[all]` | MCP and agent runtime | Both entry points |
-
-Run without a durable installation:
-
-```bash
-uvx --from "gramps-mcp[mcp]" gramps-mcp
-uvx --from "gramps-mcp[agent]" gramps-agent
-```
-
-Or install into an environment:
-
-```bash
-uv pip install "gramps-mcp[mcp]"
-uv pip install "gramps-mcp[agent]"
-```
-
-Every install receives `medulla[full]` through Meristem. The connector
-does not start an insecure engine listener or select a machine-specific graph database.
-AgentConfig owns engine topology and identity.
-
-## Runtime configuration
-
-The checked-in MCP configuration is reference-only:
-
-```json
-{
-  "mcpServers": {
-    "gramps-mcp": {
-      "command": "uvx",
-      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp"],
-      "env": {
-        "MCP_TOOL_MODE": "condensed",
-        "GRAMPS_TOKEN": "env://GRAMPS_TOKEN",
-        "GRAMPS_URL": "env://GRAMPS_URL"
-      }
-    }
-  }
-}
-```
-
-An alias-aware Arbora launcher resolves the two references before creating the child
-process. Other launchers must inject the values through their own runtime secret
-mechanism. Never replace references with a credential or endpoint in a committed file.
-
-| Setting | Purpose |
-| --- | --- |
-| `GRAMPS_URL` | Absolute HTTPS origin of the selected Gramps Web API |
-| `GRAMPS_TOKEN` | Fixed bearer credential when delegation is inactive |
-| `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` | Optional login pair when a fixed token is not used |
-| `TLS_PROFILE` / `TLS_PROFILES_REF` | Checked system/private trust and optional mTLS |
-| `MCP_TOOL_MODE` | `condensed`, `verbose`, `both`, or `intent` |
-
-The endpoint must not contain credentials, a query, or a fragment. The retired boolean
-verification switch is unsupported; trust policy is a resolved TLS profile and cannot
-be disabled per request.
-
-Validate configuration without printing resolved values:
-
-```bash
-scion-sdk-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
-```
-
-## Usage
-
-### Python client
-
-```python
-from gramps_mcp.auth import get_client
-
-client = get_client()
-try:
-    result = client.get_people(page=1, pagesize=25)
-    print(result.status_code)
-finally:
-    client.close()
-```
-
-### MCP tool call
-
-```json
-{
-  "tool": "gramps_people",
-  "arguments": {
-    "action": "get_people",
-    "params_json": "{\"page\":1,\"pagesize\":25}"
-  }
-}
-```
-
-Use `gramps-genealogy-operations` for evidence handling, privacy controls, stable-handle
-resolution, and safe mutations. Merges, imports, deletes, tree repair or migration,
-transaction undo, user changes, and token/password operations require explicit scope and
-approval.
-
-## Containers
-
-The multi-stage Dockerfile provides separate MCP and agent targets:
-
-```bash
-docker build --target mcp -t gramps-mcp:mcp -f docker/Dockerfile .
-docker build --target agent -t gramps-mcp:agent-local -f docker/Dockerfile .
-```
-
-Compose image references, model selection, MCP endpoint, credentials, and telemetry are
-externalized. Published ports bind to loopback by default; any wider network exposure
-must add authenticated MCP transport, authorization policy, and ingress TLS.
-
-<!-- GOVERNED-CAPABILITY:START -->
-## Governed capability contract
-
-The package contributes only provider-owned inputs:
-
-- a mapping of the public Gramps data model;
-- neutral people, family, and event source presets;
-- one provider skill and canonical prompts;
-- entry points that prove which distribution owns each input.
-
-The committed release-generated schema-v2 bundle adds exact local MCP schema
-fingerprints, a signed manifest, SHACL shapes, neutral mappings and fixtures, a
-migration ledger, and an offline source attestation. It contains no live record,
-instance extension, endpoint, credential, local path, tenant mapping, or external-live
-claim. Genealogy ingestion also requires approved tenant, ACL, consent, classification,
-retention, provenance, redaction, and deletion policy. Missing or stale evidence fails
-closed.
-
-Runtime endpoints, credentials, TLS trust, identity, tree/tenant policy, retention, and
-observability destinations are deployment inputs and never packaged values. Read
-[Configuration, trust, and privacy](docs/configuration.md) before enabling a network
-transport, Arbora delegation, source synchronization, or trace export.
-<!-- GOVERNED-CAPABILITY:END -->
-
-## Privacy and observability
-
-Genealogy can expose living-person identities, family relationships, dates, places,
-notes, media, DNA, contact details, and authentication data. Keep telemetry content
-capture disabled unless a separately approved policy permits it. Export bounded status,
-counts, timings, and error classes rather than prompts, responses, tool payloads,
-records, endpoints, credentials, or filesystem paths.
-
-See the [documentation](https://knuckles-team.github.io/gramps-mcp/) for configuration,
-deployment, and operational guidance.
+---
 
 ## Environment Variables
 
@@ -460,6 +342,188 @@ deployment, and operational guidance.
 _43 package + 18 inherited variable(s). Auto-generated from `.env.example` + the shared scion-sdk set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
+---
+
+## Installation
+
+| Extra | Installs | Intended use |
+| --- | --- | --- |
+| `gramps-mcp[mcp]` | Meristem MCP runtime and the mandatory full medulla base dependency | MCP tool hosting |
+| `gramps-mcp[agent]` | Current `agent-runtime` plus Logfire | Integrated A2A agent |
+| `gramps-mcp[all]` | MCP and agent runtime | Both entry points |
+
+Run without a durable installation:
+
+```bash
+uvx --from "gramps-mcp[mcp]" gramps-mcp
+uvx --from "gramps-mcp[agent]" gramps-agent
+```
+
+Or install into an environment:
+
+```bash
+uv pip install "gramps-mcp[mcp]"
+uv pip install "gramps-mcp[agent]"
+```
+
+Every install receives `medulla[full]` through Meristem. The connector
+does not start an insecure engine listener or select a machine-specific graph database.
+AgentConfig owns engine topology and identity.
+
+---
+
+## Runtime configuration
+
+The checked-in MCP configuration is reference-only:
+
+```json
+{
+  "mcpServers": {
+    "gramps-mcp": {
+      "command": "uvx",
+      "args": ["--from", "gramps-mcp[mcp]", "gramps-mcp"],
+      "env": {
+        "MCP_TOOL_MODE": "condensed",
+        "GRAMPS_TOKEN": "env://GRAMPS_TOKEN",
+        "GRAMPS_URL": "env://GRAMPS_URL"
+      }
+    }
+  }
+}
+```
+
+An alias-aware Arbora launcher resolves the two references before creating the child
+process. Other launchers must inject the values through their own runtime secret
+mechanism. Never replace references with a credential or endpoint in a committed file.
+
+| Setting | Purpose |
+| --- | --- |
+| `GRAMPS_URL` | Absolute HTTPS origin of the selected Gramps Web API |
+| `GRAMPS_TOKEN` | Fixed bearer credential when delegation is inactive |
+| `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` | Optional login pair when a fixed token is not used |
+| `TLS_PROFILE` / `TLS_PROFILES_REF` | Checked system/private trust and optional mTLS |
+| `MCP_TOOL_MODE` | `condensed`, `verbose`, `both`, or `intent` |
+
+The endpoint must not contain credentials, a query, or a fragment. The retired boolean
+verification switch is unsupported; trust policy is a resolved TLS profile and cannot
+be disabled per request.
+
+Validate configuration without printing resolved values:
+
+```bash
+scion-sdk-doctor --only config transport_security mcp_fleet_secrets mcp_fleet
+```
+
+---
+
+## Usage
+
+### Python client
+
+```python
+from gramps_mcp.auth import get_client
+
+client = get_client()
+try:
+    result = client.get_people(page=1, pagesize=25)
+    print(result.status_code)
+finally:
+    client.close()
+```
+
+### MCP tool call
+
+```json
+{
+  "tool": "gramps_people",
+  "arguments": {
+    "action": "get_people",
+    "params_json": "{\"page\":1,\"pagesize\":25}"
+  }
+}
+```
+
+Use `gramps-genealogy-operations` for evidence handling, privacy controls, stable-handle
+resolution, and safe mutations. Merges, imports, deletes, tree repair or migration,
+transaction undo, user changes, and token/password operations require explicit scope and
+approval.
+
+---
+
+## Containers
+
+The multi-stage Dockerfile provides separate MCP and agent targets:
+
+```bash
+docker build --target mcp -t gramps-mcp:mcp -f docker/Dockerfile .
+docker build --target agent -t gramps-mcp:agent-local -f docker/Dockerfile .
+```
+
+Compose image references, model selection, MCP endpoint, credentials, and telemetry are
+externalized. Published ports bind to loopback by default; any wider network exposure
+must add authenticated MCP transport, authorization policy, and ingress TLS.
+
+---
+
+## Documentation
+
+The complete documentation is published as the
+[official documentation site](https://knuckles-team.github.io/gramps-mcp/) and is
+the recommended reference for installation, deployment, and day-to-day operation.
+
+---
+
+## Repository Owners
+
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
+
+---
+
+## Contribute
+
+Contributions are welcome! Please ensure code quality by running local checks before submitting pull requests:
+- Format code using `ruff format .`
+- Lint code using `ruff check .`
+- Validate type-safety with `mypy .`
+- Run test suites using `pytest`
+
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
+
+The package contributes only provider-owned inputs:
+
+- a mapping of the public Gramps data model;
+- neutral people, family, and event source presets;
+- one provider skill and canonical prompts;
+- entry points that prove which distribution owns each input.
+
+The committed release-generated schema-v2 bundle adds exact local MCP schema
+fingerprints, a signed manifest, SHACL shapes, neutral mappings and fixtures, a
+migration ledger, and an offline source attestation. It contains no live record,
+instance extension, endpoint, credential, local path, tenant mapping, or external-live
+claim. Genealogy ingestion also requires approved tenant, ACL, consent, classification,
+retention, provenance, redaction, and deletion policy. Missing or stale evidence fails
+closed.
+
+Runtime endpoints, credentials, TLS trust, identity, tree/tenant policy, retention, and
+observability destinations are deployment inputs and never packaged values. Read
+[Configuration, trust, and privacy](docs/configuration.md) before enabling a network
+transport, Arbora delegation, source synchronization, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->
+
+## Privacy and observability
+
+Genealogy can expose living-person identities, family relationships, dates, places,
+notes, media, DNA, contact details, and authentication data. Keep telemetry content
+capture disabled unless a separately approved policy permits it. Export bounded status,
+counts, timings, and error classes rather than prompts, responses, tool payloads,
+records, endpoints, credentials, or filesystem paths.
+
+See the [documentation](https://knuckles-team.github.io/gramps-mcp/) for configuration,
+deployment, and operational guidance.
 
 <!-- BEGIN scion-sdk-deployment (generated; do not edit between markers) -->
 
