@@ -1,14 +1,39 @@
 ---
 name: gramps-genealogy-operations
 skill_type: skill
-description: Research and administer an authorized Gramps family-history system through gramps-mcp, including people, families, events, places, relationships, sources, citations, notes, media, DNA, timelines, imports, exports, trees, users, and supporting configuration. Use for evidence-based genealogy lookup, kinship resolution, media or record management, carefully approved mutations, or requesting centrally governed Arbora synchronization of Gramps records.
+description: >-
+  Research and administer an authorized Gramps family-history system through gramps-mcp: people, families, events, places, sources, media, DNA, timelines, imports, exports, trees and users. Use for evidence-based lookup, kinship resolution, record management, approved mutations, or requesting governed Arbora sync. Full scope in body.
 ---
 
 # Gramps Genealogy Operations
 
+Scope: Research and administer an authorized Gramps family-history system through gramps-mcp, including people, families, events, places, relationships, sources, citations, notes, media, DNA, timelines, imports, exports, trees, users, and supporting configuration. Use for evidence-based genealogy lookup, kinship resolution, media or record management, carefully approved mutations, or requesting centrally governed Arbora synchronization of Gramps records.
+
 Use the `gramps-mcp` server as the typed boundary to an operator-selected Gramps Web
 API. Treat genealogy records as sensitive personal data, especially records about
 living people, DNA, notes, media, contact details, user accounts, and authentication.
+
+## Steps
+
+1. Establish the authorized tree and the minimum record scope, and call `gramps_get_metadata` to confirm the connection.
+   Verify the response names the expected tree.
+2. Find the target with `gramps_get_search` or `gramps_get_people` using a `gramps_id` or narrow query.
+   Verify exactly one `handle` is selected.
+3. Read the record and its linked events, sources and citations with `gramps_get_person` (`handle`) and the matching typed reads.
+   Verify conclusions are backed by a citation and flag any that are not.
+4. Check living or sensitive status with `gramps_get_living` (`handle`) before returning personal details.
+   Verify living persons are withheld or the operator approved release.
+5. For a mutation, state the objects and effect, get explicit approval, and call the typed write tool such as `gramps_put_person`.
+   Verify by reading the record back with `gramps_get_person`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| Not-found error for a handle | A `gramps_id` such as `I0042` was passed where the opaque `handle` is required, or the handle is from another tree | Resolve the record with the list tool and its `gramps_id` filter, then pass the `handle` it returns |
+| Ambiguous or empty search | Name-only query matches several people or none | Narrow with `gramps_id` or `rules` filters via `gramps_get_people`, and ask the operator to pick the handle; never assume identity from a name |
+| Destructive tool refused | `confirm=true` missing or operator approval absent | Describe the exact objects to the operator, obtain approval, and pass `confirm=true` |
 
 ## Invoke the tools
 

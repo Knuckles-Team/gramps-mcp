@@ -16,6 +16,27 @@ metadata:
 
 Use the typed tools of the `gramps-mcp` connector: one tool per upstream API operation, named `gramps_<operation>`. Each tool takes typed parameters; there is no `action` or `params_json` routing.
 
+## Steps
+
+1. Identify the administration task and read current state with `gramps_get_trees` or `gramps_get_configs` (no parameters).
+   Verify the target `tree_id` or `key` is listed.
+2. State the exact change and effect to the operator, citing the current value from `gramps_get_config` (`key`), and obtain explicit approval.
+   Verify the approval names the objects.
+3. Apply the smallest change, for example `gramps_put_config` (`body`, `key`) or `gramps_put_tree` (`body`, `tree_id`).
+   Verify by re-reading with `gramps_get_config` (`key`) or `gramps_get_tree` (`tree_id`).
+4. For merges compare both records with the typed reads, and call `gramps_post_merge_person` (`body`, `phoenix_handle`, `titanic_handle`).
+   Verify only the surviving `handle` remains.
+5. For long operations check `gramps_get_task` (`task_id`).
+   Verify status is complete, and use `gramps_get_transaction_history` (`transaction_id`) to confirm the recorded change.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| HTTP 401 or 403 from any tool | `GRAMPS_TOKEN` or `GRAMPS_USERNAME` and `GRAMPS_PASSWORD` missing or expired, or the account role is too low for a write | Set valid credentials for the `gramps-mcp` server, then call `gramps_get_metadata` to confirm the session works; ask the operator for an editor-role account before any write |
+| Merge or delete refused | `confirm=true` missing or handles reversed | Re-read both records, confirm which is `phoenix_handle` and `titanic_handle`, obtain approval, and pass `confirm=true` |
+| Task not complete | Long-running repair or migration still in progress | Poll `gramps_get_task` (`task_id`) with a bounded wait and report the status; undo with `gramps_post_transaction_undo` only after approval |
+
 ## Where the data lives
 
 - **gramps-people** (`GRAMPS_URL`): holds Person; read with `gramps_get_people`.

@@ -25,6 +25,27 @@ serving, and durable graph state belong to their owning repositories. Read
 personal records, and customer data out of source, logs, fixtures, and skill
 content.
 
+## Steps
+
+1. Find the owning spec row with `git grep -n "<term>" -- specs`.
+   Verify an existing row is extended instead of adding a new requirement.
+2. Make the smallest change in the existing client, tool, or ingestion module.
+   Verify with `git diff --stat` that only intended files changed.
+3. Run focused tests with `uv run --locked --extra test pytest -q tests/test_pages_workflow.py`.
+   Verify the run ends with all tests passed.
+4. Run the shared gates with `uvx pre-commit run --all-files`.
+   Verify every hook reports Passed.
+5. Stage reviewed paths with `git add -- <path>` and check `git diff --cached --name-status`.
+   Verify only intended files are staged before committing with the `Spec:` trailer.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Pre-commit hook fails | Formatting, spelling or spec gate violation | Read the hook output, fix the named file, and re-stage the same path before committing again |
+| Test cannot find the environment | Locked environment not synced | Run `uv sync --locked` in the worktree, then invoke the focused pytest command |
+| No spec row found | Requirement not yet declared | Extend the closest existing spec file under `specs/` first, or use `Spec: none (<reason>)` for a central criterion |
+
 ## Rapid delivery: the 5-minute contract
 
 Specs are already designed. Deliver small, reviewable slices and cite the owning
